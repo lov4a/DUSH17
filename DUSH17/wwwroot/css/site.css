@@ -947,7 +947,7 @@ input[type="checkbox"] {
 }
 
 .match_info h1 {
-    font-size: calc(14px + 18 * (100vw / 1900));
+    font-size: calc(14px + 8 * (100vw / 1900));
     margin-bottom: 0;
     font-weight:400;
 }
@@ -1052,4 +1052,30 @@ input[type="checkbox"] {
 .match_nav_button input:focus {
     background: #c5002e;
     color:white;
+}
+.one_action {
+    display: grid;
+    grid-template-columns: 5% 5% 88%;
+    grid-gap: 1%;
+}
+.actions2 {
+    width: 100%;
+    position: relative;
+}
+.actions2 img {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    width: 100%;
+}
+.goal_assist{
+    display:flex;
+}
+.goal_assist h3 {
+    font-size: calc(12px + 5 * (100vw / 1900));
+    color: gray;
+    font-weight:400;
+    margin:0;
+    padding:1.5%;
 }

@@ -23,7 +23,7 @@ namespace DUSH17.Pages
         {
             Match = context.Matches.Include(i => i.Team).Include(i => i.Opponent).ThenInclude(i=>i.Picture).Include(i => i.Competition).FirstOrDefault(i => i.Id == id);
             protocols = context.Protocols.Where(i=>i.MatchId == id).Include(i=>i.Footballer).ThenInclude(i=>i.Position).AsNoTracking().ToList();
-            actionns = context.Actions.Where(i=>i.MatchId == id).AsNoTracking().ToList();
+            actionns = context.Actions.Include(i=>i.Footballer).Where(i=>i.MatchId == id).OrderBy(i=>i.Time).AsNoTracking().ToList();
             replaces = context.Replaces.Where(i=>i.MatchID == id).Include(i=>i.FootballerIn).AsNoTracking().ToList();
             foreach (var person in protocols)
             {

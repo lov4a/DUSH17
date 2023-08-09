@@ -1,0 +1,238 @@
+﻿@page "{Id}"
+@model DUSH17.Pages.PlayerPageModel
+<script>
+
+	function stat() {
+		document.getElementById("stat").setAttribute("style", "display: block");
+		document.getElementById("achievment").setAttribute("style", "display: none");
+	}
+	function achievments() {
+		document.getElementById("stat").setAttribute("style", "display: none");
+		document.getElementById("achievment").setAttribute("style", "display: block");
+	}
+
+	document.addEventListener('DOMContentLoaded', () => {
+
+		const getSort = ({ target }) => {
+			const order = (target.dataset.order = -(target.dataset.order || -1));
+			const index = [...target.parentNode.cells].indexOf(target);
+			const collator = new Intl.Collator(['en', 'ru'], { numeric: true });
+			const comparator = (index, order) => (a, b) => order * collator.compare(
+				a.children[index].innerHTML,
+				b.children[index].innerHTML
+			);
+
+			for (const tBody of target.closest('table').tBodies)
+				tBody.append(...[...tBody.rows].sort(comparator(index, order)));
+
+			for (const cell of target.parentNode.cells)
+				cell.classList.toggle('sorted', cell === target);
+		};
+
+		document.querySelectorAll('.table thead').forEach(tableTH => tableTH.addEventListener('click', () => getSort(event)));
+
+	});
+</script>
+@{
+
+	foreach (var foot in Model.Footballers.Where(i => i.Id == Convert.ToInt32(Request.RouteValues["Id"])))
+	{
+
+		<div class="player_page">
+
+			<div style="border:solid 1px black; display:inline-block; border-right:none">
+				<img alt="Team" src="~/images/Players/@foot.Picture.Name" />
+			 </div>
+			<div style="border:solid 1px black; display:inline-block; border-left:none">
+				<h1>@foot.Surname @foot.Name @foot.Patronymic</h1>
+				<hr style="margin-bottom:0;margin-top:0; color:#c5002e;height:5px;width:90%" />
+				<div style="display:flex;flex-wrap: wrap">
+					<div style="width:25%;margin-top:10px"><h2>Дата рождения</h2></div><div><h3 style="margin-top:10px">@foot.DateOfBirthday</h3></div>
+					<div style="flex-basis:100%;height:0"></div>
+					<div style="width:25%;margin-top:10px"><h2>Дата поступления</h2></div><div><h3 style="margin-top:10px">@foot.DateOfStart</h3></div>
+					<div style="flex-basis:100%;height:0"></div>
+					<div style ="width:25%"><h2>Амплуа</h2></div><div><h3>@foot.Position.NameOfPosition</h3></div>
+					<div style="flex-basis:100%;height:0"></div>
+					<div style="width:25%"><h2>Рост</h2></div><div><h3>@foot.Height см</h3></div>
+					<div style="flex-basis:100%;height:0"></div>
+					<div style="width:25%"><h2>Вес</h2></div><div><h3>@foot.Weight кг</h3></div>
+					<div style="flex-basis:100%;height:0"></div>
+					<div style="width:25%"><h2>Команда</h2></div><div><a asp-page="TeamPage" asp-route-Id="@foot.TeamId" style="text-decoration:none;color: black;"><h3>ДЮСШ-17 @foot.Team.Year года рождения</h3></a></div>
+					<div style="flex-basis:100%;height:0"></div>
+					<div style="width:25%"><h2>Тренер</h2></div><div><h3>@foot.Team.Coach.Surname @foot.Team.Coach.Name @foot.Team.Coach.Patronymic</h3></div>
+				</div>
+
+			</div>
+		</div>
+		<div style="display:inline-block; border: 1px solid black;border-top:none; background-color:#c5002e; width:100%">
+			<button class="button-80" id="squad" runat="server" onclick="achievments()">Достижения</button>
+
+			<button class="button-80" id="achievments" runat="server" onclick="stat()">Статистика</button>
+			<form method="post">
+				<button class="button-80" type="submit" asp-page-handler="stat" asp-route-pId="@foot.Id" asp-route-tId="@foot.TeamId" asp-route-am="10" style="color:white; text-align:center;background-color:#c5002e">
+					Сравнение
+				</button>
+			</form>
+		</div>
+		<div id="stat">
+			<table class="statictable">
+				
+				<thead>
+					<tr> <th style="text-align: center;">Игры</th><th style="text-align: center;">Минуты</th><th style="text-align: center;">Голы</th><th style="text-align: center;">Голы/90</th><th style="text-align: center;">Голевые передачи</th><th style="text-align: center;">Пас/90</th><th style="text-align: center;">Гол+Пас</th><th style="text-align: center;">Желыте карточки</th><th style="text-align: center;">Красные карточки</th></tr>
+				</thead>
+				<tbody>
+
+						<tr>
+							<td style="text-align: center;">@Model.Protocols.Where(i => i.FootballerId  == foot.Id).Count()</td>
+
+						@{
+							double totalMin = 0;
+							foreach (var match in Model.Matches.Where(f=>f.TeamId == foot.TeamId))
+							{
+
+								@if (match.Protocols.Where(pr => pr.FootballerId == foot.Id).Count() > 0)
+								{
+									if (Model.Actions.Where(a => a.ActionTypeId == 6 && a.MatchId == match.Id && a.FootballerId == foot.Id).Count() > 0)
+									{
+										int inMin = 0;
+										int outMin = 90;
+										foreach (var rep in Model.Replaces.Where(fb => fb.MatchID == match.Id && (fb.FootballerInId == foot.Id || fb.FootballerOutId == foot.Id)))
+										{
+											if (rep.FootballerOutId == foot.Id)
+											{
+												outMin = rep.Time;
+											}
+											if (rep.FootballerInId == foot.Id)
+											{
+												inMin = rep.Time;
+											}
+										}
+										totalMin += outMin - inMin;
+									}
+								}
+
+
+							}
+							<td style="text-align: center;">@totalMin</td>
+							<td style="text-align: center;">@Model.Actions.Where(g=>g.FootballerId == foot.Id && g.ActionTypeId == 1).Count()</td>
+							double g90 = 0;
+								if (@Model.Actions.Where(g => g.FootballerId == foot.Id && g.ActionTypeId == 6).Count() != 0)
+								{
+								g90 = Math.Round((Convert.ToDouble(@Model.Actions.Where(g => g.FootballerId == foot.Id && g.ActionTypeId == 1).Count()) / (totalMin / 90)), 2);
+
+								}
+							}
+							<td style="text-align: center;">@g90</td>
+							<td style="text-align: center;">@Model.Actions.Where(g=>g.FootballerId == foot.Id && g.ActionTypeId == 2).Count()</td>
+							@{
+								double gp90 = 0;
+								if (@Model.Actions.Where(g => g.FootballerId == foot.Id && g.ActionTypeId == 6).Count() != 0)
+								{
+								gp90 = Math.Round((Convert.ToDouble(@Model.Actions.Where(g => g.FootballerId == foot.Id && g.ActionTypeId == 2).Count()) / (totalMin / 90)), 2);
+
+								}
+							}
+							<td style="text-align: center;">@gp90</td>
+							@{
+								int gp = (@Model.Actions.Where(g => g.FootballerId == foot.Id && g.ActionTypeId == 1).Count() + @Model.Actions.Where(g => g.FootballerId == foot.Id && g.ActionTypeId == 2).Count());
+							}
+							<td style="text-align: center;">@gp</td>
+							<td style="text-align: center;">@Model.Actions.Where(g=>g.FootballerId == foot.Id && g.ActionTypeId == 3).Count()</td>
+							<td style="text-align: center;">@Model.Actions.Where(g=>g.FootballerId == foot.Id && g.ActionTypeId == 4).Count()</td>
+						</tr>
+					
+				</tbody>
+			</table>
+			<div style="border: 1px solid black; background-color:#c5002e; width:100%;padding:5px; text-align:center; color:white;font-size:20px;font-family:'Segoe UI'">Список матчей</div>
+			<table class="table" id="table1">
+
+				<thead>
+
+					<tr> <th style="text-align: center;">Дата</th><th style="text-align: center;">Соперник</th><th style="text-align: center;">Результат</th><th style="text-align: center;">Счет</th><th style="text-align: center;">Соревнование(уровень)</th><th style="text-align: center;">Минуты</th><th style="text-align: center;">Голы</th><th style="text-align: center;">ГП</th><th style="text-align: center;">ЖК</th><th style="text-align: center;">КК</th></tr>
+				</thead>
+				<tbody>
+					@foreach (var m in Model.Matches.Where(f=>f.TeamId == foot.TeamId).OrderByDescending(d => d.Date))
+					{
+						<tr>
+							<td style="text-align: center;">@m.Date</td>
+							<td style="text-align: center;">@m.Opponent</td>
+							@if(m.Goals > m.OpponentGoals)
+							{
+								<td style="text-align: center"><ps style="background-color:lawngreen;border:solid 1px black;color:black;font-weight: bold;padding-left:5px;padding-right:5px">В</ps></td>
+							}
+							else if (m.Goals < m.OpponentGoals)
+							{
+								<td style="text-align: center"><ps style="background-color:red;border:solid 1px black;color:black;font-weight: bold;padding-left:5px;padding-right:5px">П</ps></td>
+							}
+							else
+							{
+								<td style="text-align: center"><ps style="background-color:yellow;border:solid 1px black;color:black;font-weight: bold;padding-left:5px;padding-right:5px">Н</ps></td>
+							}
+							<td style="text-align: center;">@m.Goals : @m.OpponentGoals</td>
+							<td style="text-align: center;">@m.Competition.NameOfCompetition (@m.Competition.CompetitionLevel.Level)</td>
+
+								@if (m.Protocols.Where(pr => pr.FootballerId == foot.Id).Count() > 0)
+								{
+									int playTime = 0;
+									if (Model.Actions.Where(a => a.ActionTypeId == 6 && a.MatchId == m.Id && a.FootballerId == foot.Id).Count() > 0)
+									{
+										int inMin = 0;
+										int outMin = 90;
+										foreach (var rep in Model.Replaces.Where(fb => fb.MatchID == m.Id && (fb.FootballerInId == foot.Id || fb.FootballerOutId == foot.Id)))
+										{
+											if (rep.FootballerOutId == foot.Id)
+											{
+												outMin = rep.Time;
+											}
+											if (rep.FootballerInId == foot.Id)
+											{
+												inMin = rep.Time;
+											}
+										}
+										playTime = outMin - inMin;
+										
+									}
+								<td style="text-align: center;">@playTime</td>
+							}
+								else
+								{
+									<td style="text-align: center;">не заявлен</td>
+								}
+							
+
+							<td style="text-align: center;">@Model.Actions.Where(g => g.FootballerId == foot.Id && g.ActionTypeId == 1 && g.MatchId == m.Id).Count()</td>
+							<td style="text-align: center;">@Model.Actions.Where(g => g.FootballerId == foot.Id && g.ActionTypeId == 2 && g.MatchId == m.Id).Count()</td>
+							<td style="text-align: center;">@Model.Actions.Where(g => g.FootballerId == foot.Id && g.ActionTypeId == 3 && g.MatchId == m.Id).Count()</td>
+							<td style="text-align: center;">@Model.Actions.Where(g => g.FootballerId == foot.Id && g.ActionTypeId == 4 && g.MatchId == m.Id).Count()</td>
+
+						</tr>
+					}
+
+				</tbody>
+			</table>
+		</div>
+		<div id="achievment" style="display:none">
+			<div style="border: 1px solid black; background-color:#c5002e; width:100%;padding:5px; text-align:center; color:white;font-size:20px;font-family:'Segoe UI'">Список достижений</div>
+
+				<table class="table">
+					<thead>
+						<tr><th>Год</th><th>Соревнование</th><th>Уровень соревнования</th><th>Место</th></tr>
+					</thead>
+					<tbody>
+					@foreach (var a in foot.FootballerAchievements)
+					{
+						<tr>
+							<td>@a.Achievement.Competition.StartDate.Year</td>
+							<td>@a.Achievement.Competition.NameOfCompetition</td>
+							<td>@a.Achievement.Competition.CompetitionLevel.Level</td>
+							<td>@a.Achievement.Place</td>
+						</tr>
+
+					}
+
+					</tbody>
+			</table>
+
+		</div>
+	}
+}

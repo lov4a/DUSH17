@@ -1,0 +1,33 @@
+﻿@page
+@model DUSH17.Pages.CreateCompetitionModel
+@{
+    <h2>Добавление соревнования</h2>
+    <form method="post">
+        <p>
+            <label>Наименование</label><br />
+            <input name="NameOfCompetition" required/>
+        </p>
+        <p>
+            <label>Уровень</label><br />
+            @Html.DropDownList("CompetitionLevelId", Model.Levels as SelectList)
+
+        </p>
+        <p>
+            <label>Город</label><br />
+            <input name="City" required/>
+        </p>
+        <p>
+            <label>Дата начала</label><br />
+            <input type="date" name="sd" required />
+        </p>
+        <p>
+            <label>Дата завершения</label><br />
+            <input type="date" name="ed" required/>
+        </p>
+        <p>
+            <label>Количество команд</label><br />
+            <input type="number" name="CountOfTeams" required/>
+        </p>
+        <input type="submit" value="Отправить" />
+    </form>
+}

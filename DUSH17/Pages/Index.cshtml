@@ -1,0 +1,221 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Главная страница";
+}
+<div style="display:flex"><h3 style="font-weight:400;margin-right:1%;">Информационная система учета статитсики и достижений спортсменов</h3> <h3 style="font-weight:600"> СШ №17 Города Томска</h3></div>
+
+
+<hr style="margin-top:0; color:black;height:1px" />
+
+<div id="carouselExampleCaptions" class="carousel slide" style="height:45vh ; -webkit-box-shadow: 4px 4px 22px -2px rgba(34, 60, 80, 0.2);-moz-box-shadow: 4px 4px 22px -2px rgba(34, 60, 80, 0.2);box-shadow: 4px 4px 22px -2px rgba(34, 60, 80, 0.2);">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    </div>
+    <div class="carousel-inner" style="height:100%">
+        <div class="carousel-item active" style="height:100%">
+            <img src="~/images/News/news1.jpg" class="d-block w-100" alt="..." style="height:100%;width:auto;object-fit: cover;">
+            <div class="carousel-caption d-none d-md-block" style="right:3%;left:3%">
+                <h5>Михаил Ратнер призвал томичей активнее голосовать за объекты благоустройства 2024 года</h5>
+                <p>
+                    В Томске будет продолжено благоустройство общественных пространств в рамках федерального проекта «Формирование комфортной городской среды», сообщил и.о.
+                </p>
+            </div>
+        </div>
+        <div class="carousel-item" style="height:100%">
+            <img src="~/images/News/news2.jpg" class="d-block w-100" alt="..." style="height:100%;width:auto;object-fit: cover;">
+            <div class="carousel-caption d-none d-md-block" style="right:3%;left:3%">
+                <h5>Первенство России</h5>
+                <p>В Крымске на натуральных полях спорткомплекса «Гигант» проходит финальный турнир первенства России среди игроков не старше 2008 года рождения</p>
+            </div>
+        </div>
+        <div class="carousel-item" style="height:100%">
+            <img src="~/images/News/news3.jpg" class="d-block w-100" alt="..." style="height:100%;width:auto;object-fit: cover;">
+            <div class="carousel-caption d-none d-md-block" style="right:3%;left:3%">
+                <h5>Первенство Сибирского и Дальневосточного федеральных округов</h5>
+                <p>В Красноярске завершилось «Первенство Сибирского и Дальневосточного федеральных округов в рамках Всероссийских спортивных соревнований “ОРГХИМ-Первенство России по мини-футболу среди девочек до 14 лет” сезона 2022-2023 гг.»
+</p>
+            </div>
+        </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+
+<h2 style="margin-top:2%">Последние результаты</h2>
+@if (Model.LastMatches.Count() > 0)
+{
+    <div class="lastmatches">
+    @foreach (var match in  Model.LastMatches)
+    {
+        <a asp-page="Match" asp-route-Id="@match.Id" style="text-decoration: none;color:black">
+            <div class="item">
+                <div><h1>@match.Competition.NameOfCompetition</h1></div>
+                <div><h4>@match.Date @match.Competition.City</h4></div>
+                <div class="result"><h3 style="text-align:end;padding-right:10%">ДЮСШ-17 @match.Team.Year</h3><h2>@match.Goals : @match.OpponentGoals</h2><h3 style="text-align:start; padding-left:10%">@match.Opponent.Name @match.OpponentYear</h3></div>
+            </div>
+        </a>
+    }
+    </div>
+}
+
+
+
+<div class="bests">
+    <div>
+        <h2 class="caption_best" style="">Команда месяца</h2>
+
+
+        <div class="bestteam">
+            <a asp-page="TeamPage" asp-route-Id="@Model.bestTeam.Id" style="text-decoration: none;">
+                <img src="~/images/TeamsPhoto/@Model.bestTeam.Picture.Name" style="" />
+            </a>
+            <div class="bestteam_caption">
+                <a asp-page="TeamPage" asp-route-Id="@Model.bestTeam.Id" style="text-decoration: none;margin-left:1%">
+                    <h3 style="margin:0;">ДЮСШ-17 @Model.bestTeam.Year |</h3>
+                </a>
+
+                <h3>@Model.bestTeam.Coach.Surname @Model.bestTeam.Coach.Name @Model.bestTeam.Coach.Patronymic </h3>
+                <div class="games">
+
+                    <p style="">
+                        <ps style="background-color:lawngreen;border:solid 1px black;color:black;font-weight: bold;padding-left:5px;padding-right:5px">
+                            В
+                        </ps>
+                    </p>
+                    <h3>@Model.Matches.Where(i => i.TeamId == Model.bestTeam.Id && i.Goals > i.OpponentGoals).Count()</h3>
+
+                    <p style="">
+                        <ps style="background-color:yellow;border:solid 1px black;color:black;font-weight: bold;padding-left:5px;padding-right:5px">
+                            Н
+                        </ps>
+                    </p>
+                    <h3>@Model.Matches.Where(i => i.TeamId == Model.bestTeam.Id && i.Goals == i.OpponentGoals).Count()</h3>
+
+                    <p style="">
+                        <ps style="background-color:red;border:solid 1px black;color:black;font-weight: bold;padding-left:5px;padding-right:5px">
+                            П
+                        </ps>
+                    </p>
+                    <h3 style="margin-right:0">@Model.Matches.Where(i => i.TeamId == Model.bestTeam.Id && i.Goals < i.OpponentGoals).Count()</h3>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+     <div>
+        <h2 class="caption_best" style="">Игрок месяца</h2>
+        <div class="bestplayer">
+            <a asp-page="PlayerPage" asp-route-Id="@Model.bestFootballer.Id" style="text-decoration: none;">
+                <img src="~/images/Players/@Model.bestFootballer.Picture.Name" style="" />
+            </a>
+            <div class="bestplayer_caption">
+                <a asp-page="TeamPage" asp-route-Id="@Model.bestTeam.Id" style="text-decoration: none;">
+                    @Model.bestFootballer.Surname @Model.bestFootballer.Name
+                </a>
+                <hr style="margin-left:-2%; margin-bottom:0;margin-top:0; color:#c5002e;height:3px;width:90%" />
+                <h3>@Model.Actions.Where(i=>i.FootballerId == Model.bestFootballer.Id && i.ActionTypeId == 1).Count() голов</h3>
+                <h3>@Model.Actions.Where(i=>i.FootballerId == Model.bestFootballer.Id && i.ActionTypeId == 2).Count() голевых передач</h3>
+            </div>
+        </div>
+    </div>
+   
+
+
+    <div>
+             <h2 class="caption_best" style="">Дни рождения</h2>
+            <div id="carouselExample" class="carousel slide">
+            <div class="carousel-inner" style="border: 3px solid #c5002e;    border-radius: 8px;">
+                @{
+                    if (Model.Birthday.Count() > 0)
+                    {
+                        <div class="carousel-item active">
+                            <div class="birthdays">
+                                <a asp-page="PlayerPage" asp-route-Id="@Model.bestFootballer.Id" style="text-decoration: none;">
+                                    <img src="~/images/Players/@Model.Birthday[0].Picture.Name" style="" />
+                                </a>
+                                <div class="bestplayer_caption">
+                                    <a asp-page="TeamPage" asp-route-Id="@Model.bestTeam.Id" style="text-decoration: none;">
+                                        @Model.Birthday[0].Surname @Model.Birthday[0].Name
+                                    </a>
+                                    <hr style="margin-left:-2%; margin-bottom:0;margin-top:0; color:#c5002e;height:3px;width:90%" />
+                                    <h3>@Model.Birthday[0].DateOfBirthday</h3>
+                                    <h3>Исполнится @(DateTime.Now.Year - Model.Birthday[0].DateOfBirthday.Year) лет</h3>
+                                </div>
+                            </div>
+                        </div>
+                        foreach (var person in Model.Birthday.Where(i=>i.Id != Model.Birthday[0].Id))
+                        {
+                            <div class="carousel-item">
+                                <div class="birthdays">
+                                    <a asp-page="PlayerPage" asp-route-Id="@Model.bestFootballer.Id" style="text-decoration: none;">
+                                        <img src="~/images/Players/@person.Picture.Name" style="" />
+                                    </a>
+                                    <div class="bestplayer_caption">
+                                        <a asp-page="TeamPage" asp-route-Id="@Model.bestTeam.Id" style="text-decoration: none;">
+                                            @person.Surname @person.Name
+                                        </a>
+                                        <hr style="margin-left:-2%; margin-bottom:0;margin-top:0; color:#c5002e;height:3px;width:90%" />
+                                        <h3>@person.DateOfBirthday</h3>
+                                        <h3>Исполнится @(DateTime.Now.Year - person.DateOfBirthday.Year) лет</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                    <div class="birthdays">
+                        <img src="~/images/birthday.png" style="" />
+                        <div class="bestplayer_caption">
+                            <h3>Ждём именинников...</h3>
+                        </div>
+                    </div>
+                    }
+                }
+              <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+              </button>
+              <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+              </button>
+            </div>
+    </div>
+</div>
+</div>
+
+<hr style="margin-top:2%; margin-bottom:1%; color:black;height:1px" />
+
+<div class="index" style="display:flex;flex-wrap: wrap">
+
+    <h1 style="font-weight:500;">Муниципальное автономное учреждение дополнительного образования «Детско-юношеская спортивная школа №17 Города Томска»</h1>
+    <div style="flex-basis:100%;height:0"></div>
+    <div><h1>Место нахождения учреждения:</h1></div><div><h3 style="margin-left:2%"> 634024, Томская область, город Томск, ул. 5-ой Армии,15 </h3></div> 
+    <div style="flex-basis:100%;height:0"></div>
+    <div><h1>Контактный телефон:</h1></div><div><h3 style="margin-left:2%;margin-right:0;"> (3822) 46-22-96</h3></div>
+    <div style="flex-basis:100%;height:0"></div>
+    <div><h1>Режим и график работы:</h1></div><div><h3 style="margin-left:2%"> ежедневно с 09-00 до 21-00</h3></div>
+    <div style="flex-basis:100%;height:0"></div>
+    <div><h1>Адрес электронной почты:</h1></div><div><h3 style="margin-left:2%"> st-vosxod@mail.ru</h3></div>
+    <div style="flex-basis:100%;height:0"></div>
+
+</div>
+
+
+
+@*<h3>Cпортсменов в школе: @Model.Footballers.Count()</h3>
+<h3>Групп в школе: @Model.Teams.Count()</h3>
+<h3>Тренеров в школе: @Model.Coaches.Count()</h3>*@
+

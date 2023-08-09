@@ -1,0 +1,44 @@
+﻿@page
+@model DUSH17.Pages.TeamsModel
+@{
+	ViewData["Title"] = "Команды";
+}
+
+
+<div class="header_for_teamspage" >
+	<h2>Команды</h2>
+	<div class="teams_icons">
+		<div>
+			<a asp-page="CreateCoach" style="" title="Добавить тренера" alt="Добавить тренера"><img src="~/images/Icons/Add_coach.png" /></a>
+		</div>
+	</div>
+	<div class="teams_icons">
+		<div>
+			<a asp-page="CreateTeam"  style="" title="Добавить команду" alt="Добавить команду"><img src="~/images/Icons/Add_team.png" /></a>
+		</div>
+	</div>
+
+</div>
+<hr style="margin-top:0; color:black;height:1px" />
+
+<div class=" teams_page">
+	@foreach (var t in Model.Teams.OrderBy(i => i.Year))
+	{
+		<div class="team_container">
+			<a asp-page="TeamPage" asp-route-Id="@t.Id" style="text-decoration: none;">
+				<h1>@t.Year</h1>
+				<hr style="margin-bottom:0;margin-top:0; color:#c5002e;height:5px" />
+				<img alt="Team" src="~/images/TeamsPhoto/@t.Picture.Name"style="padding:0" />
+				<hr style="margin-bottom:0;margin-top:0; color:#c5002e;height:5px" />
+			</a>
+
+				<p style="padding-left:10px; color:dimgrey; margin-bottom:2px">Тренер</p>
+				<a href="https://localhost:44317/" style="text-decoration: none;">
+					<h2>@t.Coach.Surname @t.Coach.Name @t.Coach.Patronymic</h2>
+				</a>
+
+
+		</div>
+	}
+</div>
+

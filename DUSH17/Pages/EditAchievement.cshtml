@@ -1,0 +1,31 @@
+﻿@page
+@model DUSH17.Pages.EditAchievementModel
+@{
+    <h2>Изменение информации</h2>
+    <form method="post">
+		<input type="hidden" name="TeamId" value="@Model.IdofTeam" />
+		<p>
+			<label>Соревнование</label><br />
+			@Html.DropDownList("CompetitionId", Model.Competitions as SelectList,Model.ach.CompetitionId)
+		</p>
+		<p>
+			<label>Занятое место</label><br />
+			<input type="number" name="Place" value="@Model.ach?.Place" />
+		</p>
+		<p>
+			<label>Список футболистов</label><br />
+			@foreach (var a in Model.FootballersH)
+			{
+				<label><input type="checkbox" name="PlayersChecked" value="@a.Id" checked="checked" /> @a.Position.NameOfPosition | @a.Surname @a.Name @a.Patronymic</label> <br />
+
+			}
+			@foreach (var a in Model.Footballers)
+			{
+				<label><input type="checkbox" name="PlayersChecked" value="@a.Id" /> @a.Position.NameOfPosition | @a.Surname @a.Name @a.Patronymic</label> <br />
+
+			}
+		</p>
+
+        <input type="submit" value="Сохранить" />
+    </form>
+}

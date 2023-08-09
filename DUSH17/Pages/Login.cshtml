@@ -1,0 +1,21 @@
+﻿@page
+@model DUSH17.Pages.LoginModel
+@{
+
+    <div class="form_auth_block">
+        <div class="form_auth_block_content">
+            @Model.Msg
+            <p class="form_auth_block_head_text">Авторизация</p>
+            <form method="post" class="form_auth_style" asp-page="login">
+                <input type="text" name="username" />
+                <label>Логин</label>
+                <input type="password" name="password" />
+                <label>Введите пароль</label>
+                <button class="form_auth_button" type="submit" value="Login">Войти</button>
+            </form>
+        </div>
+    </div>
+
+
+
+}

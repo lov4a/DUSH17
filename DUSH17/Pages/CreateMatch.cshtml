@@ -1,0 +1,56 @@
+﻿@page
+@model DUSH17.Pages.CreateMatchModel
+@{
+	<h2>Добавление результата матча</h2>
+	<hr style="margin-top:0; color:black;height:1px" />
+	<label>@Model.comp.NameOfCompetition @Model.comp.StartDate.Year</label>
+
+	<form method="post">
+		<p>
+			<input type="hidden" name="TeamId" value="@Model.IdofTeam" />
+		</p>
+		<p>
+			<input type="hidden" name="CompetitionId" value="@Model.comp.Id" />
+		</p>
+		<p>
+			<label>Дата матча</label><br />
+			<input type="date" name="date" required/>
+		</p>
+
+		<label style="margin:0">Соперник и результат матча</label><br />
+		<div style="padding:3px;margin-top:0">
+			<input type="text" value="ДЮСШ-17" style="width:200px;text-align:center;margin-bottom:5px;font-weight:bold" readonly />
+			<label> - </label>
+			<input list="teams" name="Opponent" style="width:200px;text-align:center;margin-bottom:5px;font-weight:bold" placeholder="Введите соперника" required/><br />
+			<input type="number" max="100" min="0" value="0" name="Goals" style="width:200px;height:100px;  text-align:center;font-size:50px" required>
+			<label style="font-size:30px"> : </label>
+			<input type="number" max="100" min="0" value="0" name="OpponentGoals" style="width:200px;height:100px; text-align:center;font-size:50px" required>
+
+			<datalist id="teams">
+				@foreach (var m in Model.Opponents.DistinctBy(o => o.Opponent))
+				{
+					<option value="@m.Opponent"></option>
+				}
+
+			</datalist>
+		</div>
+
+		<p style="margin-top: 10px">
+			<label>Заявка на матч (отметьте игроков основного состава и игроков замены)</label><br />
+			@foreach (var a in Model.Footballers2)
+			{
+				<label><input type="checkbox" name="PlayersChecked" value="@a.Id" /> @a.Position.NameOfPosition | @a.Surname @a.Name @a.Patronymic</label> <br />
+
+			}
+			<hr style="margin-top:0; color:black;height:1px" />
+			@foreach (var a in Model.Footballers)
+			{
+				<label><input type="checkbox" name="PlayersChecked" value="@a.Id" />@a.Position.NameOfPosition | @a.Surname @a.Name @a.Patronymic | @a.DateOfBirthday.Year</label> <br />
+
+			}
+		</p>
+
+
+		<input type="submit" value="Перейти к заполнению протокола" />
+	</form>
+}

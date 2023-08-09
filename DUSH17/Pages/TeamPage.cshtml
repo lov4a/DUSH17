@@ -1,0 +1,484 @@
+﻿
+@page "{Id}"
+@model DUSH17.Pages.TeamPageModel
+
+<script>
+
+		function squad()
+		{
+			document.getElementById("stat").setAttribute("style", "display: block");
+			document.getElementById("achievment").setAttribute("style", "display: none");
+		document.getElementById("matches").setAttribute("style", "display: none");
+		}
+		function achievments()
+		{
+			document.getElementById("stat").setAttribute("style", "display: none");
+			document.getElementById("achievment").setAttribute("style", "display: block");
+			document.getElementById("matches").setAttribute("style", "display: none");
+		}
+		function games()
+		{
+			document.getElementById("stat").setAttribute("style", "display: none");
+			document.getElementById("achievment").setAttribute("style", "display: none");
+			document.getElementById("matches").setAttribute("style", "display: block");
+		}
+
+		document.addEventListener('DOMContentLoaded', () => {
+
+			const getSort = ({ target }) => {
+				const order = (target.dataset.order = -(target.dataset.order || -1));
+				const index = [...target.parentNode.cells].indexOf(target);
+				const collator = new Intl.Collator(['en', 'ru'], { numeric: true });
+				const comparator = (index, order) => (a, b) => order * collator.compare(
+					a.children[index].innerHTML,
+					b.children[index].innerHTML
+				);
+
+				for (const tBody of target.closest('table').tBodies)
+					tBody.append(...[...tBody.rows].sort(comparator(index, order)));
+
+				for (const cell of target.parentNode.cells)
+					cell.classList.toggle('sorted', cell === target);
+			};
+
+			document.querySelectorAll('.table thead').forEach(tableTH => tableTH.addEventListener('click', () => getSort(event)));
+
+		});
+</script>
+
+
+@{
+
+	foreach (var t in Model.Teams.Where(i => i.Id == Convert.ToInt32(Request.RouteValues["Id"])))
+	{
+
+		ViewData["Title"] = "Команда " + @t.Year + " года рождения";
+
+		<h2>ДЮСШ-17 @t.Year года рождения</h2>
+		<hr style="margin-top:0; color:black;height:1px" />
+		<div class="team_page">
+
+			<div>
+				<img class="team_page_photo" alt="Team" src="~/images/TeamsPhoto/@t.Picture.Name" style="border:solid 1px black; border-bottom:none;border-right:none" />
+
+
+			</div>
+			<div style="border:solid 1px black; position:relative; border-left:none;border-bottom:none">
+				<div style="position:absolute; width:100%">
+					@{
+						int u = Convert.ToInt32(DateTime.Now.Year) - t.Year;
+					}
+				<h1>Команда U-@u</h1>
+				<hr style="margin-bottom:0;margin-top:0; color:#c5002e;height:5px;width:90%" />
+					<div style="display:flex;flex-wrap: wrap">
+						<div style="width:48%;margin-top:10px"><h3>Тренер</h3></div><div><h4 style="margin-top:10px">@t.Coach.Surname @t.Coach.Name[0].@t.Coach.Patronymic[0].</h4></div>
+						<div style="flex-basis:100%;height:0"></div>
+						@{
+							int maxGoals = 0;
+							int maxAs = 0;
+							var footb =  Model.Footballers.Where(team => team.TeamId == t.Id);
+							if (footb.Count() > 0)
+							{
+								int id = footb.First().Id;
+								int idA = footb.First().Id;
+								int minMinutes = 0;
+								int minMinutesA = 0;
+							foreach (var foot in Model.Footballers.Where(i => i.TeamId == t.Id))
+							{
+								int totalMin = 0;
+								foreach (var match in Model.Matches.Where(f => f.TeamId == foot.TeamId))
+								{
+
+									@if (match.Protocols.Where(pr => pr.FootballerId == foot.Id).Count() > 0)
+									{
+
+										int inMin = 0;
+										int outMin = 90;
+										foreach (var rep in Model.Replaces.Where(fb => fb.MatchID == match.Id && (fb.FootballerInId == foot.Id || fb.FootballerOutId == foot.Id)))
+										{
+											if (rep.FootballerOutId == foot.Id)
+											{
+												outMin = rep.Time;
+											}
+											if (rep.FootballerInId == foot.Id)
+											{
+												inMin = rep.Time;
+											}
+										}
+										totalMin += outMin - inMin;
+									}
+								}
+							
+								if (Model.Actions.Where(x => x.FootballerId == foot.Id && x.ActionTypeId == 1).Count() > maxGoals)
+								{
+									id = foot.Id;
+									maxGoals = Model.Actions.Where(x => x.FootballerId == foot.Id && x.ActionTypeId == 1).Count();
+									minMinutes = totalMin;
+								}
+								else if (Model.Actions.Where(x => x.FootballerId == foot.Id && x.ActionTypeId == 1).Count() == maxGoals)
+								{
+									if (totalMin < minMinutes)
+									{
+										id = foot.Id;
+										maxGoals = Model.Actions.Where(x => x.FootballerId == foot.Id && x.ActionTypeId == 1).Count();
+										minMinutes = totalMin;
+									}
+								}
+								if (Model.Actions.Where(x => x.FootballerId == foot.Id && x.ActionTypeId == 2).Count() > maxAs)
+								{
+									idA = foot.Id;
+									maxAs = Model.Actions.Where(x => x.FootballerId == foot.Id && x.ActionTypeId == 2).Count();
+									minMinutesA = totalMin;
+								}
+								else if (Model.Actions.Where(x => x.FootballerId == foot.Id && x.ActionTypeId == 2).Count() == maxAs)
+								{
+									if (totalMin < minMinutesA)
+									{
+										idA = foot.Id;
+										maxAs = Model.Actions.Where(x => x.FootballerId == foot.Id && x.ActionTypeId == 2).Count();
+										minMinutesA = totalMin;
+									}
+								}
+
+								}
+									@foreach (var ff in Model.Footballers.Where(i => i.Id == id))
+									{
+										<div style="width:48%;margin-top:10px"><h3>Лучший бомбардир</h3></div>
+										<a asp-page="PlayerPage" asp-route-Id="@ff.Id" style="text-decoration: none;color: black;"><div><h4 style="margin-top:10px">@ff.Name @ff.Surname</h4></div></a>
+
+									}
+									@foreach (var ff in Model.Footballers.Where(i => i.Id == idA))
+									{
+										<div style="width:48%;margin-top:10px"><h3>Лучший ассистент</h3></div>
+										<a asp-page="PlayerPage" asp-route-Id="@ff.Id" style="text-decoration: none;color: black;"><div><h4 style="margin-top:10px">@ff.Name @ff.Surname</h4></div></a>
+
+									}
+
+
+							}
+							<div style="flex-basis:100%;height:0"></div>
+							<div style="width:48%;margin-top:10px"><h3>Последние результаты</h3></div>
+							<div style="flex-basis:100%;height:0"></div>
+							<div style="margin: 10px; margin-top:2px; display:flex">
+								@foreach (var m in Model.Matches.Where(i => i.TeamId == t.Id).Take(10).OrderByDescending(d => d.Date))
+								{
+
+									@if (m.Goals > m.OpponentGoals)
+									{
+										<p title="ДЮСШ-17 @m.Goals:@m.OpponentGoals @m.Opponent" style="text-align: center;margin:2px"><ps style="background-color:lawngreen;border:solid 1px black;color:black;font-weight: bold;padding-left:5px;padding-right:5px">В</ps></p>
+									}
+									else if (m.Goals < m.OpponentGoals)
+									{
+										<p title="ДЮСШ-17 @m.Goals:@m.OpponentGoals @m.Opponent" style="text-align: center;margin:2px"><ps style="background-color:red;border:solid 1px black;color:black;font-weight: bold;padding-left:5px;padding-right:5px">П</ps></p>
+									}
+									else
+									{
+										<p title="ДЮСШ-17 @m.Goals:@m.OpponentGoals @m.Opponent" style="text-align: center;margin:2px"><ps style="background-color:yellow;border:solid 1px black;color:black;font-weight: bold;padding-left:5px;padding-right:5px">Н</ps></p>
+									}
+
+								}
+							</div>
+							<div style="flex-basis:100%;height:0"></div>
+							<div style="width:48%;margin-top:10px"><h3>Процент посещаемости</h3></div>
+							double propusk = 0;
+							foreach (var l in Model.Lessons.Where(i => i.TeamId == Convert.ToInt32(Request.RouteValues["Id"])))
+							{
+								propusk += Model.Visits.Where(i => i.LessonId == l.Id).Count();
+							}
+							if (propusk == 0)
+							{
+								<div><h4 style="margin-top:10px">100</h4></div>
+							}
+							else
+							{
+								propusk = 100 * propusk / (Model.Lessons.Where(i => i.TeamId == Convert.ToInt32(Request.RouteValues["Id"])).Count() * Model.Footballers.Where(i => i.TeamId == Convert.ToInt32(Request.RouteValues["Id"])).Count());
+								<div><h4 style="margin-top:10px">@(Math.Round(100.00 - Math.Round(propusk, 2),2))</h4></div>
+							}
+
+						}
+
+					</div>
+
+
+				</div>
+
+				<div style="position:absolute; bottom:0; width:100%">
+					<table class="teamstat" >
+						<thead>
+							<tr>
+								<th style ="border-left:none">Матчи</th>
+								<th>Победы</th>
+								<th>Ничьи</th>
+								<th>Поражения</th>
+								<th>Забито</th>
+								<th style="border-right:none">Пропущено</th>
+							</tr>
+						</thead>
+						<tbody>
+							@{
+								int wins = 0;
+								int loses = 0;
+								int draws = 0;
+								int scored = 0;
+								int missed = 0;
+								foreach (var m in Model.Matches.Where(i => i.TeamId == t.Id))
+								{
+									scored += m.Goals;
+									missed += m.OpponentGoals;
+									if (m.Goals > m.OpponentGoals)
+									{
+										wins++;
+									}
+									else if (m.Goals < m.OpponentGoals)
+									{
+										loses++;
+									}
+									else
+									{
+										draws++;
+									}
+								}
+							}
+							<tr>
+								<td style="border-left:none; font-weight:bold">@Model.Matches.Where(i => i.TeamId == t.Id).Count()</td>
+								<td style="font-weight:bold">@wins</td>
+								<td style="font-weight:bold">@draws</td>
+								<td style="font-weight:bold">@loses</td>
+								<td style="font-weight:bold">@scored</td>
+								<td style="border-right:none; font-weight:bold">@missed</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+
+
+			</div>
+
+
+
+
+		</div>
+		<div style="display:inline-block; border: 1px solid black; border-top:none;border-right:none; width:100%; background-color:#c5002e">
+			<button class="button-80" id="squad" runat="server" onclick="squad()" style="color:white; text-align:center;background-color:#c5002e">  Состав</button>
+			<button class="button-80" id="achievments" runat="server" onclick="achievments()" style="color:white; text-align:center;background-color:#c5002e">  Достижения</button>
+			<button class="button-80" id="matches1" runat="server" onclick="games()" style="color:white; text-align:center;background-color:#c5002e">  Результаты</button>
+
+			<form method="post">
+				<button class="button-80" type="submit" asp-page-handler="diagram" asp-route-id="@t.Id" style="color:white; text-align:center;background-color:#c5002e">
+					Статистика
+				</button>
+				<button class="button-80" type="submit" asp-page-handler="atend" asp-route-id="@t.Id" style="color:white; text-align:center;background-color:#c5002e">
+					Журнал посещаемости
+				</button>
+			</form>
+			
+		</div>
+
+		<div id="stat">
+		@if (User.Identity.Name != null)
+			{
+				<form asp-page="./Create" method="get">
+					<p><a href="/Create/?tId=@t.Id">Добавить спортсмена</a></p>
+				</form>
+			}
+
+			 
+			<div style="border: 1px solid black; background-color:#c5002e; width:100%;padding:5px; text-align:center; color:white;font-weight: bold;font-size:20px;font-family:'Segoe UI'">Список игроков команды</div>
+			<table class="table">
+				<thead>
+					@if (User.Identity.Name != null)
+					{
+						<tr><th>Позиция</th><th style="padding-right: 0">ФИО</th><th style="padding-left: 0">Дата Рождения</th><th style="text-align: center;">Игры</th><th style="text-align: center;">Минуты</th><th style="text-align: center;">Г</th><th style="text-align: center;">Г/90</th><th style="text-align: center;">П</th><th style="text-align: center;">П/90</th><th style="text-align: center;">Г+П</th><th style="text-align: center;">ЖК</th><th style="text-align: center;">КК</th><th></th><th></th></tr>
+					}
+					else
+					{
+						<tr><th>Позиция</th><th style="padding-right: 0">ФИО</th><th style="padding-left: 0">Дата Рождения</th><th style="text-align: center;">Игры</th><th style="text-align: center;">Минуты</th><th style="text-align: center;">Г</th><th style="text-align: center;">Г/90</th><th style="text-align: center;">П</th><th style="text-align: center;">П/90</th><th style="text-align: center;">Г+П</th><th style="text-align: center;">ЖК</th><th style="text-align: center;">КК</th></tr>					}
+					
+				</thead>
+				<tbody>
+					@foreach (var person in Model.Footballers.Where(ti => ti.TeamId == Convert.ToInt32(Request.RouteValues["Id"])).OrderBy(pos => pos.PositionId))
+					{
+						<tr>
+							<td style ="padding-right: 0;width:150px">@person.Position.NameOfPosition</td>
+							<td style="padding-right: 0;width:300px"><a asp-page="PlayerPage" asp-route-Id="@person.Id" style="text-decoration: none;color:black">@person.Surname @person.Name @person.Patronymic</a></td>
+							<td style="padding-left: 0; text-align: left">@person.DateOfBirthday</td>
+							<td style="text-align: center;">@Model.Protocols.Where(i => i.FootballerId  == person.Id).Count()</td>
+							@{
+								double totalMin = 0;
+								foreach (var match in Model.Matches.Where(f => f.TeamId == person.TeamId))
+								{
+									
+									@if (match.Protocols.Where(pr => pr.FootballerId == person.Id).Count() > 0)
+									{
+										@if (Model.Actions.Where(i=>i.FootballerId == person.Id && i.MatchId == match.Id && i.ActionTypeId == 6).Count() > 0)
+										{
+											int inMin = 0;
+											int outMin = 90;
+											foreach (var rep in Model.Replaces.Where(fb => fb.MatchID == match.Id && (fb.FootballerInId == person.Id || fb.FootballerOutId == person.Id)))
+											{
+												if (rep.FootballerOutId == person.Id)
+												{
+													outMin = rep.Time;
+												}
+												if (rep.FootballerInId == person.Id)
+												{
+													inMin = rep.Time;
+												}
+											}
+											totalMin += outMin - inMin;
+										}
+
+									}
+
+								}
+
+							}
+							<td style="text-align: center;">@totalMin</td>
+							<td style="text-align: center;">@Model.Actions.Where(g=>g.FootballerId == person.Id && g.ActionTypeId == 1).Count()</td>
+							@{
+								double g90 = 0;
+								if (@Model.Actions.Where(g => g.FootballerId == person.Id && g.ActionTypeId == 6).Count() != 0)
+								{
+									g90 = Math.Round((Convert.ToDouble(@Model.Actions.Where(g => g.FootballerId == person.Id && g.ActionTypeId == 1).Count()) / (totalMin / 90)), 2);
+
+								}
+							}
+							<td style="text-align: center;">@g90</td>
+							<td style="text-align: center;">@Model.Actions.Where(g=>g.FootballerId == person.Id && g.ActionTypeId == 2).Count()</td>
+							@{
+								double gp90 = 0;
+								if (@Model.Actions.Where(g => g.FootballerId == person.Id && g.ActionTypeId == 6).Count() != 0)
+								{
+									gp90 = Math.Round((Convert.ToDouble(@Model.Actions.Where(g => g.FootballerId == person.Id && g.ActionTypeId == 2).Count()) / (totalMin / 90)), 2);
+
+								}
+							}
+							<td style="text-align: center;">@gp90</td>
+							@{
+								int gp = (@Model.Actions.Where(g => g.FootballerId == person.Id && g.ActionTypeId == 1).Count() + @Model.Actions.Where(g => g.FootballerId == person.Id && g.ActionTypeId == 2).Count());
+							}
+							<td style="text-align: center;">@gp</td>
+							<td style="text-align: center;">@Model.Actions.Where(g=>g.FootballerId == person.Id && g.ActionTypeId == 3).Count()</td>
+							<td style="text-align: center;">@Model.Actions.Where(g=>g.FootballerId == person.Id && g.ActionTypeId == 4).Count()</td>
+							@if (User.Identity.Name != null)
+							{
+								<td style="text-align: right">
+									<form method="post">
+										<a asp-page="Edit" asp-route-id="@person.Id" style="" title="Редактировать"><img src="~/images/Icons/edit.png" /></a>
+										<button type="submit" asp-page-handler="delete" asp-route-id="@person.Id" asp-route-letter="f" asp-route-teamId="@t.Id" style="background:none; border:none; padding-bottom:0" title="Удалить">
+											<img src="~/images/Icons/delete.png" />
+										</button>
+									</form>
+								</td>
+							}
+
+						</tr>
+					}
+				</tbody>
+			</table>
+
+		</div>
+		<div id="achievment" style="display:none">
+			@if (User.Identity.Name != null)
+			{
+				<p><a href="/CreateAchievement/?tId=@t.Id&year=@t.Year">Добавить результат соревнования</a></p>
+			}
+
+			<div style="border: 1px solid black; background-color:#c5002e; width:100%;padding:5px; text-align:center; color:white;font-weight: bold;font-size:20px;font-family:'Segoe UI'">Список достижений</div>
+			<table class="table">
+				<thead>
+				@if (User.Identity.Name != null)
+				{
+						<tr><th>Год</th><th>Соревнование</th><th>Уровень соревнования</th><th style="text-align:center">Место</th> <th></th><th></th></tr>
+				}
+				else
+				{
+						<tr><th>Год</th><th>Соревнование</th><th>Уровень соревнования</th><th style ="text-align:center">Место</th></tr>
+				}
+
+				</thead>
+				<tbody>
+					@foreach (var a in Model.Achievments.Where(ti => ti.TeamId == Convert.ToInt32(Request.RouteValues["Id"])).OrderByDescending(y=>y.Competition.EndDate))
+					{
+						<tr><td>@a.Competition.StartDate.Year</td><td>@a.Competition.NameOfCompetition</td><td>@a.Competition.CompetitionLevel.Level</td><td style="text-align:center">@a.Place</td>
+							@if (User.Identity.Name != null)
+							{
+									<td style="text-align: right">
+										<form method="post">
+										<a asp-page="EditAchievement" asp-route-tId="@t.Id" asp-route-year="@t.Year" asp-route-id="@a.Id" style="" title="Редактировать"><img src="~/images/Icons/edit.png" /></a>
+											<button type="submit" asp-page-handler="delete" asp-route-id="@a.Id" asp-route-letter="a" asp-route-teamId="@t.Id" style="background:none; border:none; padding-bottom:0" title="Удалить">
+												<img src="~/images/Icons/delete.png" />
+											</button>
+										</form>
+									</td>
+							}
+
+						</tr>
+					}
+
+				</tbody>
+			</table>
+
+		</div>
+		<div id="matches" style="display:none">
+			@if (User.Identity.Name != null)
+			{
+				<p><a href="/CreateCompetition">Добавить соревнование</a></p>
+
+				<p><a asp-page="SelectCompetition" asp-route-id="@t.Id" style="">Добавить результат матча</a></p>
+			}
+
+			<div style="border: 1px solid black; background-color:#c5002e; width:100%;padding:5px; text-align:center; color:white;font-weight: bold;font-size:20px;font-family:'Segoe UI'">Список матчей</div>
+			<table class="table" id="table1">
+
+				<thead>
+					@if (User.Identity.Name != null)
+					{
+						<tr> <th style="text-align: center;">Дата</th><th style="text-align: center;">Соревнование(уровень)</th><th style="text-align: center;">Соперник</th><th style="text-align: center;">Результат</th><th style="text-align: center;">Счет</th><th></th><th></th></tr>
+					}
+					else
+					{
+						<tr> <th style="text-align: center;">Дата</th><th style="text-align: center;">Соревнование(уровень)</th><th style="text-align: center;">Соперник</th><th style="text-align: center;">Результат</th><th style="text-align: center;">Счет</th></tr>
+					}
+					
+				</thead>
+				<tbody>
+					@foreach (var m in Model.Matches.Where(i => i.TeamId == t.Id).OrderByDescending(y=>y.Date))
+					{
+						<tr>
+							<td style="text-align: center;">@m.Date</td>
+							<td style="text-align: center;">@m.Competition.NameOfCompetition (@m.Competition.CompetitionLevel.Level)</td>
+							<td style="text-align: center;">@m.Opponent</td>
+							@if (m.Goals > m.OpponentGoals)
+							{
+								<td style="text-align: center"><ps style="background-color:lawngreen;border:solid 1px black;color:black;font-weight: bold;padding-left:5px;padding-right:5px">В</ps></td>
+							}
+							else if (m.Goals < m.OpponentGoals)
+							{
+								<td style="text-align: center"><ps style="background-color:red;border:solid 1px black;color:black;font-weight: bold;padding-left:5px;padding-right:5px">П</ps></td>
+							}
+							else
+							{
+								<td style="text-align: center"><ps style="background-color:yellow;border:solid 1px black;color:black;font-weight: bold;padding-left:5px;padding-right:5px">Н</ps></td>
+							}
+							<td style="text-align: center;">@m.Goals : @m.OpponentGoals</td>
+							@if (User.Identity.Name != null)
+							{
+								<td style="text-align: right">
+									<form method="post">
+										<a asp-page="Edit" asp-route-id="@t.Id" style="" title="Редактировать"><img src="~/images/Icons/edit.png" /></a>
+										<button type="submit" asp-page-handler="delete" asp-route-id="@t.Id " style="background:none; border:none; padding-bottom:0" title="Удалить">
+											<img src="~/images/Icons/delete.png" />
+										</button>
+									</form>
+								</td>
+							}
+
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	}
+	}

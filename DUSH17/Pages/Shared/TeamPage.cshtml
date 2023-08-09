@@ -1,0 +1,101 @@
+﻿
+@page "{Id}"
+@model DUSH17.Pages.TeamPageModel
+@using DUSH17.Models
+
+<script>
+
+		function squad()
+		{
+			document.getElementById("stat").setAttribute("style", "display: block");
+			document.getElementById("achievment").setAttribute("style", "display: none");
+		}
+		function achievments()
+		{
+			document.getElementById("stat").setAttribute("style", "display: none");
+			document.getElementById("achievment").setAttribute("style", "display: block");
+		}
+</script>
+
+
+	@{
+		
+		foreach (var t in Model.Teams.Where(i => i.Id == Convert.ToInt32(Request.RouteValues["Id"])))
+		{
+			
+			ViewData["Title"] = "Команда " + @t.Year+" года рождения";
+
+			<h2>ДЮСШ-17 @t.Year года рождения</h2>
+			<hr style="margin-top:0; color:black;height:1px" />
+			<div class="team_page">
+
+				<div>
+					<img class="team_page_photo" alt="Team" src="~/images/TeamsPhoto/@t.Picture.Name" />
+					
+					<div style="display:inline-block; border: 1px solid black; box-shadow: 1px 1px 1px 1px gray; width:100%">
+						<button class="button-80" id="squad" runat="server" onclick="squad()"> <img src="~/images/Icons/Squad.png" width="25%"> Состав</button>
+
+						<button class="button-80" id="achievments" runat="server" onclick="achievments()"> <img src="~/images/Icons/Achivments.png" width="17%"> Достижения</button>
+					</div>
+				</div>
+
+
+
+				@foreach (var c in Model.Coachess.Where(i=>i.Id == t.CoachId))
+				{
+					<div>
+						<img class="team_page_photo" alt="Coach" src="~/images/Coaches/@c.Picture.Name" />
+
+						<div style="height:148px; padding-left:10px; border: 1px solid black; box-shadow: 1px 1px 1px 1px gray">
+							<h2 style="padding-top:2px">Тренер</h2>
+							<h1>@c.Surname @c.Name @c.Patronymic</h1>
+							<h2>Дата рождения</h2>
+							<h1>@c.DateOfBirthday</h1>
+							<h2>Категория</h2>
+							<h1 style="padding-bottom:1000px">@c.Category.NameOfCategory</h1>
+						</div>
+
+					</div>
+
+				}
+
+			</div>
+
+			<hr style="margin-top:15px; margin-bottom: 5px; color:black;height:1px" />
+			<div id="stat">
+
+				<table class="table">
+					<thead>
+					<tr><th><a asp-action="Index" asp-route-sortOrder="@ViewBag.Sort">Позиция</a></th><th><a asp-controller="Footballer" asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]">ФИО</a></th><th><a asp-controller="FootballerController" asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParm"]">Дата Рождения</a></th><th>Игры</th><th>Голы</th><th>Г/90мин</th><th>Голевые передачи</th><th>ГП/90мин</th><th>Г+ГП</th><th>ЖК</th><th>КК</th></tr>
+					</thead>
+					<tbody>
+						@foreach (var person in Model.Footballers.Where(ti=>ti.TeamId ==Convert.ToInt32(Request.RouteValues["Id"])).OrderBy(pos=>pos.PositionId))
+						{
+						<tr><td>@person.Position.NameOfPosition</td><td>@person.Surname @person.Name @person.Patronymic</td><td>@person.DateOfBirthday</td><td></td><td></td><td></td><td></td><td></td></tr>
+						}
+					</tbody>
+				</table>
+			
+			</div>
+			<div id="achievment" style="display:none">
+
+				<table class="table">
+					<thead>
+						<tr><th>Год</th><th>Соревнование</th><th>Уровень соревнования</th><th>Место</th></tr>
+					</thead>
+					<tbody>
+						@foreach (var a in Model.Achievments.Where(ti => ti.TeamId == Convert.ToInt32(Request.RouteValues["Id"])))
+						{
+						<tr><td>@a.Competition.StartDate.Year</td><td>@a.Competition.NameOfComprtition</td><td>@a.Competition.CompetitionLevel.Level</td><td>@a.Place</td></tr>
+						}
+					</tbody>
+				</table>
+
+			</div>
+	}
+	}
+
+
+
+
+

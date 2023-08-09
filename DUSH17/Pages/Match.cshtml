@@ -1,0 +1,47 @@
+﻿@page
+@model DUSH17.Pages.MatchModel
+@{
+	if(Model.Match.Home == true)
+	{
+		ViewData["Title"] = "ДЮСШ-17 " + Model.Match.Goals  + ":" + Model.Match.OpponentGoals + " " + Model.Match.Opponent.Name;
+	}
+	else
+	{
+		ViewData["Title"] = Model.Match.Opponent.Name + Model.Match.OpponentGoals + ":" + Model.Match.Goals + " " + "ДЮСШ-17 ";
+	}
+}
+
+
+<div class="match_info">
+	<div><h1>@Model.Match.Competition.NameOfCompetition</h1></div>
+	<div><h4>@Model.Match.Date @Model.Match.Competition.City</h4></div>
+	<table class="resultOfMatch">
+		<tbody>
+			@if(Model.Match.Home)
+			{
+				<tr><td style="width:40%"><img src="~/images/Opponents/sh17.png" /></td><td rowspan="3"><h2>@Model.Match.Goals : @Model.Match.OpponentGoals</h2></td><td style="width:40%"><img src="~/images/Opponents/@Model.Match.Opponent.Picture.Name" /></td></tr>
+				<tr><td style="width:40%"><h3>ДЮСШ-17 @Model.Match.Team.Year</h3></td><td style="width:40%"><h3>@Model.Match.Opponent.Name @Model.Match.OpponentYear</h3></td></tr>
+				<tr><td style="width:40%"><h3>Томск</h3></td><td style="width:40%"><h3>@Model.Match.Opponent.City</h3></td></tr>
+			}
+			else
+			{
+				<tr><td style="width:40%"><img src="~/images/Opponents/@Model.Match.Opponent.Picture.Name" /></td><td rowspan="3"><h2>@Model.Match.OpponentGoals : @Model.Match.Goals</h2></td><td style="width:40%"><img src="~/images/Opponents/sh17.png" /></td></tr>
+				<tr><td style="width:40%"><h3>@Model.Match.Opponent.Name @Model.Match.OpponentYear</h3></td><td style="width:40%"><h3>ДЮСШ-17 @Model.Match.Team.Year</h3></td></tr>
+				<tr><td style="width:40%"><h3>@Model.Match.Opponent.City</h3></td><td style="width:40%"><h3>Томск</h3></td></tr>
+			}
+
+		</tbody>
+	</table>
+</div>
+<div class="match_actions">
+	<div class="match_nav_button">
+		<input type="button" value="Обзор" style="border-radius: 8px 0px 0px 0px 0px;" /><input type="button" value="Состав" />
+	</div>
+	<div>
+		@foreach(var person in Model.protocols)
+		{
+			<h2>@person.Footballer.Position.NameOfPosition | @person.Footballer.Surname @person.Footballer.Name</h2>
+		}
+	</div>
+</div>
+		

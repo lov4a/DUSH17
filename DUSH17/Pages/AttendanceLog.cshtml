@@ -1,0 +1,109 @@
+﻿@page
+@model DUSH17.Pages.AttendanceLogModel
+@{
+	ViewData["Title"] = "Журнал посещаемости команды ДЮСШ №17 " + Model.team.Year + " года рождения";
+
+	<h2>Журнал посещаемости команды ДЮСШ №17 @Model.team.Year года рождения</h2>
+	<hr style="margin-top:0; color:black;height:1px" />
+
+            string dayB = Convert.ToString(Model.secondDate.Day);
+			string monthB = Convert.ToString(Model.secondDate.Month);
+
+            if (Model.secondDate.Day < 10)
+            {
+                dayB = "0" + Model.secondDate.Day;
+            }
+            if (Model.secondDate.Month < 10)
+            {
+                monthB = "0" + Model.secondDate.Month;
+            }
+            string dayS = Convert.ToString(Model.firstDate.Day);
+            string monthS = Convert.ToString(Model.firstDate.Month);
+
+            if (Model.firstDate.Day < 10)
+            {
+				dayS = "0" + Model.firstDate.Day;
+            }
+			if (Model.firstDate.Month < 10)
+            {
+				monthS = "0" + Model.firstDate.Month;
+            }
+
+
+	<label>Отфильтровать по дате</label><br />
+	<form method="get">
+		<input style="margin-bottom:10px" type="date" value="@Model.firstDate.Year-@monthS-@dayS" name="fDate" /> <label>-</label>
+		<input type="date" value="@Model.secondDate.Year-@monthB-@dayB" name="sDate" />
+		<input type="hidden" value="@Model.team.Id" name="id"/>
+		<button type="submit" class="btn btn-primary" style=" padding-top:0; vertical-align:top; padding-bottom: 2px; background-color:#c5002e; border-color:#281b19">Применить</button>
+	</form>
+	
+	<table class="Attend" style="">
+		<thead>
+			<tr>
+				<th class="headcol" style="border-right:solid 1px black;border-bottom:solid 1px black;border-top:solid 1px black;border-left:solid 1px black;padding-left:10px">Футболист</th>
+				@foreach(var lesson in Model.Lessons.Where(i=>i.Date >= Model.firstDate && i.Date <= Model.secondDate))
+				{
+					<form method="post">
+						<th style="border-right:solid 1px black;border-bottom:solid 1px black;border-top:solid 1px black">@lesson.Date.ToString("dd.MM.yy")
+						<div class="content">
+							<a asp-page="EditLesson" asp-route-id="@lesson.Id" title="Редактировать"><img src="~/images/Icons/edit.png" /></a>
+								
+								<button  asp-page-handler="delete" asp-route-lid="@lesson.Id"  style="background:none; border:none; padding-bottom:0" title="Удалить">
+									<img src="~/images/Icons/delete.png" />
+								</button>
+							</div>
+						</th>
+					</form>
+				}
+				<form id="createLes" method="post">
+					<th class="lastcol" style="border-top:solid 1px black;border-right:solid 1px black;border-bottom:solid 1px black;border-left:solid 1px black">
+						<input type="date" value="" name="date" /><input type="hidden" name="tId" value="@Model.team.Id" />
+						<button title="Добавить занятие" type="submit" style="color:#c5002e;background-color:white;border: solid 1px black; width: 22%">✓</button>
+					</th>
+				</form>
+			</tr>
+		</thead>
+		<tbody>
+
+				@foreach (var foot in Model.Footballers)
+				{
+					<tr style="border-bottom:solid 1px #dddddd">
+					<td style="border-right:1px solid black;border-right:1px solid black;border-left:solid 1px black; padding-left:10px" width="200" class="headcol"><a asp-page="PlayerPage" asp-route-Id="@foot.Id" style="text-decoration: none;color:black">@foot.Surname @foot.Name[0].@foot.Patronymic[0].</a></td>
+					@foreach (var l in Model.Lessons.Where(i => i.Date >= Model.firstDate && i.Date <= Model.secondDate))
+					{
+						if (Model.Visits.Where(i=>i.FootballerId == foot.Id && i.LessonId == l.Id).Count() != 0)
+						{
+							if (@Model.Visits.Where(i => i.FootballerId == foot.Id && i.LessonId == l.Id).First().Status == "П")
+							{
+									<td style="overflow:hidden"><ps title="Пропуск по болезни" style="background-color:gray;border:solid 1px black;color:white;font-weight: bold;padding-left:5px;padding-right:5px">П</ps></td>
+							}
+							else
+							{
+									<td style="overflow:hidden"><ps title="Неявка" style="background-color:red;border:solid 1px black;color:white;font-weight: bold;padding-left:5px;padding-right:5px">Н</ps></td>
+							}
+
+						}
+						else
+						{
+								<td style="overflow:hidden"></td>
+						}
+					}
+						<td class="lastcol" style="border-left:solid 1px;border-right:solid 1px black;border-bottom:solid 1px black">
+
+						<select id="TypeId" name="types" form="createLes">
+							<option value="Я">Явка</option>
+							<option value="Н">Неявка</option>
+							<option value="П">Пропуск по причине</option>
+						</select>
+						
+					</td>
+					</tr>
+					
+				}
+	
+
+		</tbody>
+	
+	</table>
+}

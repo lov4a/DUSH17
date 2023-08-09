@@ -1,0 +1,25 @@
+﻿@page
+@model DUSH17.Pages.SelectCompetitionModel
+@{
+	<div style="border: 1px solid black; background-color:#c5002e; width:100%;padding:5px; text-align:start; color:white;font-weight: bold;font-size:20px;font-family:'Segoe UI'">Выберите соревнование</div>
+	<table class="table">
+		<thead>
+			<tr><th>Соревнование</th><th>Даты проведения</th><th>Город</th></tr>
+		</thead>
+			<tbody>
+				@foreach (var c in Model.Competitions)
+				{
+					<form method="post">
+
+				<tr>
+					<td><a asp-page="CreateMatch" asp-route-tId="@Model.Team.Id" asp-route-year="@Model.Team.Year" asp-route-cId="@c.Id" style="text-decoration: none;color:black">@c.NameOfCompetition @c.StartDate.Year</a></td>
+					<td><a asp-page="CreateMatch" asp-route-tId="@Model.Team.Id" asp-route-year="@Model.Team.Year" asp-route-cId="@c.Id" style="text-decoration: none;color:black">@c.StartDate - @c.EndDate</a></td>
+					<td><a asp-page="CreateMatch" asp-route-tId="@Model.Team.Id" asp-route-year="@Model.Team.Year" asp-route-cId="@c.Id" style="text-decoration: none;color:black">@c.City</a></td>
+				</tr>
+						
+					</form>
+
+				}
+		</tbody>
+	</table>
+}

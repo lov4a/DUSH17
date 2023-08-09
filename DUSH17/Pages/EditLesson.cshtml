@@ -1,0 +1,81 @@
+﻿@page
+@model DUSH17.Pages.EditLessonModel
+@{
+	<h2>Изменение информации о посещаемости занятия @Model.les.Date</h2>
+	<hr style="margin-top:0; color:black;height:1px" />
+	<form method="post">
+	<input type="hidden" name="TeamId" value="@Model.les.TeamId">
+	
+	@{
+	        string day = Convert.ToString(Model.les.Date.Day);
+			string month = Convert.ToString(Model.les.Date.Month);
+
+			if (Model.les.Date.Day < 10)
+            {
+				day = "0" + Model.les.Date.Day;
+            }
+			if (Model.les.Date.Month < 10)
+            {
+				month = "0" + Model.les.Date.Month;
+            }
+	
+	}
+
+
+        
+	<p>
+		<label>Дата занятия</label><br>
+		<input type="date" name="date" value="@Model.les.Date.Year-@month-@day">
+		<button type="submit" class="btn btn-primary" style=" margin-left:14px; padding-top:0; vertical-align:top; padding-bottom: 2px; background-color:#c5002e; border-color:#281b19">Сохранить изменения</button>
+	</p>
+
+		<table class="Attend" >
+		<thead>
+			<tr >
+				<th style="border:solid black  1px; border-right:none">Футболист</th>
+				<th style="border:solid black  1px">Статус</th>
+			</tr>
+		</thead>
+		<tbody>
+		  
+				@foreach(var foot in Model.Footballers)
+				{
+				<tr >
+					<td style="border-left:solid black  1px">@foot.Surname @foot.Name[0].@foot.Patronymic[0].</td>
+					<td style="border-right:solid black  1px">
+
+						<select id="TypeId" name="types">
+							
+							@if(Model.Visits.Where(i=>i.LessonId == Model.les.Id && i.FootballerId == foot.Id && i.Status == "Н").Count() > 0)
+							{
+								<option value="Я">Явка</option>
+								<option value="Н" selected="selected">Неявка</option>
+								<option value="П">Пропуск по болезни</option>
+							}
+							else if (Model.Visits.Where(i => i.LessonId == Model.les.Id && i.FootballerId == foot.Id && i.Status == "П").Count() > 0)
+							{
+								<option value="Я">Явка</option>
+								<option value="Н">Неявка</option>
+								<option value="П" selected="selected">Пропуск по болезни</option>
+							}
+							else
+							{
+								<option value="Я" selected="selected">Явка</option>
+								<option value="Н" >Неявка</option>
+								<option value="П" >Пропуск по болезни</option>
+							}
+
+						</select>
+
+					</td>
+				</tr>
+				}
+		
+		</tbody>
+		</table>
+		
+	</form>
+}
+
+
+

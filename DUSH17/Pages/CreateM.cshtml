@@ -1,0 +1,27 @@
+﻿@page
+@model DUSH17.Pages.CreateMModel
+@{
+    <h2>Добавление спортсмена</h2>
+    <form method="post">
+        <p>
+            <label>Opponent</label><br />
+            <input name="Opponent" />
+        </p>
+        <p>
+            <label>Goals</label><br />
+            <input name="Goals" />
+        </p>
+        <p>
+            <label>Oppponent Goals</label><br />
+            <input name="OpponentGoals" />
+        </p>
+        <p>
+            <label>Дата</label><br />
+            <input type="date" name="db" />
+        </p>
+        <p>
+            <input type="hidden" name="TeamId" value="@Model.tid"/>
+        </p>
+        <input type="submit" value="Отправить" />
+    </form>
+}

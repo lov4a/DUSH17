@@ -1,0 +1,524 @@
+﻿@page
+@using DUSH17.Models
+@model PlayersModel
+
+@{
+    ViewData["Title"] = "Футболисты школы";
+}
+<script>
+	function myFunction() {
+		var input, filter, table, tr, td, i, txtValue;
+		input = document.getElementById("myInput");
+		filter = input.value.toUpperCase();
+		table = document.getElementById("table1");
+		tr = table.getElementsByTagName("tr");
+		for (i = 0; i < tr.length; i++) {
+			td = tr[i].getElementsByTagName("td")[1];
+			if (td) {
+				txtValue = td.textContent || td.innerText;
+				if (txtValue.toUpperCase().indexOf(filter) > -1) {
+					tr[i].style.display = "";
+				} else {
+					tr[i].style.display = "none";
+				}
+			}
+		}
+	}
+	function hideLoop(){
+		input = document.getElementById("myInput");
+		input.setAttribute("style", "background: none");
+	}
+	function setLoop() {
+		input = document.getElementById("myInput");
+		input.setAttribute("style", "background-color: none");
+	}
+
+	function clearInputs(el) {
+		var x = el.previousElementSibling;
+		x.value = null;
+		var y = x.previousElementSibling;
+		y.value = null;
+		el.setAttribute("style", "display: none");
+
+	}
+	function setSecond(first, second, val1, val2) {
+		if (first.value == '' && second.value == '') {
+			first.value = val1;
+			second.value = val2;
+		}
+		var par = first.parentElement.getElementsByClassName("drop_filter")[0];
+		par.setAttribute("style", "display: initial");
+
+	}
+
+	document.addEventListener('DOMContentLoaded', () => {
+
+		const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
+
+		const comparer = (idx, asc) => (a, b) => ((v1, v2) =>
+			v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
+		)(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+
+		document.querySelectorAll('th').forEach(th => th.addEventListener('click', (() => {
+			const table = th.closest('table');
+			var tb = table.tBodies[0];
+			Array.from(tb.querySelectorAll('tr:nth-child(n)'))
+				.sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
+				.forEach(tr => tb.appendChild(tr));
+		})));
+
+	});
+
+	function sortTable(){
+	}
+
+	function dropdown(el){
+		var checkList = el.parentElement;
+			if (checkList.classList.contains('visible'))
+				checkList.classList.remove('visible');
+			else
+				checkList.classList.add('visible');
+	}
+
+	function disableEmptyInputs(form) {
+		var controls = form.elements;
+		for (var i = 0, iLen = controls.length; i < iLen; i++) {
+			controls[i].disabled = controls[i].value == '';
+		}
+	}
+
+</script>
+
+<body >
+
+	<h1>Футболисты ДЮСШ-17 Томск</h1>
+	<hr style="margin-top:0; color:black;height:1px" />
+
+	<div class="players">
+
+		<div>
+			<input type="text" class="findPl" id="myInput" onkeyup="myFunction()" onclick="hideLoop()" onfocusout="setLoop()" placeholder="Поиск по ФИО">
+			<div class="sidebar">
+				<form asp-page="./Players" method="get" onsubmit="disableEmptyInputs(this)">
+					<div id="list11" class="dropdown-check-list" tabindex="100">
+						<span class="anchor" onclick="dropdown(this)">Период</span>
+						<ul class="items">
+							<li>
+								<div class="values" style="margin-left:0;text-align:center">
+									@if (Model.dates.Count() > 0)
+									{
+										<input id="rangeR" class="dateInput" type="date" style="" value="@Model.dates[0]"
+										   onclick=""
+										   placeholder="" max=""  name="fDate" />
+										<input id="rangeR2" class="dateInput" type="date" style="" value="@Model.dates[1]"
+										   onclick=""
+										   placeholder="" max=""  name="sDate" />
+										<button class="drop_filter" type="button" onclick="clearInputs(this)" value="0">Сбросить период</button>
+									}
+									else
+									{
+										DateTime date = DateTime.Now;
+										string day = Convert.ToString(date.Day);
+										string month = Convert.ToString(date.Month);
+										if (day.Length < 2)
+										{
+											day = "0" + Convert.ToString(date.Day);
+										}
+										if (month.Length < 2)
+										{
+											month = "0" + Convert.ToString(date.Month);
+										}
+										<input id="rangeR" class="dateInput" type="date" style="margin-bottom:2%" 
+										   onclick="setSecond(this,this.nextElementSibling, '@date.AddYears(-1).Year-@month-@day', '@date.Year-@month-@day')"
+										   placeholder="" max="" name="fDate" />
+										<input id="rangeR2" class="dateInput" type="date" style=""
+										   onclick="setSecond(this,this.previousElementSibling, '@date.Year-@month-@day', '@date.AddYears(-1).Year-@month-@day')"
+										   placeholder="" max="" name="sDate" />
+										<button style="margin-top:10%;display:none"
+										class="drop_filter" type="button" onclick="clearInputs(this)" value="0">Сбросить период</button>
+									}
+								</div>
+
+							</li>
+						</ul>
+					</div>
+					<div id="list1" class="dropdown-check-list" tabindex="100">
+						<span class="anchor" onclick="dropdown(this)">Выбор позиции</span>
+						<ul class="items">
+							<li>
+								<input id="all" class="checks" style="cursor:pointer" type="checkbox" name="PosChecked" value="0" /> <label class="check" style="cursor:pointer" for="all">Все позиции</label>
+							</li>
+							@foreach (var a in Model.PositionList)
+							{
+								if(Model.checkedPos.Contains(a.Id))
+								{
+									<li><input style="cursor:pointer" id="@a.NameOfPosition" class="checks" type="checkbox" name="PosChecked" value="@a.Id" checked />
+										<label class="check" style="cursor:pointer" for="@a.NameOfPosition">@a.NameOfPosition</label> </li>
+								}
+								else
+								{
+									<li>
+										<input style="cursor:pointer" id="@a.NameOfPosition" class="checks" type="checkbox" name="PosChecked" value="@a.Id" />
+										<label class="check" for="@a.NameOfPosition">@a.NameOfPosition</label>
+									</li>
+								}
+
+							}
+						</ul>
+					</div>
+					<div id="list2" class="dropdown-check-list" tabindex="100">
+						<span class="anchor" onclick="dropdown(this)">Выбор команды</span>
+						<ul class="items">
+							<li><input class="checks" id="all2" type="checkbox" style="cursor:pointer" name="TeamChecked" value="-1" /><label for="all2" class="check" style="margin-left:2%;">Все команды</label> </li>
+							@foreach (var a in Model.TeamList)
+							{
+								if (Model.checkedTeams.Contains(a.Id))
+								{
+									<li><input style="cursor:pointer" id="@a.Id" class="checks" type="checkbox" name="TeamChecked" value="@a.Id" checked />
+										<label class="check" for="@a.Id">@a.Year | @a.Coach.Surname @a.Coach.Name[0].@a.Coach.Patronymic[0].</label>
+										 </li>
+								}
+								else
+								{
+									<li>
+										<input style="cursor:pointer" id="@a.Id" class="checks" type="checkbox" name="TeamChecked" value="@a.Id" />
+										<label class="check" for="@a.Id">@a.Year | @a.Coach.Surname @a.Coach.Name[0].@a.Coach.Patronymic[0].</label>
+										 </li>
+								}
+
+
+							}
+						</ul>
+					</div>
+					<div id="list3" class="dropdown-check-list" tabindex="100">
+						<span class="anchor" onclick="dropdown(this)">Количество игр</span>
+						<ul class="items">
+							<li>
+								<div class="values">
+									@if (Model.setGames.Count() > 0)
+									{
+										<input id="rangeGames" type="number" style="margin-right:2%"
+										   onclick="setSecond(this,this.nextElementSibling, @Model.MinMaxForPlaceHolder[1], @Model.MinMaxForPlaceHolder[0])"
+										   placeholder="от @Model.MinMaxForPlaceHolder[1]" max="@Model.MinMaxForPlaceHolder[0]" min="0" name="games[0]" value="@Model.setGames[0]" />
+										<input id="rangeGames2" type="number" style="margin-left:2%"
+										   onclick="setSecond(this,this.previousElementSibling, @Model.MinMaxForPlaceHolder[0], @Model.MinMaxForPlaceHolder[1])"
+										   placeholder="до @Model.MinMaxForPlaceHolder[0]" max="@Model.MinMaxForPlaceHolder[0]" min="0" name="games[1]" value="@Model.setGames[1]" />
+										<button class="drop_filter" type='button' onclick="clearInputs(this)">&#215;</button>
+									}
+									else
+									{
+										<input id="rangeGames" type="number" style="margin-right:2%"
+										   onclick="setSecond(this,this.nextElementSibling, @Model.MinMaxForPlaceHolder[1], @Model.MinMaxForPlaceHolder[0])"
+										   placeholder="от @Model.MinMaxForPlaceHolder[1]" max="@Model.MinMaxForPlaceHolder[0]" min="0" name="games[0]" />
+										<input id="rangeGames2" type="number" style="margin-left:2%"
+										onclick="setSecond(this,this.previousElementSibling, @Model.MinMaxForPlaceHolder[0], @Model.MinMaxForPlaceHolder[1])"
+										   placeholder="до @Model.MinMaxForPlaceHolder[0]" max="@Model.MinMaxForPlaceHolder[0]" min="0" name="games[1]" />
+										<button style="display:none" class="drop_filter" type="button" onclick="clearInputs(this)" value="0">&#215;</button>
+									}
+								</div>
+
+
+							</li>
+						</ul>
+					</div>
+					<div id="list4" class="dropdown-check-list" tabindex="100">
+						<span class="anchor" onclick="dropdown(this)">Минуты</span>
+						<ul class="items">
+							<li>
+								<div class="values">
+
+									@if (Model.setMinutes.Count() > 0)
+									{
+										<input id="rangeMinutes" onclick="setSecond(this,this.nextElementSibling, @Model.stats.MinBy(i=>i.minutes).minutes, @Model.stats.MaxBy(i=>i.minutes).minutes)"
+										type="number" style="margin-right:2%"
+										   max="@Model.stats.MaxBy(i=>i.minutes).minutes" min="0" value="@Model.setMinutes[0]"
+										   name="minutes[0]" placeholder="от @Model.stats.MinBy(i=>i.minutes).minutes" />
+										<input id="rangeMinutes2" onclick="setSecond(this,this.previousElementSibling, @Model.stats.MaxBy(i=>i.minutes).minutes, @Model.stats.MinBy(i=>i.minutes).minutes)"
+											type="number" style="margin-left:2%"
+										   max="@Model.stats.MaxBy(i=>i.minutes).minutes" min="0" value="@Model.setMinutes[1]"
+										   name="minutes[1]" placeholder="до @Model.stats.MaxBy(i=>i.minutes).minutes" />
+										<button class="drop_filter" type="button" onclick="clearInputs(this)" value="0">&#215;</button>
+									}
+									else
+									{
+										<input id="rangeMinutes" onclick="setSecond(this,this.nextElementSibling, @Model.stats.MinBy(i=>i.minutes).minutes, @Model.stats.MaxBy(i=>i.minutes).minutes)"
+										type="number" style="margin-right:2%"
+										   max="@Model.stats.MaxBy(i=>i.minutes).minutes" min="0"
+										   name="minutes[0]" placeholder="от @Model.stats.MinBy(i=>i.minutes).minutes" />
+										<input id="rangeMinutes2" onclick="setSecond(this,this.previousElementSibling, @Model.stats.MaxBy(i=>i.minutes).minutes, @Model.stats.MinBy(i=>i.minutes).minutes)"
+											type="number" style="margin-left:2%"
+										   max="@Model.stats.MaxBy(i=>i.minutes).minutes" min="0" 
+										   name="minutes[1]" placeholder="до @Model.stats.MaxBy(i=>i.minutes).minutes" />
+										<button style="display:none" class="drop_filter" type="button" onclick="clearInputs(this)" value="0">&#215;</button>
+									}
+								</div>
+
+
+							</li>
+						</ul>
+					</div>
+					<div id="list5" class="dropdown-check-list" tabindex="100">
+						<span class="anchor" onclick="dropdown(this)">Голы</span>
+						<ul class="items">
+							<li>
+								<div class="values">
+									@if(Model.setGoals.Count() > 0)
+									{
+										<input  type="number" style="margin-right:2%"
+										   onclick="setSecond(this,this.nextElementSibling, @Model.MinMaxForPlaceHolder[3], @Model.MinMaxForPlaceHolder[2])"
+										   placeholder="от @Model.MinMaxForPlaceHolder[3]" max="@Model.MinMaxForPlaceHolder[2]" min="0" name="goals[0]" value="@Model.setGoals[0]"/>
+										<input  type="number" style="margin-left:2%"
+										   onclick="setSecond(this,this.previousElementSibling, @Model.MinMaxForPlaceHolder[2], @Model.MinMaxForPlaceHolder[3])"
+										   placeholder="до @Model.MinMaxForPlaceHolder[2]" max="@Model.MinMaxForPlaceHolder[2]" min="0" name="goals[1]" value="@Model.setGoals[1]" />
+										<button class="drop_filter" type="button" onclick="clearInputs(this)" value="0">&#215;</button>
+									}
+									else
+									{
+										<input id="rangeGoals" type="number" style="margin-right:2%"
+										   onclick="setSecond(this,this.nextElementSibling, @Model.MinMaxForPlaceHolder[3], @Model.MinMaxForPlaceHolder[2])"
+										   max="@Model.MinMaxForPlaceHolder[2]" min="0" name="goals[0]" placeholder="от @Model.MinMaxForPlaceHolder[3]" />
+										<input id="rangeGoals2" type="number" style="margin-left:2%"
+										   onclick="setSecond(this,this.previousElementSibling, @Model.MinMaxForPlaceHolder[2], @Model.MinMaxForPlaceHolder[3])"
+										   max="@Model.MinMaxForPlaceHolder[2]" min="0" name="goals[1]" placeholder="от @Model.MinMaxForPlaceHolder[2]" />
+										<button style="display:none" class="drop_filter" type="button" onclick="clearInputs(this)" value="0">&#215;</button>
+									}
+
+								</div>
+							</li>
+						</ul>
+					</div>
+					<div id="list6" class="dropdown-check-list" tabindex="100">
+						<span class="anchor" onclick="dropdown(this)">Голы на 90 минут</span>
+						<ul class="items">
+							<li>
+								<div class="values">
+								@if (Model.setg90.Count() > 0)
+								{
+									<input id="rangeg90" type="number" style="margin-right:2%"
+									onclick="setSecond(this,this.nextElementSibling, 0, 1)"
+										   step="0.01" placeholder="от 0" max="@Model.stats.MaxBy(i=>i.g90).g90" min="0" name="gOn90[0]" value="@Convert.ToString(Model.setg90[0]).Replace(',','.')" />
+										<input id="rangeg902" type="number" style="margin-left:2%" onclick="setSecond(this.previousElementSibling,this, 0, 1)"
+										value="@Convert.ToString(Model.setg90[1]).Replace(',','.')"
+									   step="0.01" placeholder="до @Model.stats.MaxBy(i=>i.g90).g90" max="@Model.stats.MaxBy(i=>i.g90).g90" min="0" name="gOn90[0]" />
+										<button class="drop_filter" type="button" onclick="clearInputs(this)" value="0">&#215;</button>
+								}
+								else
+								{
+										<input id="rangeg90" type="number" style="margin-right:2%" onclick="setSecond(this,this.nextElementSibling, 0, 1)"
+										   step="0.01" placeholder="от 0" max="1" min="0" name="gOn90[0]" />
+										<input id="rangeg902" type="number" style="margin-left:2%" onclick="setSecond(this.previousElementSibling,this, 0, 1)"
+										   step="0.01" placeholder="до @Model.stats.MaxBy(i=>i.g90).g90" max="1" min="0" name="gOn90[1]" />
+										<button style="display:none" class="drop_filter" type="button" onclick="clearInputs(this)" value="0">&#215;</button>
+								}
+								</div>
+							</li>
+						</ul>
+					</div>
+					<div id="list7" class="dropdown-check-list" tabindex="100">
+						<span class="anchor" onclick="dropdown(this)">Голевые передачи</span>
+						<ul class="items">
+							<li>
+								<div class="values">
+									@if (Model.setAssists.Count() > 0)
+									{
+										<input id="rangeAssists" type="number" style="margin-right:2%" onclick="setSecond(this,this.nextElementSibling, @Model.MinMaxForPlaceHolder[5], @Model.MinMaxForPlaceHolder[4])"
+										   placeholder="от @Model.MinMaxForPlaceHolder[5]" max="@Model.MinMaxForPlaceHolder[4]" min="0" name="assists[0]" value="@Model.setAssists[0]"/>
+										<input id="rangeAssists2" type="number" style="margin-left:2%" onclick="setSecond(this.previousElementSibling,this, @Model.MinMaxForPlaceHolder[5], @Model.MinMaxForPlaceHolder[4])"
+										   placeholder="до @Model.MinMaxForPlaceHolder[4]" max="@Model.MinMaxForPlaceHolder[4]" min="0" name="assists[1]" value="@Model.setAssists[1]" />
+										<button  class="drop_filter" type="button" onclick="clearInputs(this)" value="0">&#215;</button>
+									}
+									else
+									{
+										<input id="rangeAssists" type="number" style="margin-right:2%" onclick="setSecond(this,this.nextElementSibling, @Model.MinMaxForPlaceHolder[5], @Model.MinMaxForPlaceHolder[4])"
+										   placeholder="от @Model.MinMaxForPlaceHolder[5]" max="@Model.MinMaxForPlaceHolder[4]" min="0" name="assists[0]" />
+										<input id="rangeAssists2" type="number" style="margin-left:2%" onclick="setSecond(this.previousElementSibling,this, @Model.MinMaxForPlaceHolder[5], @Model.MinMaxForPlaceHolder[4])"
+										   placeholder="до @Model.MinMaxForPlaceHolder[4]" max="@Model.MinMaxForPlaceHolder[4]" min="0" name="assists[1]" />
+										   <button style="display:none" class="drop_filter" type="button" onclick="clearInputs(this)" value="0">&#215;</button>
+									}
+								</div>
+
+							</li>
+						</ul>
+					</div>
+					<div id="list8" class="dropdown-check-list" tabindex="100">
+						<span class="anchor" onclick="dropdown(this)">ГП на 90 минут</span>
+						<ul class="items">
+							<li>
+								<div class="values">
+									@if (Model.seta90.Count() > 0)
+									{
+										<input id="rangea90" type="number" style="margin-right:2%" onclick="setSecond(this,this.nextElementSibling, 0, 1)"
+										   step="0.01" placeholder="от 0" max="1" min="0" name="aOn90[0]" value="@Convert.ToString(Model.seta90[0]).Replace(',','.')" />
+										<input id="rangea902" type="number" style="margin-left:2%" onclick="setSecond(this.previousElementSibling,this, 0, 1)" value="@Convert.ToString(Model.seta90[1]).Replace(',','.')"
+										   step="0.01" placeholder="до @Model.stats.MaxBy(i=>i.a90).a90" max="1" min="0" name="aOn90[0]" />
+										<button  class="drop_filter" type="button" onclick="clearInputs(this)" value="0">&#215;</button>
+									}
+									else
+									{
+										<input id="rangea90" type="number" style="margin-right:2%" onclick="setSecond(this,this.nextElementSibling, 0, 1)"
+										   step="0.01" placeholder="от 0" max="1" min="0" name="aOn90[0]" />
+										<input id="rangea902" type="number" style="margin-left:2%" onclick="setSecond(this.previousElementSibling,this, 0, 1)"
+										   step="0.01" placeholder="до @Model.stats.MaxBy(i=>i.a90).a90" max="1" min="0" name="aOn90[1]" />
+										<button style="display:none" class="drop_filter" type="button" onclick="clearInputs(this)" value="0">&#215;</button>
+									}
+								</div>
+
+							</li>
+						</ul>
+					</div>
+					<div id="list9" class="dropdown-check-list" tabindex="100">
+						<span class="anchor" onclick="dropdown(this)">Гол + Пас</span>
+						<ul class="items">
+							<li>
+								<div class="values">
+									@if (Model.setGP.Count() > 0)
+									{
+										<input id="rangeGP" type="number" style="margin-right:2%" value="@Model.setGP[0]"
+										   onclick="setSecond(this,this.nextElementSibling, @Model.stats.MinBy(i=>i.gPlusA).gPlusA, @Model.stats.MaxBy(i=>i.gPlusA).gPlusA)"
+										   placeholder="от @Model.stats.MinBy(i=>i.gPlusA).gPlusA" max="@Model.stats.MaxBy(i=>i.gPlusA).gPlusA" min="0" name="gp[0]" />
+										<input id="rangeGP2" type="number" style="margin-left:2%" value="@Model.setGP[1]"
+										   onclick="setSecond(this.previousElementSibling,this, @Model.stats.MinBy(i=>i.gPlusA).gPlusA, @Model.stats.MaxBy(i=>i.gPlusA).gPlusA)"
+										   placeholder="до @Model.stats.MaxBy(i=>i.gPlusA).gPlusA" max="@Model.stats.MaxBy(i=>i.gPlusA).gPlusA" min="0" name="gp[1]" />
+										<button  class="drop_filter" type="button" onclick="clearInputs(this)" value="0">&#215;</button>
+									}
+									else
+									{
+										<input id="rangeGP" type="number" style="margin-right:2%"
+										   onclick="setSecond(this,this.nextElementSibling, @Model.stats.MinBy(i=>i.gPlusA).gPlusA, @Model.stats.MaxBy(i=>i.gPlusA).gPlusA)"
+										   placeholder="от @Model.stats.MinBy(i=>i.gPlusA).gPlusA" max="@Model.stats.MaxBy(i=>i.gPlusA).gPlusA" min="0" name="gp[0]" />
+										<input id="rangeGP2" type="number" style="margin-left:2%"
+										   onclick="setSecond(this.previousElementSibling,this, @Model.stats.MinBy(i=>i.gPlusA).gPlusA, @Model.stats.MaxBy(i=>i.gPlusA).gPlusA)"
+										   placeholder="до @Model.stats.MaxBy(i=>i.gPlusA).gPlusA" max="@Model.stats.MaxBy(i=>i.gPlusA).gPlusA" min="0" name="gp[1]" />
+										<button style="display:none" class="drop_filter" type="button" onclick="clearInputs(this)" value="0">&#215;</button>
+									}
+								</div>
+
+							</li>
+						</ul>
+					</div>
+					<div id="list10" class="dropdown-check-list" tabindex="100">
+						<span class="anchor" onclick="dropdown(this)">Желтые карточки</span>
+						<ul class="items">
+							<li>
+								<div class="values">
+									@if (Model.setY.Count() > 0)
+									{
+										<input id="rangeY" type="number" style="margin-right:2%" value="@Model.setY[0]"
+										   onclick="setSecond(this,this.nextElementSibling, @Model.MinMaxForPlaceHolder[7], @Model.MinMaxForPlaceHolder[6])"
+										   placeholder="от @Model.MinMaxForPlaceHolder[7]" max="@Model.MinMaxForPlaceHolder[6]" min="0" name="yCards[0]" />
+										<input id="rangeY2" type="number" style="margin-left:2%" value="@Model.setY[1]"
+										onclick="setSecond(this.previousElementSibling,this, @Model.MinMaxForPlaceHolder[7], @Model.MinMaxForPlaceHolder[6])"
+										   placeholder="до @Model.MinMaxForPlaceHolder[6]" max="@Model.MinMaxForPlaceHolder[6]" min="0" name="yCards[1]" />
+										<button  class="drop_filter" type="button" onclick="clearInputs(this)" value="0">&#215;</button>
+									}
+									else
+									{
+										<input id="rangeY" type="number" style="margin-right:2%"
+										   onclick="setSecond(this,this.nextElementSibling, @Model.MinMaxForPlaceHolder[7], @Model.MinMaxForPlaceHolder[6])"
+										   placeholder="от @Model.MinMaxForPlaceHolder[7]" max="@Model.MinMaxForPlaceHolder[6]" min="0" name="yCards[0]" />
+										<input id="rangeY2" type="number" style="margin-left:2%"
+										   onclick="setSecond(this.previousElementSibling,this, @Model.MinMaxForPlaceHolder[7], @Model.MinMaxForPlaceHolder[6])"
+										   placeholder="до @Model.MinMaxForPlaceHolder[6]" max="@Model.MinMaxForPlaceHolder[6]" min="0" name="yCards[1]" />
+										<button style="display:none" class="drop_filter" type="button" onclick="clearInputs(this)" value="0">&#215;</button>
+									}
+								</div>
+
+							</li>
+						</ul>
+					</div>
+					<div id="list11" class="dropdown-check-list" tabindex="100">
+						<span class="anchor" onclick="dropdown(this)">Красные карточки</span>
+						<ul class="items">
+							<li>
+								<div class="values">
+									@if (Model.setR.Count() > 0)
+									{
+										<input id="rangeR" type="number" style="margin-right:2%" value="@Model.setR[0]"
+										   onclick="setSecond(this,this.nextElementSibling, @Model.MinMaxForPlaceHolder[9], @Model.MinMaxForPlaceHolder[8])"
+										   placeholder="от @Model.MinMaxForPlaceHolder[9]" max="@Model.MinMaxForPlaceHolder[8]" min="0" name="rCards[0]" />
+										<input id="rangeR2" type="number" style="margin-left:2%" value="@Model.setR[1]"
+										   onclick="setSecond(this.previousElementSibling,this, @Model.MinMaxForPlaceHolder[9], @Model.MinMaxForPlaceHolder[8])"
+										   placeholder="до @Model.MinMaxForPlaceHolder[8]" max="@Model.MinMaxForPlaceHolder[8]" min="0" name="rCards[1]" />
+										  <button  class="drop_filter" type="button" onclick="clearInputs(this)" value="0">&#215;</button>
+									}
+									else
+									{
+										<input id="rangeR" type="number" style="margin-right:2%"
+										   onclick="setSecond(this,this.nextElementSibling, @Model.MinMaxForPlaceHolder[9], @Model.MinMaxForPlaceHolder[8])"
+										   placeholder="от @Model.MinMaxForPlaceHolder[9]" max="@Model.MinMaxForPlaceHolder[8]" min="0" name="rCards[0]" />
+										<input id="rangeR2" type="number" style="margin-left:2%"
+										   onclick="setSecond(this.previousElementSibling,this, @Model.MinMaxForPlaceHolder[9], @Model.MinMaxForPlaceHolder[8])"
+										   placeholder="до @Model.MinMaxForPlaceHolder[8]" max="@Model.MinMaxForPlaceHolder[8]" min="0" name="rCards[1]" />
+										<button style="display:none" class="drop_filter" type="button" onclick="clearInputs(this)" value="0">&#215;</button>
+									}
+								</div>
+
+							</li>
+						</ul>
+					</div>
+					<div class="submit">
+						<input type="submit" value="Применить фильтр" class="btn btn-primary" style="padding-bottom:1%; background-color:#c5002e; border-color:#281b19" />
+						<div><a style="color:#c5002e" asp-page="./Players">Сбросить фильтр</a></div>
+					</div>
+
+				</form>
+
+			</div>
+
+
+		</div>
+		<div>
+
+
+
+			<table class="allP" id="sortableTable">
+				<thead style="">
+					<tr> <th style="border-radius:8px 0px 0px 0px;border-left:1px solid black">Позиция</th><th style="">ФИО</th><th style="">Год рождения</th><th>Игры</th><th>Минуты</th><th>Г</th><th>Г/90</th><th>П</th><th>П/90</th><th>Г+П</th><th>ЖК</th><th style="border-radius:0px 8px 0px 0px">КК</th></tr>
+				</thead>
+				<tbody id="body">
+					@foreach (var person in Model.Footballers)
+					{
+						<tr style="border-bottom:solid 1px #dddddd">
+							<td style="padding-right: 0;padding-left:1%;text-align:left">@person.Position.NameOfPosition</td>
+
+							<td style="padding-right: 0;text-align:left;padding-left:1%"><a asp-page="PlayerPage" asp-route-Id="@person.Id" style="text-decoration: none;">@person.Surname @person.Name @person.Patronymic</a></td>
+
+							<td style="padding-left: 0; text-align: center">@person.DateOfBirthday.Year</td>
+							<td style="text-align: center;">@Model.Protocols.Where(i => i.FootballerId  == person.Id).Count()</td>
+							<td style="text-align: center;">@Model.stats.FirstOrDefault(i=>i.Id == person.Id).minutes</td>
+							<td style="text-align: center;">@Model.Actions.Where(g=>g.FootballerId == person.Id && g.ActionTypeId == 1).Count()</td>
+							@{
+								if(Model.Actions.Where(i=>i.FootballerId == person.Id && i.ActionTypeId == 6).Count() > 0)
+								{
+									<td style="text-align: center;">@Model.stats.FirstOrDefault(i=>i.Id == person.Id).g90</td>
+								}
+								else
+								{
+									<td style="text-align: center;">0</td>
+								}
+							}
+
+							<td style="text-align: center;">@Model.Actions.Where(g=>g.FootballerId == person.Id && g.ActionTypeId == 2).Count()</td>
+							@{
+								if (Model.Actions.Where(i => i.FootballerId == person.Id && i.ActionTypeId == 6).Count() > 0)
+								{
+									<td style="text-align: center;">@Model.stats.FirstOrDefault(i=>i.Id == person.Id).a90</td>
+								}
+								else
+								{
+									<td style="text-align: center;">0</td>
+								}
+							}
+							<td style="text-align: center;">@Model.stats.FirstOrDefault(i=>i.Id == person.Id).gPlusA</td>
+							<td style="text-align: center;">@Model.Actions.Where(g=>g.FootballerId == person.Id && g.ActionTypeId == 3).Count()</td>
+							<td style="text-align: center;">@Model.Actions.Where(g=>g.FootballerId == person.Id && g.ActionTypeId == 4).Count()</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+
+
+</body>

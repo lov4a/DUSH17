@@ -1,0 +1,20 @@
+﻿@page
+@model DUSH17.Pages.CreateTeamModel
+@{
+	ViewData["Title"] = "Добавление команды";
+}
+<h2>Добавление команды</h2>
+<form method="post">
+    <div class="create_container">
+        <p>
+            <label>Год рождения</label><br />
+        <input type="number" min="@(DateTime.Now.Year - 17)" max="@(DateTime.Now.Year - 6)" name="Year" required />
+        </p>
+        <p>
+            <label>Тренер</label><br />
+            @Html.DropDownList("CoachId", Model.Coaches as SelectList)
+
+        </p>
+        <input class="CreateButton" style="" type="submit" value="Отправить" />
+    </div>
+</form>

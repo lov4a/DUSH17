@@ -1,0 +1,32 @@
+﻿@page
+@using DUSH17.Models
+@model PlayersModel
+@{
+    ViewData["Title"] = "Home Page";
+    string str = "pos_desc";
+}
+<h1>Список пользователей</h1>
+
+<table class="table">
+    <tr>
+        <th>
+            <a href="/FootballerController/Index/@str">
+                Позиция
+            </a>
+        </th>
+        <th>
+            <a asp-action="Index" asp-route-sortOrder="@ViewBag.NameSort">
+                ФИО
+            </a>
+        </th>
+        <th>
+            <a asp-controller="Footballer" asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParm"]">
+                Дата
+            </a>
+        </th>
+    </tr>
+    @foreach (var u in Model.Footballers)
+    {
+        <tr><td>@u.PositionId</td><td>@u.Surname</td><td>@u.DateOfBirthday</td></tr>
+    }
+</table>

@@ -1,0 +1,73 @@
+﻿@page
+@model DUSH17.Pages.EditModel
+@{
+
+    <h2>Изменение информации</h2>
+    <hr style="margin-top:0; color:black;height:1px" />
+    <form method="post">
+        <input name="Id" value="@Model.Person?.Id" type="hidden" />
+        <p>
+            <label>Фамилия</label><br />
+            <input name="Surname" value="@Model.Person?.Surname" />
+        </p>
+        <p>
+            <label>Имя</label><br />
+            <input name="Name" value="@Model.Person?.Name" />
+        </p>
+        <p>
+            <label>Отчество</label><br />
+            <input name="Patronymic" value="@Model.Person?.Patronymic" />
+        </p>
+        @{
+            string dayB = Convert.ToString(Model.Person.DateOfBirthday.Day);
+            string monthB = Convert.ToString(Model.Person.DateOfBirthday.Month);
+
+            if (Model.Person.DateOfBirthday.Day < 10)
+            {
+                dayB = "0" + Model.Person.DateOfBirthday.Day;
+            }
+            if (Model.Person.DateOfBirthday.Month < 10)
+            {
+                monthB = "0" + Model.Person.DateOfBirthday.Month;
+            }
+            string dayS = Convert.ToString(Model.Person.DateOfStart.Day);
+            string monthS = Convert.ToString(Model.Person.DateOfStart.Month);
+
+            if (Model.Person.DateOfStart.Day < 10)
+            {
+                dayS = "0" + Model.Person.DateOfStart.Day;
+            }
+            if (Model.Person.DateOfStart.Month < 10)
+            {
+                monthS = "0" + Model.Person.DateOfStart.Month;
+            }
+
+        }
+        <p>
+            <label>Дата рождения</label><br />
+            <input type="date" name="DateOfBirthday" value="@Model.Person?.DateOfBirthday.Year-@monthB-@dayB" />
+        </p>
+        <p>
+            <label>Дата вступления в школу</label><br />
+            <input type="date" name="DateOfStart" value="@Model.Person?.DateOfStart.Year-@monthS-@dayS" />
+        </p>
+        <p>
+            <label>Рост</label><br />
+            <input type="number" name="Height" value="@Model.Person?.Height" />
+        </p>
+        <p>
+            <label>Вес</label><br />
+            <input type="number" name="Weight" value="@Model.Person?.Weight" />
+        </p>
+        <p>
+            <label>Номер телефона</label><br />
+            <input type="text" name="PhoneNumber" value="@Model.Person?.PhoneNumber" />
+        </p>
+        <p>
+            <label>Позиция</label><br />
+            @Html.DropDownList("PositionId", Model.Positions as SelectList)
+
+        </p>
+        <input type="submit" value="Сохранить" />
+    </form>
+}

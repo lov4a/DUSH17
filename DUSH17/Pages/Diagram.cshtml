@@ -1,0 +1,222 @@
+@page
+@model DUSH17.Pages.DiagramModel
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+	google.charts.load('current', { packages: ['corechart', 'line'], 'language': 'ru' });
+	google.charts.setOnLoadCallback(drawChart);
+	google.charts.setOnLoadCallback(drawChart2);
+	google.charts.setOnLoadCallback(drawChart3);
+
+    function drawChart() {
+
+		if (@Model.Act == 0)
+		{
+			var data = google.visualization.arrayToDataTable([
+				['Футболист', 'Минуты', { role: 'annotation' }],
+			@foreach (var person in Model.Footballers)
+			{
+				double totalMin = 0;
+				foreach (var match in Model.Matches.Where(f => f.TeamId == person.TeamId))
+				{
+
+					@if (match.Protocols.Where(pr => pr.FootballerId == person.Id).Count() > 0)
+					{
+						if (Model.Actions.Where(a => a.ActionTypeId == 6 && a.MatchId == match.Id && a.FootballerId == person.Id).Count() > 0)
+						{
+							int inMin = 0;
+							int outMin = 90;
+							foreach (var rep in Model.Replaces.Where(fb => fb.MatchID == match.Id && (fb.FootballerInId == person.Id || fb.FootballerOutId == person.Id)))
+							{
+								if (rep.FootballerOutId == person.Id)
+								{
+									outMin = rep.Time;
+								}
+								if (rep.FootballerInId == person.Id)
+								{
+									inMin = rep.Time;
+								}
+							}
+							totalMin += outMin - inMin;
+						}
+
+					}
+
+				}
+
+				<text>['@(new Microsoft.AspNetCore.Html.HtmlString(person.Surname + " " + person.Name))', @totalMin, @totalMin], </text>
+
+
+			}
+			]);
+			var options = {
+				lineWidth: 3,
+				isStacked: true,
+				legend: 'none',
+				width: '100%',
+				height: '500',
+				chartArea: { left: '15%', top: '0%', bottom: '10%', width: "80%", height: "80%" },
+				colors: ['c5002e'],
+				hAxis: {
+					title: 'Количество минут',
+					ticks: [100, 200, 300, 400, 500, 600, 700, 800, 900]
+
+				}
+			};
+
+			var chart = new google.visualization.BarChart(document.getElementById('chart'));
+
+			chart.draw(data, options);
+		}
+
+    }
+	function drawChart2() {
+
+		if (@Model.Act != 7 && @Model.Act != 8 && @Model.Act != 0) {
+
+			var data = google.visualization.arrayToDataTable([
+				['Футболист', '@(new Microsoft.AspNetCore.Html.HtmlString(Model.str))', { role: 'annotation' }],
+			@foreach (var person in Model.Footballers)
+			{
+				double Stat = 0.0;
+				foreach (var match in Model.Matches.Where(f => f.TeamId == person.TeamId))
+				{
+
+
+					Stat += Model.Actions.Where(i => i.FootballerId == person.Id && i.ActionTypeId == Model.Act && i.MatchId == match.Id).Count();
+
+
+				}
+				<text>['@(new Microsoft.AspNetCore.Html.HtmlString(person.Surname + " " + person.Name))', @Stat, @Stat], </text>
+			}
+			]);
+
+
+
+
+			var options = {
+				lineWidth: 3,
+				isStacked: true,
+				legend: 'none',
+				width: '100%',
+				height: '500',
+				chartArea: { left: '15%', top: '0%', bottom: '10%', width: "80%", height: "80%" },
+				colors: ['c5002e'],
+				hAxis: {
+					title: '@(new Microsoft.AspNetCore.Html.HtmlString(Model.str))',
+					ticks: [5, 10, 15, 20, 30, 40, 50]
+
+				}
+			};
+
+
+
+			var chart = new google.visualization.BarChart(document.getElementById('chart2'));
+
+			chart.draw(data, options);
+
+		}
+
+	}
+	function drawChart3() {
+
+		if (@Model.Act == 7 || @Model.Act == 8) {
+
+			var data = google.visualization.arrayToDataTable([
+			['Футболист', '@(new Microsoft.AspNetCore.Html.HtmlString(Model.str))', { role: 'annotation' }],
+			@foreach (var person in Model.Footballers)
+			{
+				double footMin2 = 0;
+				double g90 = 0;
+				double goalsf = 0;
+				foreach (var match in Model.Matches.Where(f => f.TeamId == person.TeamId))
+				{
+					if (match.Protocols.Where(pr => pr.FootballerId == person.Id).Count() > 0)
+					{
+						if (Model.Actions.Where(a => a.ActionTypeId == 6 && a.MatchId == match.Id && a.FootballerId == person.Id).Count() > 0)
+						{
+							int inMin = 0;
+							int outMin = 90;
+							foreach (var rep in Model.Replaces.Where(fb => fb.MatchID == match.Id && (fb.FootballerInId == person.Id || fb.FootballerOutId == person.Id)))
+							{
+								if (rep.FootballerOutId == person.Id)
+								{
+									outMin = rep.Time;
+								}
+								if (rep.FootballerInId == person.Id)
+								{
+									inMin = rep.Time;
+								}
+							}
+							footMin2 += outMin - inMin;
+						}
+					}
+					if (Model.Act == 7)
+					{
+						goalsf += Model.Actions.Where(i => i.FootballerId == person.Id && i.ActionTypeId == 1 && i.MatchId == match.Id).Count();
+					}
+					else
+					{
+						goalsf += Model.Actions.Where(i => i.FootballerId == person.Id && i.ActionTypeId == 2 && i.MatchId == match.Id).Count();
+					}
+
+				}
+
+				if (Model.Actions.Where(g => g.FootballerId == person.Id && g.ActionTypeId == 6).Count() != 0)
+				{
+					g90 = Math.Round((goalsf / (footMin2 / 90)), 2);
+
+				}
+				string s5 = Convert.ToString(g90).Replace(',','.');
+				<text>['@(new Microsoft.AspNetCore.Html.HtmlString(person.Surname + " " + person.Name))',parseFloat(@s5),parseFloat(@s5)], </text>
+			}
+			]);
+
+
+			var options = {
+				lineWidth: 3,
+				isStacked: true,
+				legend: 'none',
+				width: '100%',
+				height: '500',
+				chartArea: { left: '15%', top: '0%', bottom: '10%', width: "80%", height: "80%" },
+				colors: ['c5002e'],
+				hAxis: {
+					title: '@(new Microsoft.AspNetCore.Html.HtmlString(Model.str))',
+					ticks: [0, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2]
+
+				}
+			};
+
+
+
+			var chart = new google.visualization.BarChart(document.getElementById('chart3'));
+
+			chart.draw(data, options);
+
+		}
+
+	}
+
+</script>
+@{
+	ViewData["Title"] = "Диаграмма";
+	<h2>ДЮСШ-17 @Model.team.Year года рождения | Диаграмма статистических показателй</h2>
+	<hr style="margin-top:0; color:black;height:1px" />
+	<form method="get">
+	<label style="margin-right:8.5%">Выбор показателя</label><br/>
+		@Html.DropDownList("ActId", Model.Type as SelectList)
+		<br/>
+		<label style="margin-right:8.5%">Отфильтровать по дате</label> <label>Количество матчей</label><br />
+		<input style="margin-bottom:10px" type="date" name="fDate" /> <label>-</label>
+		<input type="date" name="sDate" style="margin-right:5px" />
+		<input type="hidden" value="@Model.team.Id" name="id"/>
+		<input type="number" min="1" max="100" name="am" value="@Model.amount" />
+		<button type="submit" class="btn btn-primary" style=" padding-top:0; vertical-align:top; padding-bottom: 2px; background-color:#c5002e; border-color:#281b19">Применить</button>
+	</form>
+
+	<hr style="margin:0; color:black;height:1px" />
+	<div style="width:100%" id="chart"></div>
+	<div style="width:100%" id="chart2"></div>
+	<div style="width:100%" id="chart3"></div>
+}

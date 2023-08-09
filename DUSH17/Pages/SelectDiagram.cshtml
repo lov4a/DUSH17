@@ -1,0 +1,11 @@
+﻿@page
+@model DUSH17.Pages.SelectDiagramModel
+@{
+	ViewData["Title"] = "Выбор раздела статистики";
+
+	<h2>Выбор раздела статистики</h2>
+	<hr style="margin-top:0; color:black;height:1px" />
+	<a asp-page="Diagram" asp-route-id="@Model.Id" asp-route-am="10" asp-route-ActId="6" style="font-size:25px;text-decoration:none;color:black">Сатистика количества сыграннных минут</a>
+	<hr style="margin-top:0; color:black;height:1px" />
+
+}

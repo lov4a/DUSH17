@@ -1,0 +1,573 @@
+﻿@page
+@model DUSH17.Pages.PlayerStatModel
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+	google.charts.load("current", { packages: ["corechart"] });
+	google.charts.setOnLoadCallback(drawMinutesChart);
+	google.charts.setOnLoadCallback(drawGoalsChart);
+	google.charts.setOnLoadCallback(drawAsistChart);
+	google.charts.setOnLoadCallback(drawGoals90Chart);
+	google.charts.setOnLoadCallback(drawAsists90Chart);
+	google.charts.setOnLoadCallback(drawYCChart);
+	google.charts.setOnLoadCallback(drawRCChart);
+
+
+
+
+	function drawMinutesChart()
+	{
+			var data = google.visualization.arrayToDataTable([
+				['Футболист', { label: 'Минуты'}, { role: 'annotation' }, {role: 'style'}],
+				@{
+						double footMin = 0;
+						foreach (var match in Model.Matches.Where(f => f.TeamId == Model.foot.TeamId))
+						{
+							if (match.Protocols.Where(pr => pr.FootballerId == Model.foot.Id).Count() > 0)
+							{
+								if (Model.Actions.Where(a => a.ActionTypeId == 6 && a.MatchId == match.Id && a.FootballerId == Model.foot.Id).Count() > 0)
+								{
+									int inMin = 0;
+									int outMin = 90;
+									foreach (var rep in Model.Replaces.Where(fb => fb.MatchID == match.Id && (fb.FootballerInId == Model.foot.Id || fb.FootballerOutId == Model.foot.Id)))
+									{
+										if (rep.FootballerOutId == Model.foot.Id)
+										{
+											outMin = rep.Time;
+										}
+										if (rep.FootballerInId == Model.foot.Id)
+										{
+											inMin = rep.Time;
+										}
+									}
+									footMin += outMin - inMin;
+								}
+							}
+						}
+					<text>['@(new Microsoft.AspNetCore.Html.HtmlString(Model.foot.Surname + " " + Model.foot.Name))', @footMin,"Минуты: " + @footMin, 'c5002e'], </text>
+
+					double totalMin = 0;
+					foreach (var person in Model.Footballers)
+					{
+						foreach (var match in Model.Matches.Where(f => f.TeamId == person.TeamId))
+						{
+							if (match.Protocols.Where(pr => pr.FootballerId == person.Id).Count() > 0)
+							{
+								if (Model.Actions.Where(a => a.ActionTypeId == 6 && a.MatchId == match.Id && a.FootballerId == person.Id).Count() > 0)
+								{
+									int inMin = 0;
+									int outMin = 90;
+									foreach (var rep in Model.Replaces.Where(fb => fb.MatchID == match.Id && (fb.FootballerInId == person.Id || fb.FootballerOutId == person.Id)))
+									{
+										if (rep.FootballerOutId == person.Id)
+										{
+											outMin = rep.Time;
+										}
+										if (rep.FootballerInId == person.Id)
+										{
+											inMin = rep.Time;
+										}
+									}
+									totalMin += outMin - inMin;
+								}
+							}
+						}
+					}
+					totalMin /= Model.Footballers.Count();
+					totalMin = Math.Round(totalMin,2);
+					string s2 = Convert.ToString(totalMin).Replace(',','.');
+					<text>['@(new Microsoft.AspNetCore.Html.HtmlString(Model.cat))',parseFloat(@s2), "Минуты: " + parseFloat(@s2), '2e1f1f'] </text>
+				}
+
+
+				]);
+			var options = {
+				lineWidth: 2,
+				legend: 'none',
+				width: '100%',
+				height: '80',
+				chartArea: { left: '0%', top: '7%',right:'1%',bottom: '7%', width: "100%", height: "80%" },
+				colors: ['c5002e'],
+				backgroundColor: '#ffffff',
+				hAxis: {
+					gridlines: {color: '#ffffff'},
+					ticks: [0,250,500,750,1000, 1250, 1500,1800]
+				},
+				bar: {groupWidth: '100%'}
+
+			};
+		var chart = new google.visualization.BarChart(document.getElementById('chart2'));
+
+		chart.draw(data, options);
+	}
+	function drawGoalsChart()
+	{
+		var data = google.visualization.arrayToDataTable([
+			['Футболист', { label: 'Голы'}, { role: 'annotation' }, {role: 'style'}],
+			@{
+				double Goals = 0.0;
+				foreach (var match in Model.Matches)
+				{
+					Goals += Model.Actions.Where(i => i.FootballerId == Model.foot.Id && i.ActionTypeId == 1 && i.MatchId == match.Id).Count();
+				}
+				<text>['@(new Microsoft.AspNetCore.Html.HtmlString(Model.foot.Surname + " " + Model.foot.Name))', @Goals,"Голы: " + @Goals, 'c5002e'],</text>
+				double SrGoals = 0.0;
+				@foreach (var person in Model.Footballers)
+				{
+					foreach (var match in Model.Matches)
+					{
+						SrGoals += Model.Actions.Where(i => i.FootballerId == person.Id && i.ActionTypeId == 1 && i.MatchId == match.Id).Count();
+					}
+
+				}
+				SrGoals /= Model.Footballers.Count();
+				string s3 = Convert.ToString(SrGoals).Replace(',','.');
+
+				if (SrGoals % 1 != 0)
+				{
+					<text>['@(new Microsoft.AspNetCore.Html.HtmlString(Model.cat))',parseFloat(@s3).toPrecision(2),"Голы: " + parseFloat(@s3).toPrecision(2),'2e1f1f']</text>
+				}
+				else
+				{
+					<text>['@(new Microsoft.AspNetCore.Html.HtmlString(Model.cat))',parseFloat(@s3),"Голы: " + parseFloat(@s3),'2e1f1f']</text>
+				}
+			}	
+		]);
+					var options = {
+				lineWidth: 2,
+				legend: 'none',
+				width: '100%',
+				height: '80',
+				chartArea: { left: '0%', top: '7%',right:'1%',bottom: '7%', width: "100%", height: "80%" },
+				colors: ['c5002e'],
+				backgroundColor: '#ffffff',
+				hAxis: {
+					gridlines: {color: '#ffffff'},
+					ticks: [0,2,4,6,8,10,12,14,16,18,20]
+				},
+				bar: {groupWidth: '100%'}
+
+			};
+		var chart = new google.visualization.BarChart(document.getElementById('chart3'));
+
+		chart.draw(data, options);
+	}
+
+
+
+	function drawAsistChart()
+	{
+		var data = google.visualization.arrayToDataTable([
+			['Футболист', { label: 'Голевые передачи'}, { role: 'annotation' }, {role: 'style'}],
+			
+			@{
+				double Asists = 0.0;
+				foreach (var match in Model.Matches)
+				{
+					Asists += Model.Actions.Where(i => i.FootballerId == Model.foot.Id && i.ActionTypeId == 2 && i.MatchId == match.Id).Count();
+				}
+				<text>['@(new Microsoft.AspNetCore.Html.HtmlString(Model.foot.Surname + " " + Model.foot.Name))', @Asists,"Голевые передачи: " + @Asists, 'c5002e'],</text>
+				double SrAsists = 0.0;
+				@foreach (var person in Model.Footballers)
+				{
+					foreach (var match in Model.Matches)
+					{
+						SrAsists += Model.Actions.Where(i => i.FootballerId == person.Id && i.ActionTypeId == 2 && i.MatchId == match.Id).Count();
+					}
+				}
+				SrAsists /= Model.Footballers.Count();
+				string s4 = Convert.ToString(SrAsists).Replace(',','.');
+
+				if (SrAsists % 1 != 0)
+				{
+					<text>['@(new Microsoft.AspNetCore.Html.HtmlString(Model.cat))',parseFloat(@s4).toPrecision(2),"Голевые передачи: " + parseFloat(@s4).toPrecision(2),'2e1f1f']</text>
+				}
+				else
+				{
+					<text>['@(new Microsoft.AspNetCore.Html.HtmlString(Model.cat))',parseFloat(@s4),"Голевые передачи: " + parseFloat(@s4),'2e1f1f']</text>
+				}
+			}	
+		]);
+					var options = {
+				lineWidth: 2,
+				legend: 'none',
+				width: '100%',
+				height: '80',
+				chartArea: { left: '0%', top: '7%',right:'1%',bottom: '7%', width: "100%", height: "80%" },
+				colors: ['c5002e'],
+				backgroundColor: '#ffffff',
+				hAxis: {
+					gridlines: {color: '#ffffff'},
+					ticks: [0,2,4,6,8,10,12,14,16,18,20]
+				},
+				bar: {groupWidth: '100%'}
+
+			};
+		var chart = new google.visualization.BarChart(document.getElementById('chart4'));
+
+		chart.draw(data, options);
+	}
+
+	function drawGoals90Chart()
+	{
+		var data = google.visualization.arrayToDataTable([
+			['Футболист', { label: 'Голы на 90 минут'}, { role: 'annotation' }, {role: 'style'}],
+			@{
+				double footMin2 = 0;
+				double g90 = 0;
+				double goalsf = 0;
+				foreach (var match in Model.Matches.Where(f => f.TeamId == Model.foot.TeamId))
+				{
+					if (match.Protocols.Where(pr => pr.FootballerId == Model.foot.Id).Count() > 0)
+					{
+						if (Model.Actions.Where(a => a.ActionTypeId == 6 && a.MatchId == match.Id && a.FootballerId == Model.foot.Id).Count() > 0)
+						{
+							int inMin = 0;
+							int outMin = 90;
+							foreach (var rep in Model.Replaces.Where(fb => fb.MatchID == match.Id && (fb.FootballerInId == Model.foot.Id || fb.FootballerOutId == Model.foot.Id)))
+							{
+								if (rep.FootballerOutId == Model.foot.Id)
+								{
+									outMin = rep.Time;
+								}
+								if (rep.FootballerInId == Model.foot.Id)
+								{
+									inMin = rep.Time;
+								}
+							}
+							footMin2 += outMin - inMin;
+						}
+					}
+					goalsf += Model.Actions.Where(i => i.FootballerId == Model.foot.Id && i.ActionTypeId == 1 && i.MatchId == match.Id).Count();
+				}
+
+				if (Model.Actions.Where(g => g.FootballerId == Model.foot.Id && g.ActionTypeId == 6).Count() != 0)
+				{
+					g90 = Math.Round((goalsf / (footMin2 / 90)), 2);
+
+				}
+				string s5 = Convert.ToString(g90).Replace(',','.');
+				<text>['@(new Microsoft.AspNetCore.Html.HtmlString(Model.foot.Surname + " " + Model.foot.Name))',parseFloat(@s5),"Голы на 90 минут: " + parseFloat(@s5), 'c5002e'], </text>
+
+				double g90All = 0;
+				double goalsAll = 0;
+				foreach (var person in Model.Footballers)
+				{	
+					double totalMin2 = 0;
+					foreach (var match in Model.Matches.Where(f => f.TeamId == person.TeamId))
+					{
+						if (match.Protocols.Where(pr => pr.FootballerId == person.Id).Count() > 0)
+						{
+							if (Model.Actions.Where(a => a.ActionTypeId == 6 && a.MatchId == match.Id && a.FootballerId == person.Id).Count() > 0)
+							{
+								int inMin = 0;
+								int outMin = 90;
+								foreach (var rep in Model.Replaces.Where(fb => fb.MatchID == match.Id && (fb.FootballerInId == person.Id || fb.FootballerOutId == person.Id)))
+								{
+									if (rep.FootballerOutId == person.Id)
+									{
+										outMin = rep.Time;
+									}
+									if (rep.FootballerInId == person.Id)
+									{
+										inMin = rep.Time;
+									}
+								}
+								totalMin2 += outMin - inMin;
+							}
+						}
+						goalsAll += Model.Actions.Where(i => i.FootballerId == person.Id && i.ActionTypeId == 1 && i.MatchId == match.Id).Count();
+					}
+					double g90f = 0;
+					if (Model.Actions.Where(g => g.FootballerId == person.Id && g.ActionTypeId == 6).Count() != 0)
+					{
+						g90f = Math.Round((Convert.ToDouble(goalsAll) / (totalMin2 / 90)), 2);
+						
+					}
+					g90All += g90f;
+				}
+				g90All /= Model.Footballers.Count();
+									g90All = Math.Round(g90All,2);
+				string s6 = Convert.ToString(g90All).Replace(',','.');
+
+				<text>['@(new Microsoft.AspNetCore.Html.HtmlString(Model.cat))',parseFloat(@s6), "Голы на 90 минут: " + parseFloat(@s6), '2e1f1f'] </text>
+			}
+
+
+			]);
+		var options = {
+			lineWidth: 2,
+			legend: 'none',
+			width: '100%',
+			height: '80',
+			chartArea: { left: '0%', top: '7%',right:'1%',bottom: '7%', width: "100%", height: "80%" },
+			colors: ['c5002e'],
+			backgroundColor: '#ffffff',
+			hAxis: {
+					gridlines: {color: '#ffffff'},
+					ticks: [0,0.25,0.5,0.75,1,1.25,1.5,1.75,2]
+			},
+			bar: {groupWidth: '100%'}
+
+		};
+		var chart = new google.visualization.BarChart(document.getElementById('chart5'));
+
+		chart.draw(data, options);
+	}
+
+
+
+		function drawAsists90Chart()
+	{
+		var data = google.visualization.arrayToDataTable([
+			['Футболист', { label: 'Голевые пердачи на 90 минут'}, { role: 'annotation' }, {role: 'style'}],
+			@{
+				double footMin3 = 0;
+				double asistf = 0;
+				foreach (var match in Model.Matches.Where(f => f.TeamId == Model.foot.TeamId))
+				{
+					if (match.Protocols.Where(pr => pr.FootballerId == Model.foot.Id).Count() > 0)
+					{
+						if (Model.Actions.Where(a => a.ActionTypeId == 6 && a.MatchId == match.Id && a.FootballerId == Model.foot.Id).Count() > 0)
+						{
+							int inMin = 0;
+							int outMin = 90;
+							foreach (var rep in Model.Replaces.Where(fb => fb.MatchID == match.Id && (fb.FootballerInId == Model.foot.Id || fb.FootballerOutId == Model.foot.Id)))
+							{
+								if (rep.FootballerOutId == Model.foot.Id)
+								{
+									outMin = rep.Time;
+								}
+								if (rep.FootballerInId == Model.foot.Id)
+								{
+									inMin = rep.Time;
+								}
+							}
+							footMin3 += outMin - inMin;
+						}
+					}
+					asistf += Model.Actions.Where(i => i.FootballerId == Model.foot.Id && i.ActionTypeId == 2 && i.MatchId == match.Id).Count();
+				}
+				double a90 = 0;
+				if (Model.Actions.Where(g => g.FootballerId == Model.foot.Id && g.ActionTypeId == 6).Count() != 0)
+				{
+					a90 = Math.Round((asistf / (footMin3 / 90)), 2);
+
+				}
+				string s7 = Convert.ToString(a90).Replace(',','.');
+				<text>['@(new Microsoft.AspNetCore.Html.HtmlString(Model.foot.Surname + " " + Model.foot.Name))',parseFloat(@s7),"Голевые передачи на 90 минут: " + parseFloat(@s7), 'c5002e'], </text>
+
+				double a90All = 0;
+				double asistAll = 0;
+				foreach (var person in Model.Footballers)
+				{	
+					double totalMin3 = 0;
+					foreach (var match in Model.Matches.Where(f => f.TeamId == person.TeamId))
+					{
+						if (match.Protocols.Where(pr => pr.FootballerId == person.Id).Count() > 0)
+						{
+							if (Model.Actions.Where(a => a.ActionTypeId == 6 && a.MatchId == match.Id && a.FootballerId == person.Id).Count() > 0)
+							{
+								int inMin = 0;
+								int outMin = 90;
+								foreach (var rep in Model.Replaces.Where(fb => fb.MatchID == match.Id && (fb.FootballerInId == person.Id || fb.FootballerOutId == person.Id)))
+								{
+									if (rep.FootballerOutId == person.Id)
+									{
+										outMin = rep.Time;
+									}
+									if (rep.FootballerInId == person.Id)
+									{
+										inMin = rep.Time;
+									}
+								}
+								totalMin3 += outMin - inMin;
+							}
+						}
+							asistAll += Model.Actions.Where(i => i.FootballerId == person.Id && i.ActionTypeId == 2 && i.MatchId == match.Id).Count();
+					}
+					double a90f = 0;
+					if (Model.Actions.Where(g => g.FootballerId == person.Id && g.ActionTypeId == 6).Count() != 0)
+					{
+						a90f = Math.Round((asistAll / (totalMin3 / 90)), 2);
+						
+					}
+					a90All += a90f;
+				}
+				a90All /= Model.Footballers.Count();
+				string s8 = Convert.ToString(a90All).Replace(',','.');
+
+
+				if (a90All % 1 != 0)
+				{
+					<text>['@(new Microsoft.AspNetCore.Html.HtmlString(Model.cat))',parseFloat(@s8).toFixed(2), "Голевые передачи на 90 минут: " + parseFloat(@s8).toFixed(2), '2e1f1f'] </text>
+				}
+				else
+				{
+					<text>['@(new Microsoft.AspNetCore.Html.HtmlString(Model.cat))',parseFloat(@s8), "Голевые передачи на 90 минут: " + parseFloat(@s8), '2e1f1f'] </text>
+				}
+			}
+
+
+			]);
+		var options = {
+			lineWidth: 2,
+			legend: 'none',
+			width: '100%',
+			height: '80',
+			chartArea: { left: '0%', top: '7%',right:'1%',bottom: '7%', width: "100%", height: "80%" },
+			colors: ['c5002e'],
+			backgroundColor: '#ffffff',
+			hAxis: {
+					gridlines: {color: '#ffffff'},
+					ticks: [0,0.25,0.5,0.75,1,1.25,1.5,1.75,2]
+			},
+			bar: {groupWidth: '100%'}
+
+		};
+		var chart = new google.visualization.BarChart(document.getElementById('chart6'));
+
+		chart.draw(data, options);
+	}
+
+function drawYCChart()
+	{
+		var data = google.visualization.arrayToDataTable([
+			['Футболист', { label: 'Желтые карточки'}, { role: 'annotation' }, {role: 'style'}],
+			['@(new Microsoft.AspNetCore.Html.HtmlString(Model.foot.Surname + " " + Model.foot.Name))', @Model.Actions.Where(i=>i.FootballerId == Model.foot.Id && i.ActionTypeId == 3).Count(),"Желтые карточки: " + @Model.Actions.Where(i=>i.FootballerId == Model.foot.Id && i.ActionTypeId == 3).Count(), 'c5002e'],
+			@{
+				double SrYC = 0.0;
+				@foreach (var person in Model.Footballers)
+				{
+					SrYC += Model.Actions.Where(i => i.FootballerId == person.Id && i.ActionTypeId == 3).Count();
+				}
+				SrYC /= Model.Footballers.Count();
+				string s9 = Convert.ToString(SrYC).Replace(',','.');
+
+				if (SrYC % 1 != 0)
+				{
+					<text>['@(new Microsoft.AspNetCore.Html.HtmlString(Model.cat))',parseFloat(@s9).toPrecision(2),"Желтые карточки: " + parseFloat(@s9).toPrecision(2),'2e1f1f']</text>
+				}
+				else
+				{
+					<text>['@(new Microsoft.AspNetCore.Html.HtmlString(Model.cat))',parseFloat(@s9),"Желтые карточки: " + parseFloat(@s9),'2e1f1f']</text>
+				}
+			}	
+		]);
+					var options = {
+				lineWidth: 2,
+				legend: 'none',
+				width: '100%',
+				height: '80',
+				chartArea: { left: '0%', top: '7%',right:'1%',bottom: '7%', width: "100%", height: "80%" },
+				colors: ['c5002e'],
+				backgroundColor: '#ffffff',
+				hAxis: {
+					gridlines: {color: '#ffffff'},
+					ticks: [0,1,2,3,4,5,6,7,8,9,10]
+				},
+				bar: {groupWidth: '100%'}
+
+			};
+		var chart = new google.visualization.BarChart(document.getElementById('chart7'));
+
+		chart.draw(data, options);
+	}
+
+
+	function drawRCChart()
+	{
+		var data = google.visualization.arrayToDataTable([
+			['Футболист', { label: 'Красные карточки'}, { role: 'annotation' }, {role: 'style'}],
+			['@(new Microsoft.AspNetCore.Html.HtmlString(Model.foot.Surname + " " + Model.foot.Name))', @Model.Actions.Where(i=>i.FootballerId == Model.foot.Id && i.ActionTypeId == 4).Count(),"Красные карточки: " + @Model.Actions.Where(i=>i.FootballerId == Model.foot.Id && i.ActionTypeId == 4).Count(), 'c5002e'],
+			@{
+				double SrRC = 0.0;
+				@foreach (var person in Model.Footballers)
+				{
+					SrRC += Model.Actions.Where(i => i.FootballerId == person.Id && i.ActionTypeId == 4).Count();
+				}
+				SrRC /= Model.Footballers.Count();
+				string s10 = Convert.ToString(SrRC).Replace(',','.');
+				if (SrRC % 1 != 0)
+				{
+					<text>['@(new Microsoft.AspNetCore.Html.HtmlString(Model.cat))',parseFloat(@s10).toPrecision(2),"Красные карточки: " + parseFloat(@s10).toPrecision(2),'2e1f1f']</text>
+				}
+				else
+				{
+					<text>['@(new Microsoft.AspNetCore.Html.HtmlString(Model.cat))',parseFloat(@s10),"Красные карточки: " + parseFloat(@s10),'2e1f1f']</text>
+				}
+				
+
+			}	
+		]);
+					var options = {
+				lineWidth: 2,
+				legend: 'none',
+				width: '100%',
+				height: '80',
+				chartArea: { left: '0%', top: '7%',right:'1%', bottom: '0%', width: "100%", height: "80%" },
+				colors: ['c5002e'],
+				backgroundColor: '#ffffff',
+				hAxis: {
+					gridlines: {color: '#ffffff'},
+					ticks: [0,1,2,3,4,5,6,7,8,9,10]
+				},
+				bar: {groupWidth: '100%'}
+
+			};
+		var chart = new google.visualization.BarChart(document.getElementById('chart8'));
+
+		chart.draw(data, options);
+	}
+</script>
+@{
+	ViewData["Title"] = "Сравнительная статистика показателей " +  @Model.foot.Surname + " " +  @Model.foot.Name[0] + "." + @Model.foot.Patronymic[0];
+	
+	<h1>Сравнительная статистика показателей @Model.foot.Surname @Model.foot.Name[0].@Model.foot.Patronymic[0]</h1>
+	<hr style="margin:0; margin-bottom:10px; color:black;height:1px" />
+	<div style="margin-left: 5px;">
+		<div id="filter">
+			<form method=" get">
+			<label>Выберите игрока или категорию игроков для сравнения и введите количество матчей</label><br />
+				<input type="hidden" name="pId" value="@Model.foot.Id">
+				<input type="hidden" name="tId" value="@Model.foot.TeamId">
+				@Html.DropDownList("category", Model.Squad as SelectList, "Все футболисты")
+				<input type="number" name="am" value="@Model.amount" max="100" min="1" style="padding-bottom: 0;padding-top: 0; height:25px" step="1">
+				<button type="submit" class="btn btn-primary" style=" padding-top:0; vertical-align:top; padding-bottom: 0;height:25px; background-color:#c5002e; border-color:#281b19">Применить</button>
+			</form>
+
+
+		</div>
+	</div>
+	<div style="display:flex">
+	
+		<div style="border: 1px solid black; margin-top: 10px;width:100%;">
+	
+			<div style="width:100%" id="chart2"></div>
+			<div style="width:100%" id="chart3"></div>
+			<div style="width:100%" id="chart4"></div>
+			<div style="width:100%" id="chart5"></div>
+			<div style="width:100%" id="chart6"></div>
+			<div style="width:100%" id="chart7"></div>
+			<div style="width:100%" id="chart8"></div>
+	
+		</div>
+	
+	</div>
+				<div style="border: 1px solid black;border-top:none;width:100%;text-align:center">
+					<div style=" text-align:center">
+						<div style="display:inline-flex">
+							<ps style="background-color:#c5002e;border:solid 1px black;color:white;padding-left:12px;padding-right:12px;margin:5px"></ps>
+							<h3 style="font-size: 16px;margin-top:5px">@Model.foot.Surname @Model.foot.Name</h3>
+						</div>
+						<div style="display:inline-flex">
+							<ps style="background-color:#2e1f1f;border:solid 1px black;color:white;padding-left:12px;padding-right:12px;margin:5px"></ps>
+							<h3 style="font-size: 16px;margin-top:5px;text-align:start">@Model.cat</h3>
+						</div>
+
+					</div>
+				</div>
+
+
+	<h2></h2>
+}

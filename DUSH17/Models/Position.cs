@@ -7,5 +7,6 @@ namespace DUSH17.Models
         [Key]
         public int Id { get; set; }
         public string NameOfPosition { get; set; } = null!;
-    }
+        public string ShortName { get; set; } = null!;
+	}
 }

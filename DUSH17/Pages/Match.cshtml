@@ -19,15 +19,15 @@
 		<tbody>
 			@if(Model.Match.Home)
 			{
-				<tr><td style="width:40%"><img src="~/images/Opponents/sh17.png" /></td><td rowspan="3"><h2>@Model.Match.Goals : @Model.Match.OpponentGoals</h2></td><td style="width:40%"><img src="~/images/Opponents/@Model.Match.Opponent.Picture.Name" /></td></tr>
-				<tr><td style="width:40%"><h3>ДЮСШ-17 @Model.Match.Team.Year</h3></td><td style="width:40%"><h3>@Model.Match.Opponent.Name @Model.Match.OpponentYear</h3></td></tr>
-				<tr><td style="width:40%"><h3>Томск</h3></td><td style="width:40%"><h3>@Model.Match.Opponent.City</h3></td></tr>
+				<tr><td style="width:35%"><img src="~/images/Opponents/sh17.png" /></td><td rowspan="3"><h2>@Model.Match.Goals : @Model.Match.OpponentGoals</h2></td><td style="width:35%"><img src="~/images/Opponents/@Model.Match.Opponent.Picture.Name" /></td></tr>
+				<tr><td style="width:35%"><h3>ДЮСШ-17 @Model.Match.Team.Year</h3></td><td style="width:35%"><h3>@Model.Match.Opponent.Name @Model.Match.OpponentYear</h3></td></tr>
+				<tr><td style="width:35%"><h3>Томск</h3></td><td style="width:35%"><h3>@Model.Match.Opponent.City</h3></td></tr>
 			}
 			else
 			{
-				<tr><td style="width:40%"><img src="~/images/Opponents/@Model.Match.Opponent.Picture.Name" /></td><td rowspan="3"><h2>@Model.Match.OpponentGoals : @Model.Match.Goals</h2></td><td style="width:40%"><img src="~/images/Opponents/sh17.png" /></td></tr>
-				<tr><td style="width:40%"><h3>@Model.Match.Opponent.Name @Model.Match.OpponentYear</h3></td><td style="width:40%"><h3>ДЮСШ-17 @Model.Match.Team.Year</h3></td></tr>
-				<tr><td style="width:40%"><h3>@Model.Match.Opponent.City</h3></td><td style="width:40%"><h3>Томск</h3></td></tr>
+				<tr><td style="width:35%"><img src="~/images/Opponents/@Model.Match.Opponent.Picture.Name" /></td><td rowspan="3"><h2>@Model.Match.OpponentGoals : @Model.Match.Goals</h2></td><td style="width:35%"><img src="~/images/Opponents/sh17.png" /></td></tr>
+				<tr><td style="width:35%"><h3>@Model.Match.Opponent.Name @Model.Match.OpponentYear</h3></td><td style="width:35%"><h3>ДЮСШ-17 @Model.Match.Team.Year</h3></td></tr>
+				<tr><td style="width:35%"><h3>@Model.Match.Opponent.City</h3></td><td style="width:35%"><h3>Томск</h3></td></tr>
 			}
 
 		</tbody>
@@ -38,10 +38,70 @@
 		<input type="button" value="Обзор" style="border-radius: 8px 0px 0px 0px 0px;" /><input type="button" value="Состав" />
 	</div>
 	<div>
-		@foreach(var person in Model.protocols)
-		{
-			<h2>@person.Footballer.Position.NameOfPosition | @person.Footballer.Surname @person.Footballer.Name</h2>
+		<h1>Стартовый состав</h1>
+		@foreach(var person in Model.squad.OrderBy(i=>i.PositionId))
+		{	
+			<div class="squad_line">
+				<div class="squad_person">
+					<h2 style="width:8%">@person.Position.ShortName</h2> <h2> | @person.Surname @person.Name</h2>
+
+					@{
+						foreach (var act in Model.actionns.OrderBy(i => i.ActionTypeId).Where(i => i.FootballerId == person.Id && (i.ActionTypeId == 1 || i.ActionTypeId == 2 || i.ActionTypeId == 3 || i.ActionTypeId == 4)))
+						{
+							switch (act.ActionTypeId)
+							{
+								case 1:
+									<div class="actions">
+									<img title="Гол" src="~/images/Icons/goal.png"/>
+									</div>
+									break;
+								case 2:
+									<div class="actions">
+										<img title="Голевая передача" src="~/images/Icons/assist.png" />
+									</div>
+									break;
+								case 3:
+									<div class="actions">
+										<img title="Желтая карточка" src="~/images/Icons/yellowCard.png" />
+									</div>
+									break;
+								case 4:
+									<div class="actions">
+										<img title="Красная карточка" src="~/images/Icons/redCard.png" />
+									</div>
+									break;
+								case 5:
+									<h2>АГ</h2>
+									break;
+							}
+						}
+					}
+				</div>
+				@{
+					foreach (var rep in Model.replaces.Where(i => i.FootballerOutId == person.Id))
+					{
+
+						<div class="squad_person">
+							<div class="actions">
+								<img title="Красная карточка" src="~/images/Icons/replace.png" />
+							</div>
+							<h2> @rep.FootballerIn.Surname @rep.FootballerIn.Name</h2>
+						</div>
+					}
+				}
+
+			</div>
 		}
+		<hr style="margin-top:0; color:black;height:1px" />
+		<h1>Замены</h1>
+
+				@foreach (var person in Model.bench.OrderBy(i => i.PositionId))
+				{
+					<div class="squad_line">
+						<div class="squad_person"><h2 style="width:8%">@person.Position.ShortName</h2> <h2> | @person.Surname @person.Name</h2></div><div></div>
+					</div>
+				}
+
 	</div>
 </div>
 		

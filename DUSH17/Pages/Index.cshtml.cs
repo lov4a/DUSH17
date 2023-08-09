@@ -35,11 +35,11 @@ namespace DUSH17.Pages
             int games = 0;
 
             Teams = context.Groups.Include(c => c.Coach).Include(p => p.Picture).AsNoTracking().ToList();
-            Matches = context.Matches.Where(i => i.Date > DateOnly.FromDateTime(DateTime.Now.AddDays(-30))).Include(i => i.Protocols).AsNoTracking().ToList();
+            Matches = context.Matches.Where(i => i.Date > DateOnly.FromDateTime(DateTime.Now.AddDays(-90))).Include(i => i.Protocols).AsNoTracking().ToList();
             LastMatches = context.Matches.Include(i => i.Competition).Include(i => i.Team).Include(i=>i.Opponent).OrderByDescending(i => i.Date).Take(3).AsNoTracking().ToList();
             Footballers = context.Footballers.Include(i => i.Picture).AsNoTracking().ToList();
             Replaces = context.Replaces.AsNoTracking().ToList();
-            Actions = context.Actions.Include(a => a.ActionType).Include(i=>i.Match).Where(i=>i.Match.Date > DateOnly.FromDateTime(DateTime.Now.AddDays(-30))).AsNoTracking().ToList();
+            Actions = context.Actions.Include(a => a.ActionType).Include(i=>i.Match).Where(i=>i.Match.Date > DateOnly.FromDateTime(DateTime.Now.AddDays(-90))).AsNoTracking().ToList();
             Birthday = context.Footballers.Where(i => i.DateOfBirthday.DayOfYear - DateTime.Now.DayOfYear >= 0 && i.DateOfBirthday.DayOfYear - DateTime.Now.DayOfYear <= 14)
                 .OrderBy(i=>i.DateOfBirthday.DayOfYear).Include(i=>i.Picture).AsNoTracking().ToList();
             foreach (var team in Teams)

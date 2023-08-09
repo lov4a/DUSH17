@@ -154,7 +154,9 @@
 					@foreach (var m in Model.Matches.Where(f=>f.TeamId == foot.TeamId).OrderByDescending(d => d.Date))
 					{
 						<tr>
-							<td style="text-align: center;">@m.Date</td>
+
+
+							<td style="text-align: center;"><a asp-page="Match" asp-route-Id="@m.Id" style="text-decoration: none;color:black">@m.Date</a></td>
 							<td style="text-align: center;">@m.Opponent</td>
 							@if(m.Goals > m.OpponentGoals)
 							{
@@ -170,7 +172,7 @@
 							}
 							<td style="text-align: center;">@m.Goals : @m.OpponentGoals</td>
 							<td style="text-align: center;">@m.Competition.NameOfCompetition (@m.Competition.CompetitionLevel.Level)</td>
-
+	
 								@if (m.Protocols.Where(pr => pr.FootballerId == foot.Id).Count() > 0)
 								{
 									int playTime = 0;

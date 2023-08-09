@@ -941,7 +941,7 @@ input[type="checkbox"] {
     margin-left: 15%;
     margin-right: 15%;
     margin-bottom: 1%;
-    background: linear-gradient(to top,#f3f3f3, white);
+    background: white;
     text-align:center;
 
 }
@@ -963,7 +963,7 @@ input[type="checkbox"] {
     margin-bottom: 1%;
 }
 .resultOfMatch h2{
-    font-size: calc(25px + 45 * (100vw / 1900));
+    font-size: calc(25px + 46 * (100vw / 1900));
 
 }
 .resultOfMatch h3{
@@ -973,26 +973,83 @@ input[type="checkbox"] {
 }
 .match_actions {
     border: 3px solid #c5002e;
-    background: linear-gradient(to top,#f3f3f3, white);
+    background: white;
     -webkit-box-shadow: 4px 4px 22px -2px rgba(34, 60, 80, 0.2);
     -moz-box-shadow: 4px 4px 22px -2px rgba(34, 60, 80, 0.2);
     box-shadow: 4px 4px 22px -2px rgba(34, 60, 80, 0.2);
     border-radius: 8px;
     margin-left: 15%;
     margin-right: 15%;
+    margin-bottom:2%;
+
+}
+
+.match_actions h2 {
+    font-size: calc(12px + 5 * (100vw / 1900));
+    font-weight:400;
+    margin:0;
+    padding:1.5%;
+    padding-left:1%;
+
+}
+.squad_person {
+    display:flex;
+
+}
+.squad_line:nth-child(odd) {
+    background-color:#f7f7f7;
+}
+.actions{
+    width:5%;
+    position:relative;
+}
+.actions img {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    width:100%;
+}
+.squad_line {
+    display: grid;
+    grid-template-columns: 55% 45%;
+    margin-left: 1%;
+    margin-right: 2%;
+    border-radius: 8px;
+    padding:0.5%;
+}
+
+.match_actions hr {
+    margin-bottom: 0.5%;
+    margin-right: 0%;
+    display: none;
+}
+.match_actions h1 {
+    border: 1px solid lightgray;
+    border-radius:8px;
+    background: #f7f7f7;
+    padding:0.5%;
+    font-size: calc(12px + 8 * (100vw / 1900));
+    margin-left:1.5%;
+    margin-right:2%;
+    margin-top:1%;
+    margin-bottom:0.5%;
+    text-align:center;
 }
 .match_nav_button {
     width: 100%;
 }
 .match_nav_button input {
-    margin-left: 0;
+    margin-left: 1.5%;
+    padding:0.5%;
+    font-weight:600;
+    margin-top: 1%;
     width:15%;
-    border: 1px solid #c5002e;
-    background: linear-gradient(to top,#f3f3f3, white);
-    border-top:none;
+    border: 1px solid lightgray;
+    border-radius:8px;
+    background: #f7f7f7;
 }
 .match_nav_button input:focus {
     background: #c5002e;
-    border-radius:0;
     color:white;
 }

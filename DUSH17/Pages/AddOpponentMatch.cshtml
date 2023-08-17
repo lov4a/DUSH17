@@ -1,0 +1,50 @@
+﻿@page
+@model DUSH17.Pages.AddOpponentMatchModel
+@{
+}
+<h2>Добавление результата матча соперников</h2>
+<form method="post">
+	<p>
+		<input type="hidden" name="Opponent1Id" value="@Model.Opponent1.Id" />
+	</p>
+	<p>
+		<input type="hidden" name="Opponent2Id" value="@Model.Opponent2.Id"/>
+	</p>
+	<p>
+		<input type="hidden" name="CompetitionId" value="@Model.Competition.Id" />
+	</p>
+	<p>
+		<input type="hidden" name="Stage" value="1" />
+	</p>
+	<div class="match_info">
+
+		<div><h1>@Model.Competition.NameOfCompetition</h1></div>
+		<div>
+			<label>Дата матча</label><br />
+			<input type="date" name="date" required />
+		</div>
+
+		<table class="resultOfMatch" style="margin-top:3%">
+			<tbody>
+
+					<tr>
+						<td style="width:25%"><img src="~/images/Opponents/@Model.Opponent1.Picture.Name" /></td>
+						<td rowspan="3" style="display:flex;text-align:center;justify-content:center">
+							<input type="number" max="100" min="0" value="0" name="Goals1" style="width:40%;  text-align:center;font-size:45px" required>
+							<h2>:</h2>
+							<input type="number" max="100" min="0" value="0" name="Goals2" style="width:40%; text-align:center;font-size:45px" required>
+						</td>
+						<td style="width:25%"><img src="~/images/Opponents/@Model.Opponent2.Picture.Name" /></td>
+					</tr>
+					<tr>
+						<td style="width:25%"><h3>@Model.Opponent1.Name</h3></td>
+						<td><input class="CreateButton" style="width:90%" type="submit" value="Добавить результат" /></td>
+						<td style="width:25%"><h3>@Model.Opponent2.Name</h3></td>
+					</tr>
+
+			</tbody>
+		</table>
+	</div>
+
+
+</form>

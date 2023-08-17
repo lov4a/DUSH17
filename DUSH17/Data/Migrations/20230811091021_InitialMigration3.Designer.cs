@@ -3,6 +3,7 @@ using System;
 using DUSH17.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DUSH17.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230811091021_InitialMigration3")]
+    partial class InitialMigration3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -390,58 +393,6 @@ namespace DUSH17.Data.Migrations
                     b.ToTable("Opponents", "xgb_dushbase");
                 });
 
-            modelBuilder.Entity("DUSH17.Models.OpponentList", b =>
-                {
-                    b.Property<int>("OpponentId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("CompetitionId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("OpponentId", "CompetitionId");
-
-                    b.HasIndex("CompetitionId");
-
-                    b.ToTable("OpponentList", "xgb_dushbase");
-                });
-
-            modelBuilder.Entity("DUSH17.Models.OpponentsMatch", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CompetitionId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Goals1")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Goals2")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Opponent1Id")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Opponent2Id")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Stage")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompetitionId");
-
-                    b.HasIndex("Opponent1Id");
-
-                    b.HasIndex("Opponent2Id");
-
-                    b.ToTable("OpponentsMatches", "xgb_dushbase");
-                });
-
             modelBuilder.Entity("DUSH17.Models.Picture", b =>
                 {
                     b.Property<int>("Id")
@@ -811,52 +762,6 @@ namespace DUSH17.Data.Migrations
                     b.Navigation("Picture");
                 });
 
-            modelBuilder.Entity("DUSH17.Models.OpponentList", b =>
-                {
-                    b.HasOne("DUSH17.Models.Competition", "Competition")
-                        .WithMany("OpponentLists")
-                        .HasForeignKey("CompetitionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DUSH17.Models.Opponent", "Opponent")
-                        .WithMany()
-                        .HasForeignKey("OpponentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Competition");
-
-                    b.Navigation("Opponent");
-                });
-
-            modelBuilder.Entity("DUSH17.Models.OpponentsMatch", b =>
-                {
-                    b.HasOne("DUSH17.Models.Competition", "Competition")
-                        .WithMany()
-                        .HasForeignKey("CompetitionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DUSH17.Models.Opponent", "Opponent1")
-                        .WithMany()
-                        .HasForeignKey("Opponent1Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DUSH17.Models.Opponent", "Opponent2")
-                        .WithMany()
-                        .HasForeignKey("Opponent2Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Competition");
-
-                    b.Navigation("Opponent1");
-
-                    b.Navigation("Opponent2");
-                });
-
             modelBuilder.Entity("DUSH17.Models.Protocol", b =>
                 {
                     b.HasOne("DUSH17.Models.Footballer", "Footballer")
@@ -976,8 +881,6 @@ namespace DUSH17.Data.Migrations
 
             modelBuilder.Entity("DUSH17.Models.Competition", b =>
                 {
-                    b.Navigation("OpponentLists");
-
                     b.Navigation("TeamLists");
                 });
 

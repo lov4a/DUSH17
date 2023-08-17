@@ -23,15 +23,25 @@ namespace DUSH17.Pages
         public async Task<IActionResult> OnGetAsync(int id)
         {
             Positions = new SelectList(context.Positions, nameof(Position.Id), nameof(Position.NameOfPosition));
+
             Footballers = context.Footballers.Include(g => g.Team).Include(p => p.Position).AsNoTracking().ToList();
             Person = await context.Footballers.FindAsync(id);
- 
+            foreach (var item in Positions)
+            {
+                if (item.Value == Convert.ToString(Person.PositionId))
+                {
+                    item.Selected = true;
+                    break;
+                }
+            }
             if (Person == null) return NotFound();
              
             return Page();
         }
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(string ds, string db)
         {
+            Person.DateOfBirthday = DateOnly.Parse(db);
+            Person.DateOfStart = DateOnly.Parse(ds);
             context.Footballers.Update(Person!);
             await context.SaveChangesAsync();
 			return LocalRedirect("~/TeamPage/"+Person.TeamId);

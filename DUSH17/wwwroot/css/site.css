@@ -63,14 +63,19 @@ div.team_container {
     display: grid;
     grid-auto-rows: auto;
     grid-template-columns: 59.9% 40.1%;
-    grid-gap:0;
+    grid-gap: 0;
     min-height: 100%;
     justify-content: center;
-
+    border: 1px solid lightgray;
+    border-radius:8px;
+    -webkit-box-shadow: 4px 4px 22px -2px rgba(34, 60, 80, 0.2);
+    -moz-box-shadow: 4px 4px 22px -2px rgba(34, 60, 80, 0.2);
+    box-shadow: 4px 4px 22px -2px rgba(34, 60, 80, 0.2);
 }
-
 .team_page_photo {
     width: 100%;
+    border-radius: 8px 0px 0px 0px;
+    border-bottom: 3px solid #c5002e;
 }
 
 .team_page h1 {
@@ -104,23 +109,23 @@ div.team_container {
 
     margin-bottom: 0px;
     width:100%;
-
     text-align:center;
 }
 
-    .teamstat th {
-        font-weight: bold;
-        color: white;
-        padding: 5px;
-        background: #c5002e;
-        border: 1px solid black;
-    }
+.teamstat th {
+    font-weight: bold;
+    color: black;
+    padding: 1%;
+    background: #f7f7f7;
+    border: 1px solid #dddddd;
+    border-top:3px solid #c5002e;
+}
 
-    .teamstat td {
-        border: 1px solid #dddddd;
-        padding: 5px;
-        border-bottom: none;
-    }
+.teamstat td {
+    border: 1px solid #dddddd;
+    border-bottom: 3px solid #c5002e;
+    padding: 5px;
+}
 
 .allP {
     margin-bottom: 0px;
@@ -306,7 +311,13 @@ allPlayers.th {
 .player_page {
     display: grid;
     grid-gap: 0;
-    grid-template-columns: 20% auto;
+    grid-template-columns: 21% auto;
+    border: 1px solid lightgray;
+    border-radius: 8px;
+    -webkit-box-shadow: 4px 4px 22px -2px rgba(34, 60, 80, 0.2);
+    -moz-box-shadow: 4px 4px 22px -2px rgba(34, 60, 80, 0.2);
+    box-shadow: 4px 4px 22px -2px rgba(34, 60, 80, 0.2);
+    margin-bottom:1%;
 }
 .player_page h2 {
     margin-left: 10px;
@@ -327,23 +338,18 @@ allPlayers.th {
     }
 .player_page img {
     width: 100%;
-    position: relative;
+    border-radius:8px 0px 0px 0px;
 }
 .statictable {
     width: 100%;
-    margin-bottom: 5px;
-    border: 1px solid #dddddd;
-    border-collapse: collapse;
-    margin-top:0px;
+    border-bottom:3px solid #c5002e;
 }
-
-    .statictable th {
-        font-weight: bold;
-        color: white;
-        padding: 5px;
-        background: #c5002e;
-        border: 1px solid black;
-    }
+.statictable th {
+    font-weight: bold;
+    color: white;
+    padding: 0.5%;
+    background: #c5002e;
+}
 
     .statictable td {
         border: 1px solid #dddddd;
@@ -464,14 +470,12 @@ div.index{
 }
 
 .dropdown {
-    width: 20%;
-    margin-right: 10px;
-    margin-left: 0px;
+    width: 30%;
+    margin-left: 2%;
 }
 .dropdown2 {
-    width: 20%;
-    margin-right: 10px;
-    margin-left: -4px;
+    width: 30%;
+    margin-left: 1%;
 }
 
 a.setAct {
@@ -627,7 +631,7 @@ a.setAct {
 }
 .item h4{
     font-size: calc(7px + 6 * (100vw / 1900));
-    margin-bottom: 10%;
+    margin-bottom: 5%;
 }
 .item h2{
     font-size: calc(12px + 7 * (100vw / 1900));
@@ -639,13 +643,8 @@ a.setAct {
     font-weight:400;
 }
 
-.result {
-    display: grid;
-    grid-template-columns: 45% 10% 45%;
-    text-align: center;
-    justify-content: center;
-    margin-bottom: 10%;
-}
+
+
 
 .games {
     display: flex;
@@ -911,14 +910,20 @@ input[type="checkbox"] {
 .create_container select::selection:hover{
     background-color:green;
 }
-.create_container p,button {
+.create_container button {
     margin-left: 1%;
 }
 .FIO{
     display:flex;
+    width:100%;
+
 }
 .FIO p{
     margin-right:3%;
+    margin-left:0;
+}
+.create_container p {
+    margin-left: 1%;
 }
 .CreateButton {
     padding-bottom: 1%;
@@ -938,8 +943,8 @@ input[type="checkbox"] {
     -moz-box-shadow: 4px 4px 22px -2px rgba(34, 60, 80, 0.2);
     box-shadow: 4px 4px 22px -2px rgba(34, 60, 80, 0.2);
     border-radius: 8px;
-    margin-left: 15%;
-    margin-right: 15%;
+    margin-left: 20%;
+    margin-right: 20%;
     margin-bottom: 1%;
     background: white;
     text-align:center;
@@ -978,8 +983,8 @@ input[type="checkbox"] {
     -moz-box-shadow: 4px 4px 22px -2px rgba(34, 60, 80, 0.2);
     box-shadow: 4px 4px 22px -2px rgba(34, 60, 80, 0.2);
     border-radius: 8px;
-    margin-left: 15%;
-    margin-right: 15%;
+    margin-left: 20%;
+    margin-right: 20%;
     margin-bottom:2%;
 
 }
@@ -1013,10 +1018,11 @@ input[type="checkbox"] {
 .squad_line {
     display: grid;
     grid-template-columns: 55% 45%;
-    margin-left: 1%;
+    margin-left: 1.5%;
     margin-right: 2%;
     border-radius: 8px;
-    padding:0.5%;
+    padding: 0.5%;
+
 }
 
 .match_actions hr {
@@ -1058,6 +1064,11 @@ input[type="checkbox"] {
     grid-template-columns: 5% 5% 88%;
     grid-gap: 1%;
 }
+.one_action_away {
+    display: grid;
+    grid-template-columns:88% 5% 5%;
+    grid-gap: 1%;
+}
 .actions2 {
     width: 100%;
     position: relative;
@@ -1078,4 +1089,350 @@ input[type="checkbox"] {
     font-weight:400;
     margin:0;
     padding:1.5%;
+}
+/*ChampionshipPage*/
+.championship {
+    width: 70%;
+    font-size: calc(14px + 8 * (100vw / 1900));
+    -webkit-box-shadow: 4px 4px 22px -2px rgba(34, 60, 80, 0.2);
+    -moz-box-shadow: 4px 4px 22px -2px rgba(34, 60, 80, 0.2);
+    box-shadow: 4px 4px 22px -2px rgba(34, 60, 80, 0.2);
+    margin-bottom: 2%;
+    border-radius: 8px;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+.championship td {
+    padding: 0.7%;
+    width: 9.25%;
+}
+.championship thead {
+    background: #c5002e;
+    color: white;
+}
+.championship th {
+    padding:0.5%;
+}
+.championship tbody tr:nth-child(odd) {
+    background-color: #f7f7f7;
+}
+    .championship tbody tr:last-child {
+        border-radius:0px 0px 8px 8px;
+    }
+.championship tbody td:last-child {
+    font-weight:bold;
+}
+.championship img {
+    width: 10%;
+
+}
+
+
+.championship tr:last-child td:first-child {
+    border-bottom-left-radius: 8px;
+}
+
+.championship tr:last-child td:last-child {
+    border-bottom-right-radius: 8px;
+}
+
+.championship td:last-child {
+    border-right: 3px solid #c5002e;
+}
+
+.championship td:first-child {
+    border-left: 3px solid #c5002e;
+}
+
+.championship tr:last-child td {
+    border-bottom: 3px solid #c5002e;
+}
+
+
+.h2h tr:first-child td:first-child {
+    border-top-left-radius: 8px;
+}
+
+.h2h tr:first-child td:last-child {
+    border-top-right-radius: 8px;
+}
+
+.h2h tr:last-child td:first-child {
+    border-bottom-left-radius: 8px;
+}
+
+.h2h tr:last-child td:last-child {
+    border-bottom-right-radius: 8px;
+}
+
+.h2h tr:first-child td {
+    border-top: 3px solid #c5002e;
+    border-bottom: 3px solid #c5002e;
+    border-top-style: solid;
+    font-size: calc(14px + 7 * (100vw / 1900));
+}
+
+.h2h td:last-child {
+    border-right: 3px solid #c5002e;
+}
+.h2h td:first-child {
+    border-left: 3px solid #c5002e;
+    border-right: 3px solid #c5002e;
+    font-size: calc(10px + 10 * (100vw / 1900));
+}
+.h2h  tr:last-child td{
+    border-bottom: 3px solid #c5002e;
+}
+.h2h {
+    width: 100%;
+    font-size: calc(10px + 7 * (100vw / 1900));
+    -webkit-box-shadow: 4px 4px 22px -2px rgba(34, 60, 80, 0.2);
+    -moz-box-shadow: 4px 4px 22px -2px rgba(34, 60, 80, 0.2);
+    box-shadow: 4px 4px 22px -2px rgba(34, 60, 80, 0.2);
+    margin-bottom: 2%;
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
+}
+
+.h2h td {
+    padding-top: 0.1%;
+    padding-bottom: 0.1%;
+    text-align:center;
+    width:6.36%;
+    border: 1px solid lightgray;
+    border-style: none solid solid none;
+    position: relative;
+}
+.h2h td p{
+    margin:0;
+}
+.h2h tr{
+       position: relative;
+}
+.h2h img {
+    width: 10%;
+}
+.h2h tr:first-child img{
+    width: 45%;
+}
+.h2h td:first-child{
+    width:20%;
+    text-align:left;
+    padding:0.7%;
+    background-color:white;
+}
+.h2h tr:hover{
+    background-color:#ffe3e3;
+}
+.h2h td:hover{
+    background-color:white;
+}
+.h2h td:hover::before {
+    content: ''; /* Добавляем псевдоколонку */
+    background: #ffe3e3; /* Цвет фона */
+    position: absolute; /* Абсолютное позиционирование */
+    height: 2000px; /* Высота колонки */
+    width: 100%; /* Ширина колонки */
+    left: 0; /* Положение от левого края */
+    top: -1000px; /* Положение от верхнего края */
+    z-index: -1; /* Располагаем ниже текста ячейки */
+}
+/*CreateMatch*/
+.addMatch {
+    padding: 3px;
+    margin-bottom: 2%
+}
+.addMatch input{
+    padding: 0;
+    padding-left: 0.3%;
+    border: 1px solid lightgray;
+    border-radius: 8px;
+
+}
+.oppoonent {
+    width: 25%;
+    text-align:center;
+}
+.setSquad {
+    border: 3px solid #c5002e;
+    border-radius: 8px;
+    font-size: calc(10px + 7 * (100vw / 1900));
+    -webkit-box-shadow: 4px 4px 22px -2px rgba(34, 60, 80, 0.2);
+    -moz-box-shadow: 4px 4px 22px -2px rgba(34, 60, 80, 0.2);
+    box-shadow: 4px 4px 22px -2px rgba(34, 60, 80, 0.2);
+    margin-bottom: 2%;
+    margin-left:20%;
+    margin-right:20%;
+}
+.setSquad h3 {
+    font-size: calc(10px + 7 * (100vw / 1900));
+    padding:0;
+    margin:0;
+}
+.setSquad h2 {
+    font-size: calc(15px + 10 * (100vw / 1900));
+    padding:0;
+    margin:0;
+}
+.setSquad input{
+    margin-left:2%;
+}
+.setSquad label {
+    margin-left: 2%;
+    margin-top:0;
+}
+.add_button {
+    border-radius: 8px;
+    background-color: #c5002e;
+    border: 1px solid lightgray;
+    color: white;
+    margin-left: 0%;
+    margin-top: 1%;
+    margin-bottom:1%;
+}
+.add_button:focus {
+    border-radius: 8px;
+    background-color: #c5002e;
+    border: 1px solid white;
+    color: white;
+    margin-top: 1%;
+    margin-bottom: 1%;
+}
+
+.dropdownPlayers:hover {
+    background-color:#ffe3e3;
+}
+.dropdownPlayers input {
+    padding-left: 3%;
+    text-align: left;
+    width: 100%;
+    border: none;
+    background-image: url('images/down-arrow.png');
+    background-repeat: no-repeat;
+    background-position:99%;
+    background-size:5%;
+    background-color:white;
+    border-radius:0px 0px 8px 8px;
+    font-size: calc(12px + 8 * (100vw / 1900));
+    font-weight: 400;
+    margin: 0;
+    padding: 1%;
+}
+.dropdownPlayers input:hover {
+    background-color: #ffe3e3;
+    border-radius:8px;
+}
+input[type="radio"]:checked {
+    background-color: #e145a3;
+}
+
+.result {
+    display: grid;
+    grid-template-columns: 35% 25% 35%;
+    text-align: center;
+    justify-content: center;
+    margin-bottom: 2%;
+    margin-left: 2.5%;
+    margin-right: 2.5%;
+    grid-auto-rows:7.2em;
+}
+
+.result  h2 {
+    font-size: calc(15px + 30 * (100vw / 1900));
+    margin-top:25%;
+    padding:0;
+}
+
+.result  h3 {
+    font-size: calc(12px + 3 * (100vw / 1900));
+    font-weight: 400;
+    margin-bottom: 0;
+    padding:0;
+}
+.result img {
+    max-height:86px;
+}
+
+.team_menu {
+    width: 100%;
+    grid-column-start:1;
+    grid-column-end:3;
+    margin-top:0;
+    border-radius: 0px 0px 8px 8px;
+}
+
+.team_menu button {
+    margin-left: 0.4%;
+    padding: 0.5%;
+    font-weight: 600;
+    margin-top: 1%;
+    margin-bottom: 1%;
+    width: 19.5%;
+    border: 1px solid lightgray;
+    border-radius: 8px;
+    background: #f7f7f7;
+    color:#c5002e;
+}
+.team_menu button:focus {
+    background: #c5002e;
+    color:white;
+}
+.team_menu button:first-child{
+    margin-left:0.29%;
+}
+
+.head_TeamList {
+    border-radius: 8px 8px 0px 0px;
+    background-color: #c5002e;
+    width: 100%;
+    padding: 0.5%;
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    font-size: calc(12px + 7 * (100vw / 1900));
+    font-family: 'Segoe UI';
+    justify-content: center;
+    display: flex;
+}
+.team_stat {
+
+    border-radius: 8px;
+    -webkit-box-shadow: 4px 4px 22px -2px rgba(34, 60, 80, 0.2);
+    -moz-box-shadow: 4px 4px 22px -2px rgba(34, 60, 80, 0.2);
+    box-shadow: 4px 4px 22px -2px rgba(34, 60, 80, 0.2);
+    margin-bottom: 2%;
+    margin-top:1%;
+}
+.team_stat table {
+    width: 100%;
+}
+.team_stat table img {
+}
+.team_stat table td {
+    border-bottom: 1px solid lightgray;
+    border-top: 1px solid lightgray;
+    padding:0.5%;
+    padding-left:0;
+    padding-right:0;
+}
+.team_stat table th {
+    border: 1px solid lightgray;
+    padding:0.3%;
+    text-align:center;
+    cursor:pointer;
+    border-bottom-color:black;
+}
+.team_stat table th:last-child{
+    border-right:none;
+}
+.team_stat table th:first-child{
+    border-left:none;
+}
+.team_stat tr:last-child td {
+    border:none;
+}
+
+.team_stat tr:last-child td:last-child {
+    border-bottom-right-radius: 8px;
 }

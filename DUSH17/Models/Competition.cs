@@ -15,9 +15,12 @@ namespace DUSH17.Models
         public int CountOfTeams { get; set; }
 
 		public virtual ICollection<TeamList> TeamLists { get; set; }
+		public virtual ICollection<OpponentList> OpponentLists { get; set; }
 		public Competition()
 		{
 			TeamLists = new HashSet<TeamList>();
+			OpponentLists = new HashSet<OpponentList>();
 		}
+
 	}
 }

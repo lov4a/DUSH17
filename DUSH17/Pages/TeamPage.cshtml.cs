@@ -34,7 +34,7 @@ namespace DUSH17.Pages
 			Footballers = context.Footballers.Include(g => g.Team).Include(p => p.Position).AsNoTracking().ToList();
 			Achievments = context.achievements.Include(t => t.Competition).ThenInclude(l => l.CompetitionLevel).AsNoTracking().ToList();
 			Actions = context.Actions.Include(a=>a.ActionType).AsNoTracking().ToList();
-			Matches = context.Matches.Include(c => c.Competition).ThenInclude(l => l.CompetitionLevel).Include(t => t.Team)
+			Matches = context.Matches.Include(i => i.Opponent).ThenInclude(i=>i.Picture).Include(c => c.Competition).ThenInclude(l => l.CompetitionLevel).Include(t => t.Team)
 	.Include(p => p.Protocols).ThenInclude(f => f.Footballer).AsNoTracking().ToList();
 			Replaces = context.Replaces.AsNoTracking().ToList();
 			Protocols = context.Protocols.AsNoTracking().ToList();

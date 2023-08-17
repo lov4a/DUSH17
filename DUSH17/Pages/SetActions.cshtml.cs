@@ -50,7 +50,7 @@ namespace DUSH17.Pages
 			}
 			for (int i = 0; i < CardMin.Length; i++)
 			{
-				if (CardMin != null && CardId != null && TypeId != null)
+				if (CardMin != null && CardId[i] > 0 && TypeId[i] > 0)
 				{
 					Actions.Add(new Actionn { FootballerId = CardId[i], MatchId = match.Id, ActionTypeId = TypeId[i], Time = CardMin[i] });
 				}
@@ -59,7 +59,7 @@ namespace DUSH17.Pages
 
 			for (int i = 0; i < repMin.Length; i++)
 			{
-				if (repMin != null && FootballerIn != null && FootballerOut != null)
+				if (repMin != null && FootballerIn[i] > 0 && FootballerOut[i] > 0)
 				{
 					rep.Add(new Replace { FootballerInId = FootballerIn[i], FootballerOutId = FootballerOut[i], MatchID = match.Id, Time = repMin[i] });
 					Actions.Add(new Actionn { FootballerId = FootballerIn[i], MatchId = match.Id, ActionTypeId = 6, Time = repMin[i] });
@@ -78,7 +78,7 @@ namespace DUSH17.Pages
 			IQueryable<Footballer> footballersIQ = from s in context.Footballers
 												   select s;
 			IQueryable<Footballer> footballersIQ2 = footballersIQ.Where(s => s.PositionId == 100);
-			match = context.Matches.Find(mId);
+			match = context.Matches.Include(i=>i.Opponent).First(i=>i.Id == mId);
 			if (match != null)
 			{
 				Protocols = context.Protocols.Where(i => i.MatchId == mId).AsNoTracking().ToList();
@@ -96,7 +96,8 @@ namespace DUSH17.Pages
 			List<Footballer> GoalAuthors = Footballers.ToList();
 			List<Footballer> AsistAuthors = Footballers.ToList();
 			List<Footballer> Cards = Footballers.ToList();
-
+			
+			Cards.Insert(0, new Footballer { Id = 0, Name = "Выберите футболиста", Surname = "" });
 			GoalAuthors.Insert(0, new Footballer { Id = 0, Name = "Автогол", Surname = "" });
 			AsistAuthors.Insert(0, new Footballer { Id = 0, Name = "Нет", Surname = "" });
 
@@ -118,6 +119,7 @@ namespace DUSH17.Pages
 										 ID = s.Id,
 										 FullName = s.Surname + " " + s.Name
 									 }), "ID", "FullName", null);
+			
 			CardTypes = new SelectList(context.ActionTypes.Where(i=>i.Id == 3 || i.Id == 4), nameof(ActionType.Id), nameof(ActionType.Name));
 
 		}

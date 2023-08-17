@@ -22,12 +22,13 @@ namespace DUSH17.Pages
 		public List<Footballer> Footballers { get; private set; } = new();
 		public List<Footballer> Footballers2 { get; private set; } = new();
 		public List<Match> Matches { get; private set; } = new();
-		public List<Match> Opponents { get; private set; } = new();
 		public List<Protocol> Protocols { get; set; } = new List<Protocol>();
+		public SelectList Opponents { get; set; } = null!;
+		public List<OpponentList> OpponentLists { get; set; } = new();
 
 		public int IdofTeam;
 		public int CompId;
-        public async Task<IActionResult> OnPostAsync(List<int>? PlayersChecked, string date, int cId)
+        public async Task<IActionResult> OnPostAsync(List<int>? PlayersChecked, string date)
 		{
 			Matches = context.Matches.Include(c=>c.Competition).Include(t=>t.Team).AsNoTracking().ToList();
 			match.Id = Matches.MaxBy(i => i.Id).Id + 1;
@@ -47,7 +48,13 @@ namespace DUSH17.Pages
 		public void OnGet(int tId, int year,int cId)
 		{
 			comp = context.Competitions.Find(cId);
-			Opponents = context.Matches.OrderBy(o=>o.Opponent).AsNoTracking().ToList();
+			OpponentLists = context.OpponentList.Include(i => i.Opponent).Where(i => i.CompetitionId == cId).AsNoTracking().ToList();
+			Opponents = new SelectList((from s in OpponentLists
+									  select new
+									  {
+										  ID = s.OpponentId,
+										  OName = s.Opponent.Name
+									  }), "ID", "OName", null);
             Matches = context.Matches.Include(c => c.Competition).Include(t => t.Team).AsNoTracking().ToList();
 			Footballers2 = context.Footballers.Include(t => t.Team).Include(p => p.Position).Where(y => y.TeamId == tId).OrderBy(p => p.PositionId).AsNoTracking().ToList();
 			Footballers = context.Footballers.Include(t => t.Team).Include(p => p.Position).Where(y => y.Team.Year - year <= 3 && y.Team.Year - year > -2 && y.TeamId != tId).OrderBy(y => y.Team.Year).ThenBy(p => p.PositionId).AsNoTracking().ToList();

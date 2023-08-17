@@ -3,9 +3,10 @@
 @{
     <h2>Добавление соревнования</h2>
     <form method="post">
-        <p>
+    <div class="create_container">
+         <p style="width:40%">
             <label>Наименование</label><br />
-            <input name="NameOfCompetition" required/>
+            <input style="width:100%" name="NameOfCompetition" required/>
         </p>
         <p>
             <label>Уровень</label><br />
@@ -26,8 +27,10 @@
         </p>
         <p>
             <label>Количество команд</label><br />
-            <input type="number" name="CountOfTeams" required/>
+            <input type="number" name="CountOfTeams" min="2" max="30" value="5" required/>
         </p>
-        <input type="submit" value="Отправить" />
+        <input class="CreateButton" type="submit" value="Отправить" />
+    </div>
+
     </form>
 }

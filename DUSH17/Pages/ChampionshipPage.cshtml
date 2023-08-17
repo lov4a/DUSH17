@@ -1,0 +1,168 @@
+﻿@page
+@model DUSH17.Pages.ChampionshipPageModel
+@{
+
+}
+<script>
+	function menu(x) {
+		var champ = document.getElementById('champ');
+		var chess = document.getElementById('chess');
+		if (x === 1) {
+			champ.style.display = 'none';
+			chess.style.display = 'block';
+		}
+		else if (x === 2) {
+			champ.style.display = 'block';
+			chess.style.display = 'none';
+		}
+
+	}
+</script>
+<h1>@Model.Championship.Competition.NameOfCompetition @Model.Championship.Competition.StartDate.Year</h1>
+<div class="match_nav_button" style="margin-left:0;margin-bottom:1%">
+	<input style="margin-left:0;" type="button" value="Таблица" onclick="menu(2)" /><input type="button" onclick="menu(1)" value="Шахматка" />
+</div>
+<table class="championship" id="champ">
+	<thead style=" border-radius: 8px 8px 0px 0px;">
+		<tr style=" border-radius: 8px 8px 0px 0px;">
+			<th style="text-align:center; border-radius: 8px 0px 0px 0px;"title="Место"></th>
+			<th style="width:10%">Команда</th>
+			<th style="text-align:center" title="Игры">И</th>
+			<th style="text-align:center" title="Выигрыши">В</th>
+			<th style="text-align:center" title="Ничьи">Н</th>
+			<th style="text-align:center" title="Поражения">П</th>
+			<th style="text-align:center" title="Мячей забито">МЗ</th>
+			<th style="text-align:center" title="Мячей пропущено">МП</th>
+			<th style="text-align:center; border-radius: 0px 8px 0px 0px;" title="Очки">О</th>
+		</tr>
+	</thead>
+	<tbody>
+		@{int i = 1;}
+		@foreach(var team in Model.Participants.OrderByDescending(i=>i.wins*3 + i.draws).ThenByDescending(i=>i.goalsScored - i.goalsConceded))
+		{
+
+		<tr>
+			<td style="width:5%;text-align:center">@i</td>
+			<td style="width:30%;"><img src="~/images/Opponents/@team.Picture.Name" /> @team.Name</td>
+			<td style="text-align:center">@(team.wins+team.draws+team.loses)</td>
+			<td style="text-align:center">@team.wins</td>
+			<td style="text-align:center">@team.draws</td>
+			<td style="text-align:center">@team.loses</td>
+			<td style="text-align:center">@team.goalsScored</td>
+			<td style="text-align:center">@team.goalsConceded</td>
+			<td style="text-align:center">@(team.wins*3 + team.draws)</td>
+			</tr>
+			i++;
+		}
+	</tbody>
+</table>
+
+<table class="h2h" id="chess" style="display:none;">
+	<tbody>
+		<tr>
+			<td style="    border-radius: 8px 0px 0px 0px;"></td>
+			@{int j = 1;}
+			@foreach (var team in Model.Participants)
+			{
+				<td><img src="~/images/Opponents/@team.Picture.Name" alt="@j"/></td>
+				j++;
+			}
+		</tr>
+		@for (int x = 0; x < Model.Participants.Count(); x++)
+		{
+			<tr>
+				<td><img src="~/images/Opponents/@Model.Participants[x].Picture.Name" alt="@(x+1)" /> @Model.Participants[x].Name</td>
+			@for (int y = 0; y < Model.Participants.Count(); y++)
+			{
+				if(x == y)
+				{
+						<td style="background-color:#c5002e"></td>
+				}
+				else
+				{
+					if(Model.Participants[x].type == 2)
+					{
+						<td>
+							@if(Model.Matches.Exists(i=>i.OpponentId == Model.Participants[y].Id && i.Home))
+							{
+									<p>@Model.Matches.First(i=>i.OpponentId == Model.Participants[y].Id && i.Home).Goals:@Model.Matches.First(i=>i.OpponentId == Model.Participants[y].Id && i.Home).OpponentGoals</p>
+							}
+							else
+							{
+								<p>- : -</p>
+							}
+							@if(Model.Matches.Exists(i=>i.OpponentId == Model.Participants[y].Id && !i.Home))
+							{
+									<p>@Model.Matches.First(i=>i.OpponentId == Model.Participants[y].Id && !i.Home).Goals:@Model.Matches.First(i=>i.OpponentId == Model.Participants[y].Id && !i.Home).OpponentGoals</p>
+							}
+							else
+							{
+								<p>- : -</p>
+							}
+						</td>
+					}
+					else
+					{
+						<td>
+							@if(Model.Participants[y].Name == "СШ-17")
+							{
+								if(Model.Matches.Exists(i=>i.OpponentId == Model.Participants[x].Id && !i.Home))
+								{
+										<p>@Model.Matches.First(i=>i.OpponentId == Model.Participants[x].Id && !i.Home).OpponentGoals:@Model.Matches.First(i=>i.OpponentId == Model.Participants[x].Id && !i.Home).Goals</p>
+								}
+								else{
+									<p>- : -</p>
+								}
+								if(Model.Matches.Exists(i=>i.OpponentId == Model.Participants[x].Id && i.Home))
+								{
+									<p>@Model.Matches.First(i=>i.OpponentId == Model.Participants[x].Id && i.Home).OpponentGoals:@Model.Matches.First(i=>i.OpponentId == Model.Participants[x].Id && i.Home).Goals</p>
+								}
+								else{
+									<p>- : -</p>
+								}
+							}
+							else
+							{
+									if (Model.Oppsmatches.Exists(i => i.Opponent1Id == Model.Participants[x].Id && i.Opponent2Id == Model.Participants[y].Id))
+									{
+										<p>@Model.Oppsmatches.First(i => i.Opponent1Id == Model.Participants[x].Id && i.Opponent2Id == Model.Participants[y].Id).Goals1:@Model.Oppsmatches.First(i => i.Opponent1Id == Model.Participants[x].Id && i.Opponent2Id == Model.Participants[y].Id).Goals2</p>
+									}
+									else
+									{
+										@if (User.Identity.Name != null)
+										{
+											<a asp-page="AddOpponentMatch" asp-route-home="@Model.Participants[x].Id" asp-route-away="@Model.Participants[y].Id" asp-route-comp="@Model.Championship.CompetitionId" style="text-decoration: none;color:black"><p>- : -</p></a>
+											
+										}
+										else
+										{
+											<p>- : -</p>
+										}
+
+									}
+									if (Model.Oppsmatches.Exists(i => i.Opponent2Id == Model.Participants[x].Id && i.Opponent1Id == Model.Participants[y].Id))
+									{
+										<p>@Model.Oppsmatches.First(i => i.Opponent2Id == Model.Participants[x].Id && i.Opponent1Id == Model.Participants[y].Id).Goals1:@Model.Oppsmatches.First(i => i.Opponent2Id == Model.Participants[x].Id && i.Opponent1Id == Model.Participants[y].Id).Goals2</p>
+									}
+									else
+									{
+										@if (User.Identity.Name != null)
+										{
+											<a asp-page="AddOpponentMatch" asp-route-home="@Model.Participants[y].Id" asp-route-away="@Model.Participants[x].Id" asp-route-comp="@Model.Championship.CompetitionId" style="text-decoration: none;color:black"><p>- : -</p></a>
+											
+										}
+										else
+										{
+											<p>- : -</p>
+										}
+									}
+							}
+						</td>
+					}
+
+				}
+			}
+			</tr>
+		}
+	</tbody>
+</table>

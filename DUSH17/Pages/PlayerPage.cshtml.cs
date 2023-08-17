@@ -25,7 +25,7 @@ namespace DUSH17.Pages
 				.ThenInclude(comp=>comp.Competition).ThenInclude(l=>l.CompetitionLevel).AsNoTracking().ToList();
 			Actions = context.Actions.Include(a => a.ActionType).Include(m=>m.Match).ThenInclude(c=>c.Competition).ThenInclude(l=>l.CompetitionLevel).AsNoTracking().ToList();
 			Matches = context.Matches.Include(c => c.Competition).ThenInclude(l => l.CompetitionLevel).Include(t => t.Team)
-				.Include(p => p.Protocols).ThenInclude(f => f.Footballer).AsNoTracking().ToList();
+				.Include(p => p.Protocols).ThenInclude(f => f.Footballer).Include(i=>i.Opponent).ThenInclude(i=>i.Picture).AsNoTracking().ToList();
 			Replaces = context.Replaces.AsNoTracking().ToList();
 			Protocols = context.Protocols.AsNoTracking().ToList();
 

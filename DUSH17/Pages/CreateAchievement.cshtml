@@ -1,33 +1,67 @@
 ﻿@page
 @model DUSH17.Pages.CreateAchievementModel
 @{
+	<script>
+		function menu(el) {
+			var x = document.getElementById('otherGroups');
+			if (x.style.display == 'none') {
+				x.style.display = 'block';
+			}
+			else {
+				x.style.display = 'none';
+			}
+
+		}
+		function getAccess() {
+			var x = document.getElementById('Next');
+			if (document.querySelectorAll('input[type="checkbox"]:checked').length > 10) {
+				x.style.display = 'block';
+			}
+			else {
+				x.style.display = 'none';
+			}
+
+		}
+	</script>
+
 	 <h2>Добавление результата соревнований</h2>
     <form method="post">
-		<p>
-			<input type="hidden" name="TeamId" value="@Model.IdofTeam" />
-		</p>
-		<p>
-			<label>Соревнование</label><br />
-			@Html.DropDownList("CompetitionId", Model.Competitions as SelectList)
-		</p>
-		<p>
-			<label>Занятое место</label><br />
-			<input type="number" name="Place" required/>
-		</p>
-		<p>
-			<label>Список футболистов</label><br />
+
+
+			<div class="setSquad">
+
+					<input type="hidden" name="TeamId" value="@Model.IdofTeam" />
+
+				<p style="margin-left:2%">
+					<label style="margin:0" >Соревнование</label><br />
+					@Html.DropDownList("CompetitionId", Model.Competitions as SelectList)
+				</p>
+				<p>
+					<label>Занятое место</label><br />
+					<input type="number" name="Place" min="1" max="30" required/>
+				</p>
+
+				<h2 style="margin-left:2%">Участники</h2><label>Отметьте игроа(-ов), котороые принимали участие в турнире</label>
+				<hr style="margin:0; color:black;height:1px" />
 			@foreach (var a in Model.Footballers2)
 			{
-				<label><input type="checkbox" name="PlayersChecked" value="@a.Id"  /> @a.Position.NameOfPosition | @a.Surname @a.Name @a.Patronymic</label> <br />
-
+					<h3><input id="@a.Id" type="checkbox" class="PlayersChecked" name="PlayersChecked" value="@a.Id" onclick="getAccess()" /> <label style="margin-left:0.2%" for="@a.Id">@a.Position.ShortName | @a.Surname @a.Name @a.Patronymic</label></h3>
 			}
-			<hr style="margin-top:0; color:black;height:1px" />
-			@foreach (var a in Model.Footballers)
-			{
-				<label><input type="checkbox" name="PlayersChecked" value="@a.Id" /> @a.Position.NameOfPosition | @a.Surname @a.Name @a.Patronymic | @a.DateOfBirthday.Year</label> <br />
+				<hr style="margin:0;margin-top:2%; color:black;height:1px" />
+				<div class="dropdownPlayers">
+					<input type="button" value="Игроки других групп" onclick="menu()" />
+				</div>
+			<input class="add_button" id="Next" type="submit" style="display:none" value="Отправить" />
+				<div id="otherGroups" style="display:none;margin-bottom:1%;">
+					<hr style="margin:0; color:black;height:1px" />
+				@foreach (var a in Model.Footballers)
+				{
+						<h3><input id="@a.Id" type="checkbox" class="PlayersChecked" onclick="getAccess()" name="PlayersChecked" value="@a.Id" /><label style="margin-left:0.2%" for="@a.Id">@a.Position.ShortName | @a.Surname @a.Name @a.Patronymic | @a.DateOfBirthday.Year</label></h3>
 
-			}
-		</p>
-		<input type="submit" value="Отправить" style="margin-bottom:10px"/>
+				}
+				</div>
+			</div>
+
 	</form>
+
 }

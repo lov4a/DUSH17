@@ -33,6 +33,7 @@
     <Compile Remove="Models\AccountModel.cs" />
     <Compile Remove="Models\LoginModel.cs" />
     <Compile Remove="Pages\Authorization.cshtml.cs" />
+    <Compile Remove="Pages\ChampionshipPage.cs" />
     <Compile Remove="Pages\CreateM.cshtml.cs" />
     <Compile Remove="Pages\Index1.cshtml.cs" />
     <Compile Remove="Pages\Index2.cshtml.cs" />

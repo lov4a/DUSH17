@@ -58,9 +58,40 @@
     {
         <a asp-page="Match" asp-route-Id="@match.Id" style="text-decoration: none;color:black">
             <div class="item">
-                <div><h1>@match.Competition.NameOfCompetition</h1></div>
-                <div><h4>@match.Date @match.Competition.City</h4></div>
-                <div class="result"><h3 style="text-align:end;padding-right:10%">ДЮСШ-17 @match.Team.Year</h3><h2>@match.Goals : @match.OpponentGoals</h2><h3 style="text-align:start; padding-left:10%">@match.Opponent.Name @match.OpponentYear</h3></div>
+                    <div><h1>@match.Competition.NameOfCompetition</h1></div>
+                    <div><h4>@match.Date @match.Competition.City</h4></div>
+                @if(match.Home)
+                {
+
+                    <div class="result">
+                        <div>
+                            <img src="~/images/Opponents/sh17.png" />
+                            <h3 style="text-align:center">СШ-17 @match.Team.Year</h3>
+                        </div>
+                        <h2>@match.Goals : @match.OpponentGoals</h2>
+                        <div>
+                            <img src="~/images/Opponents/@match.Opponent.Picture.Name" />
+                            <h3 style="text-align:center;">@match.Opponent.Name @match.Opponent.Year</h3>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="result">
+
+                        <div>
+                            <img src="~/images/Opponents/@match.Opponent.Picture.Name" />
+                            <h3 style="text-align:center;">@match.Opponent.Name @match.Opponent.Year</h3>
+                        </div>
+                        <h2>@match.OpponentGoals : @match.Goals</h2>
+                        <div>
+                            <img src="~/images/Opponents/sh17.png" />
+                            <h3 style="text-align:center">СШ-17 @match.Team.Year</h3>
+                        </div>
+                    </div>
+                }
+
+
             </div>
         </a>
     }

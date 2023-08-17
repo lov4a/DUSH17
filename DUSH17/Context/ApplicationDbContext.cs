@@ -28,9 +28,12 @@ namespace DUSH17.Context
 		public DbSet<Role> Roles { get; set; }
 		public DbSet<TeamList> TeamList { get; set; }
 		public DbSet<Opponent> Opponents { get; set; }
+		public DbSet<Championship> Championships { get; set; }
+		public DbSet<OpponentList> OpponentList { get; set; }
+		public DbSet<OpponentsMatch> OpponentsMatches { get; set; }
 
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+		protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 			modelBuilder.HasDefaultSchema("xgb_dushbase");
 			base.OnModelCreating(modelBuilder);
@@ -41,6 +44,8 @@ namespace DUSH17.Context
 			.HasKey(k => new { k.MatchId, k.FootballerId });
 			modelBuilder.Entity<TeamList>()
 			.HasKey(t => new { t.TeamId, t.CompetitionId });
+			modelBuilder.Entity<OpponentList>()
+			.HasKey(t => new { t.OpponentId, t.CompetitionId });
 		}
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
 			: base(options) 

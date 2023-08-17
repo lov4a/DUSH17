@@ -24,67 +24,77 @@
 	{
 		e.parentElement.remove();
 	}
+	function setMin(el){
+		if(el.value < 1){
+			el.value = 1;
+		}
 
-
-
+	}
 </script>
 @{
-	<h2>Заполнение протокола матча | ДЮСШ-17 @Model.match.Goals - @Model.match.OpponentGoals @Model.match.Opponent | @Model.match.Date</h2>
-	<hr style="margin-top:0; margin-bottom: 2px; color:black;height:1px" />
+	<h2>Заполнение протокола матча | ДЮСШ-17 @Model.match.Goals - @Model.match.OpponentGoals @Model.match.Opponent.Name | @Model.match.Date</h2>
+	<hr style="margin-top:0; margin-bottom: 1%; color:black;height:1px" />
 
 	<form method="post">
-
-		<label style="margin-bottom:2px;font-weight:bold">Заявка на матч (отметьте игроков основного состава)</label><br />
-		<p>
-			<input type="hidden" name="mID" value="@Model.match.Id">
+		<input type="hidden" name="mID" value="@Model.match.Id">
+		<div class="setSquad">
+			<h2 style="margin-left:2%">Основной состав</h2><label>Отметьте игроков основоного состава</label>
+			<hr style="margin:0; color:black;height:1px" />
 			@foreach (var a in Model.Footballers)
 			{
-				<label><input type="checkbox" name="PlayersChecked" value="@a.Id" /> @a.Position.NameOfPosition | @a.Surname @a.Name @a.Patronymic</label> <br />
-
+				<h3><input id="@a.Id" type="checkbox" class="PlayersChecked" name="PlayersChecked" value="@a.Id" onclick="getAccess()" /> <label style="margin-left:0.2%" for="@a.Id">@a.Position.ShortName | @a.Surname @a.Name @a.Patronymic</label></h3>
 			}
-		</p>
-		<hr style="margin-top:0; margin-bottom: 2px; color:black;height:1px" />
-		<label style="margin-bottom:2px;font-weight:bold">Заполните информацию о забитых мячах</label><br />
-		<p>
-			
-			@for (int i = 0; i < Model.match.Goals; i++)
-			{
-				<label style="width:5%; margin-right:0px">Минута</label><label style="width:20%; margin-right:10px;margin-left:10px">Автор забитого мяча</label><label  style="width:20%">Автор голевой передачи</label><br/>
-				<input type="number" max="120" min="1"  style="width:5%; margin-right:5px; text-align:center" value="1" step="1" name="GoalMin"/>
-				@Html.DropDownList("GoalId", Model.SquadG as SelectList, new{ @class = "dropdown" })
-				@Html.DropDownList("AsistId", Model.SquadA as SelectList, new{ @class = "dropdown" })
-				<br />
-			}
-		</p>
-		<hr style="margin-top:0; margin-bottom: 2px; color:black;height:1px" />
-		<label style="margin-bottom:2px;font-weight:bold">Внесите информацию о предупреждениях и удалениях (желтые и красные карточки)</label><br />
-		<div style="margin:0" id="parent2">
+			<hr style="margin-top:1%; margin-bottom: 1%; color:black;height:1px" />
+			<label style="margin-bottom:2px;font-weight:bold">Заполните информацию о забитых мячах</label><br />
+			<p>
 
-			<div style="margin:0" class="elem2" id="child2">
-				<label style="width:5%; margin-right:0px">Минута</label><label style="width:20%; margin-right:10px;margin-left:10px">Футболист</label><label style="width:20%">Тип карточки</label><br/>
-				<input type="number" max="120" min="1" style="width:5%; margin-right:5px; text-align:center" value="null" step="1" name="CardMin"/>
-				@Html.DropDownList("CardId", Model.CardOwners as SelectList,"Выберите футболиста", new{ @class = "dropdown" })
-				@Html.DropDownList("TypeId", Model.CardTypes as SelectList,"Выберите тип карточки", new{ @class = "dropdown2" })
-				<a class="setAct" onClick="delete_row(this); return false;" href="/SetActions?mId=@Model.match.Id">   Удалить карточку</a>
+				@for (int i = 0; i < Model.match.Goals; i++)
+				{
+					<label style="width:5%; margin-right:2%">Минута</label>
+
+					<label style="width:30%; margin-left:2%">Автор забитого мяча</label>
+
+					<label style="width:30%; margin-left:2%;">Автор голевой передачи</label>
+
+					<br />
+					<input type="number" max="120" min="1" style="width:7%; text-align:center" value="1" step="1" name="GoalMin" required onfocusout="setMin(this)" />
+					@Html.DropDownList("GoalId", Model.SquadG as SelectList, new{ @class = "dropdown" })
+					@Html.DropDownList("AsistId", Model.SquadA as SelectList, new{ @class = "dropdown" })
+					<br />
+				}
+			</p>
+			<hr style="margin-top:0; margin-bottom: 2px; color:black;height:1px" />
+			<label style="margin-bottom:2px;font-weight:bold">Внесите информацию о предупреждениях и удалениях (желтые и красные карточки)</label><br />
+			<div style="margin:0" id="parent2">
+
+				<div style="margin:0" class="elem2" id="child2">
+					<label style="width:5%; margin-right:2%">Минута</label><label style="width:30%;margin-left:2.2%">Футболист</label><label style="width:20%">Тип карточки</label><br />
+					<input type="number" max="120" min="1" style="width:7%;margin-left:2%; text-align:center" value="1" step="1" name="CardMin" onfocusout="setMin(this)" />
+					@Html.DropDownList("CardId", Model.CardOwners as SelectList, new{ @class = "dropdown2" })
+					@Html.DropDownList("TypeId", Model.CardTypes as SelectList, new{ @class = "dropdown2" })
+					<a class="setAct" onClick="delete_row(this); return false;" href="/SetActions?mId=@Model.match.Id" style="margin-left:1%;">   Удалить карточку</a>
+				</div>
 			</div>
-		</div>
-		<a class="setAtc" onClick="myFunction2(); return false;" href="SetActions.cshtml">Добавить карточку</a> <br />
-		<hr style="margin-top:0; margin-bottom: 2px; color:black;height:1px" />
-		<label style="margin-bottom:2px;font-weight:bold" l>Внесите информацию о замаенах</label><br />
+			<a class="setAtc" style="margin-left:2%" onClick="myFunction2(); return false;" href="SetActions.cshtml">Добавить карточку</a> <br />
+			<hr style="margin-top:0; margin-bottom: 1%; color:black;height:1px" />
+			<label style="margin-bottom:1%;font-weight:bold" l>Внесите информацию о замаенах</label><br />
 
-		<div style="margin:0" id="parent">
+			<div style="margin:0" id="parent">
 
 				<div style="margin:0" class="elem" id="child">
 
-					<label style="width:5%; margin-right:0px">Минута</label><label style="width:20%; margin-right:10px;margin-left:10px">Ушедший футболист</label><label style="width:20%">Вышедший футболист</label><br />
-					<input type="number" max="120" min="1" style="width:5%; margin-right:5px; text-align:center" value="null" step="1" name="repMin"/>
-					@Html.DropDownList("FootballerOut", Model.CardOwners as SelectList,"Выберите футболиста", new{ @class = "dropdown" } )
-					@Html.DropDownList("FootballerIn", Model.CardOwners as SelectList,"Выберите футболиста", new{ @class = "dropdown2" })
-					<a class="setAct" onClick="delete_row(this); return false;" href="SetActions.cshtml">   Удалить замену</a>
+					<label style="width:7%; margin-right:0px">Минута</label><label style="width:30%;margin-left:2%">Ушедший футболист</label><label style="width:30%">Вышедший футболист</label><br />
+					<input type="number" max="120" min="1" style="width:7%; text-align:center" value="1" step="1" name="repMin" onfocusout="setMin(this)" />
+					@Html.DropDownList("FootballerOut", Model.CardOwners as SelectList, new{ @class = "dropdown2" } )
+					@Html.DropDownList("FootballerIn", Model.CardOwners as SelectList, new{ @class = "dropdown2" })
+					<a class="setAct" style="margin-left:2%" onClick="delete_row(this); return false;" href="SetActions.cshtml">   Удалить замену</a>
 				</div>
+			</div>
+			<a class="setAtc" style="margin-left:2%" onClick="myFunction(); return false;" href="/SetActions?mId=@Model.match.Id">Добавить замену</a> <br />
+			<hr style="margin-top:0; margin-bottom: 2px; color:black;height:1px" />
+			<input class="add_button" type="submit" value="Отправить" />
 		</div>
-		<a class="setAtc" onClick="myFunction(); return false;" href="/SetActions?mId=@Model.match.Id">Добавить замену</a> <br />
-		<hr style="margin-top:0; margin-bottom: 2px; color:black;height:1px" />
-		<input style="margin: 25px;margin-left:0" type="submit" value="Отправить" />
+		
+
 	</form>
 }

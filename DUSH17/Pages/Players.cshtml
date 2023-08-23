@@ -10,7 +10,7 @@
 		var input, filter, table, tr, td, i, txtValue;
 		input = document.getElementById("myInput");
 		filter = input.value.toUpperCase();
-		table = document.getElementById("table1");
+		table = document.getElementById("sortableTable");
 		tr = table.getElementsByTagName("tr");
 		for (i = 0; i < tr.length; i++) {
 			td = tr[i].getElementsByTagName("td")[1];
@@ -88,7 +88,6 @@
 	}
 
 </script>
-
 <body >
 
 	<h1>Футболисты ДЮСШ-17 Томск</h1>
@@ -457,7 +456,7 @@
 						</ul>
 					</div>
 					<div class="submit">
-						<input type="submit" value="Применить фильтр" class="btn btn-primary" style="padding-bottom:1%; background-color:#c5002e; border-color:#281b19" />
+						<input type="submit" value="Применить" class="btn btn-primary" style="padding-bottom:1%; background-color:#c5002e; border-color:#281b19" />
 						<div><a style="color:#c5002e" asp-page="./Players">Сбросить фильтр</a></div>
 					</div>
 
@@ -473,15 +472,16 @@
 
 			<table class="allP" id="sortableTable">
 				<thead style="">
-					<tr> <th style="border-radius:8px 0px 0px 0px;border-left:1px solid black">Позиция</th><th style="">ФИО</th><th style="">Год рождения</th><th>Игры</th><th>Минуты</th><th>Г</th><th>Г/90</th><th>П</th><th>П/90</th><th>Г+П</th><th>ЖК</th><th style="border-radius:0px 8px 0px 0px">КК</th></tr>
+					<tr> <th style="border-radius:8px 0px 0px 0px;border-left:1px solid black;position:sticky; left:0;">Игрок</th><th style="">Позиция</th><th style="">Год рождения</th><th>Игры</th><th>Минуты</th><th>Г</th><th>Г/90</th><th>П</th><th>П/90</th><th>Г+П</th><th>ЖК</th><th style="border-radius:0px 8px 0px 0px">КК</th></tr>
 				</thead>
 				<tbody id="body">
 					@foreach (var person in Model.Footballers)
 					{
 						<tr style="border-bottom:solid 1px #dddddd">
-							<td style="padding-right: 0;padding-left:1%;text-align:left">@person.Position.NameOfPosition</td>
+							<td  style="padding-right: 0;text-align:left;padding-left:2%;position:sticky; left:0;"><a asp-page="PlayerPage" asp-route-Id="@person.Id" style="text-decoration: none;">@person.Surname @person.Name</a></td>
+							<td style="padding-right: 0;text-align:center;padding-left:0">@person.Position.ShortName.ToUpper()</td>
 
-							<td style="padding-right: 0;text-align:left;padding-left:1%"><a asp-page="PlayerPage" asp-route-Id="@person.Id" style="text-decoration: none;">@person.Surname @person.Name @person.Patronymic</a></td>
+
 
 							<td style="padding-left: 0; text-align: center">@person.DateOfBirthday.Year</td>
 							<td style="text-align: center;">@Model.Protocols.Where(i => i.FootballerId  == person.Id).Count()</td>

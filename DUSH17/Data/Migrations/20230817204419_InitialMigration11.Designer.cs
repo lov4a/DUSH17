@@ -3,6 +3,7 @@ using System;
 using DUSH17.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DUSH17.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230817204419_InitialMigration11")]
+    partial class InitialMigration11
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -298,6 +301,25 @@ namespace DUSH17.Data.Migrations
                     b.HasIndex("FootballerId");
 
                     b.ToTable("FAs", "xgb_dushbase");
+                });
+
+            modelBuilder.Entity("DUSH17.Models.GroupTournament", b =>
+                {
+                    b.Property<int>("CompetitionId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("GroupsCount")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Round")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Winers")
+                        .HasColumnType("integer");
+
+                    b.HasKey("CompetitionId");
+
+                    b.ToTable("GroupTournaments", "xgb_dushbase");
                 });
 
             modelBuilder.Entity("DUSH17.Models.Lesson", b =>
@@ -763,6 +785,17 @@ namespace DUSH17.Data.Migrations
                     b.Navigation("Achievement");
 
                     b.Navigation("Footballer");
+                });
+
+            modelBuilder.Entity("DUSH17.Models.GroupTournament", b =>
+                {
+                    b.HasOne("DUSH17.Models.Competition", "Competition")
+                        .WithMany()
+                        .HasForeignKey("CompetitionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Competition");
                 });
 
             modelBuilder.Entity("DUSH17.Models.Lesson", b =>

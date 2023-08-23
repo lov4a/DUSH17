@@ -1,0 +1,30 @@
+﻿@page
+@model DUSH17.Pages.TournamentsModel
+@{
+	ViewData["Title"] = "Турниры";
+}
+@{
+
+	<table class="tournaments">
+		<thead>
+			<tr><th style="border-radius:8px 0px 0px 0px;">Соревнование</th><th>Команды школы</th><th>Место проведения</th><th style="border-radius:0px 8px 0px 0px;">Год</th></tr>
+		</thead>
+		<tbody >
+			@foreach(var t in Model.Competitions)
+			{
+				<tr>
+					<td width="35%" style="text-align:left;padding-left:2%;"><a asp-page ="ChampionshipPage" asp-route-id="@t.Id" style="text-decoration:none">@t.NameOfCompetition</a></td>
+				<td>
+				@foreach (var team in Model.teams.Where(i=>i.CompetitionId == t.Id))
+				{
+					<p style="padding:0.5%;margin:0">СШ-17 @team.Team.Year @team.Team.Coach.Surname @team.Team.Coach.Name[0].@team.Team.Coach.Patronymic[0].</p>
+				}
+				</td>
+					<td>@t.City</td>
+					<td>@t.StartDate.Year</td>
+				</tr>
+			}
+		</tbody>
+
+	</table>
+}

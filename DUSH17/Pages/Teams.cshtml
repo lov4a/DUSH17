@@ -7,16 +7,17 @@
 
 <div class="header_for_teamspage" >
 	<h2>Команды</h2>
-	<div class="teams_icons">
-		<div>
-			<a asp-page="CreateCoach" style="" title="Добавить тренера" alt="Добавить тренера"><img src="~/images/Icons/Add_coach.png" /></a>
+	@if (User.Identity.Name != null)
+	{
+		<div class="teams_icons">
+
+				<a asp-page="CreateCoach" style="" title="Добавить тренера" alt="Добавить тренера"><img src="~/images/Icons/Add_coach.png" /></a>
+
+				<a asp-page="CreateTeam"  style="" title="Добавить команду" alt="Добавить команду"><img src="~/images/Icons/Add_team.png" /></a>
+
 		</div>
-	</div>
-	<div class="teams_icons">
-		<div>
-			<a asp-page="CreateTeam"  style="" title="Добавить команду" alt="Добавить команду"><img src="~/images/Icons/Add_team.png" /></a>
-		</div>
-	</div>
+	}
+
 
 </div>
 <hr style="margin-top:0; color:black;height:1px" />

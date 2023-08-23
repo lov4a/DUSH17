@@ -4,6 +4,7 @@
 	{
 		public int OpponentId { get; set; }
 		public int CompetitionId { get; set; }
+		public int GroupId { get; set; }
 		public Opponent Opponent { get; set; } = null!;
 		public Competition Competition { get; set; } = null!;
 	}

@@ -16,6 +16,7 @@ namespace DUSH17.Models
         public int TeamId { get; set; }
         public int Goals { get; set; }
         public int OpponentGoals { get; set; }
+        public int Stage { get; set; }
 		public virtual ICollection<Protocol> Protocols { get; set; }
 		public Match()
 		{

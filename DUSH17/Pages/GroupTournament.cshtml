@@ -1,0 +1,15 @@
+﻿@page
+@model DUSH17.Pages.GroupTournamentModel
+@{
+
+}
+@{
+	foreach(var Group in Model.Championship)
+	{
+		foreach(var team in Model.Participants.Where(i=>i.group == Group.Id))
+		{
+			<h2>@team.Name</h2>
+		}
+		<hr style="height:1px; color:black"/>
+	}
+}

@@ -31,10 +31,13 @@
 
   <ItemGroup>
     <Compile Remove="Models\AccountModel.cs" />
+    <Compile Remove="Models\Group.cs" />
+    <Compile Remove="Models\GroupTournament.cs" />
     <Compile Remove="Models\LoginModel.cs" />
     <Compile Remove="Pages\Authorization.cshtml.cs" />
     <Compile Remove="Pages\ChampionshipPage.cs" />
     <Compile Remove="Pages\CreateM.cshtml.cs" />
+    <Compile Remove="Pages\GroupTournament.cshtml.cs" />
     <Compile Remove="Pages\Index1.cshtml.cs" />
     <Compile Remove="Pages\Index2.cshtml.cs" />
     <Compile Remove="Pages\Partial_Players.cshtml.cs" />
@@ -48,6 +51,7 @@
   <ItemGroup>
     <Content Remove="Pages\Authorization.cshtml" />
     <Content Remove="Pages\CreateM.cshtml" />
+    <Content Remove="Pages\GroupTournament.cshtml" />
     <Content Remove="Pages\Index1.cshtml" />
     <Content Remove="Pages\Index2.cshtml" />
     <Content Remove="Pages\Partial_Players.cshtml" />

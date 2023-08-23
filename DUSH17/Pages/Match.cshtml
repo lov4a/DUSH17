@@ -286,7 +286,7 @@
 
 			@foreach (var person in Model.squad.OrderBy(i => i.PositionId))
 			{
-				<div class="squad_line">
+				<div class="squad_line_away">
 					@{
 						foreach (var rep in Model.replaces.Where(i => i.FootballerOutId == person.Id))
 						{
@@ -346,7 +346,7 @@
 
 			@foreach (var person in Model.bench.OrderBy(i => i.PositionId))
 			{
-				<div class="squad_line">
+				<div class="squad_line_away">
 					<div></div>
 					<div class="squad_person" style="justify-content:end">
 
@@ -392,7 +392,7 @@
 			@foreach (var act in Model.actionns.Where(i => i.Time < 46 && i.ActionTypeId != 6 && i.ActionTypeId != 2))
 			{
 
-				<div class="squad_line">
+				<div class="squad_line_away">
 					<div></div>
 					<div class="one_action_away">
 						@{
@@ -449,7 +449,7 @@
 			@foreach (var act in Model.actionns.Where(i => i.Time > 45 && i.ActionTypeId != 6 && i.ActionTypeId != 2))
 			{
 				<div></div>
-				<div class="squad_line" >
+				<div class="squad_line_away" >
 					<div></div>
 					<div class="one_action_away">
 						@{

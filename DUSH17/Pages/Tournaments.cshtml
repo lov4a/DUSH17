@@ -2,29 +2,59 @@
 @model DUSH17.Pages.TournamentsModel
 @{
 	ViewData["Title"] = "Турниры";
+	ViewBag.Description = "Турниры с участием СШ-17 города Томска";
+	ViewBag.Keywords = "Турниры СШ-17 Томск, Турниры ДЮСШ-17 Томск";
 }
 @{
-
-	<table class="tournaments">
-		<thead>
-			<tr><th style="border-radius:8px 0px 0px 0px;">Соревнование</th><th>Команды школы</th><th>Место проведения</th><th style="border-radius:0px 8px 0px 0px;">Год</th></tr>
-		</thead>
-		<tbody >
-			@foreach(var t in Model.Competitions)
+	<html id="tournaments">
+	<body>
+		<div class="index_h">
+			<h3 style="font-weight:400;margin-right:1%;">Соревнования с участием команд школы</h3>
+			<a style="font-weight:bold;text-align:end; text-decoration:none; color:black" href="#" class="bvi-open" title="Версия сайта для слабовидящих"><img /><img class="menu_imageEye" src="~/img/eye.svg" alt="Глаз" />Версия для слабовидящих</a>
+		</div>
+			<hr style="margin-top:0;margin-bottom:1%; color:black;height:1px" />
+		<div class="teams_page" style="justify-content:start">
+			@foreach (var t in Model.Championships)
 			{
-				<tr>
-					<td width="35%" style="text-align:left;padding-left:2%;"><a asp-page ="ChampionshipPage" asp-route-id="@t.Id" style="text-decoration:none">@t.NameOfCompetition</a></td>
-				<td>
-				@foreach (var team in Model.teams.Where(i=>i.CompetitionId == t.Id))
-				{
-					<p style="padding:0.5%;margin:0">СШ-17 @team.Team.Year @team.Team.Coach.Surname @team.Team.Coach.Name[0].@team.Team.Coach.Patronymic[0].</p>
-				}
-				</td>
-					<td>@t.City</td>
-					<td>@t.StartDate.Year</td>
-				</tr>
-			}
-		</tbody>
+				<div class="tournament_container">
+					<a asp-page="ChampionshipPage" asp-route-id="@t.Competition.Id" style="text-decoration: none;">
+					<div style="height:16%">
+							<h1 style="font-weight:600;" title="@t.Competition.NameOfCompetition">
+								@t.Competition.NameOfCompetition
+							</h1>
+					</div>
 
-	</table>
+
+						<hr style="margin-bottom:0;margin-top:0; color:lightgray;height:1%" />
+						<div style="width:100%;text-align:center;height:64%">
+							<img alt="Team" src="~/images/Tournaments/@t.Competition.Picture.Name" style="padding:0" />
+						</div>
+						<hr style="margin-bottom:0;margin-top:0; color:lightgray;height:1%" />
+					</a>
+					<div style="height:16%">
+						
+					
+					<div style="display:flex;width:100%;margin-bottom:0;">
+						@foreach (var team in Model.teams.Where(i => i.CompetitionId == t.Competition.Id))
+						{
+							
+							
+								@if(team.Name != null)
+								{
+								<h2 style="margin-right:1%;white-space:nowrap"><a asp-page="/TeamPage" asp-route-id="@team.Team.Id" style="text-decoration:none; color:black">@team.Name @team.Team.Year</a></h2>
+								}
+								else
+								{
+								<h2 style="margin-right:1%;white-space:nowrap"><a asp-page="/TeamPage" asp-route-id="@team.Team.Id" style="text-decoration:none; color:black">СШ-17 @team.Team.Year</a></h2>
+								}
+						}
+					</div>
+						<h2 style="text-align:start;padding-left:2%; color:dimgrey; margin-bottom:0.2%;">@t.Competition.StartDate - @t.Competition.EndDate</h2>
+					</div>
+				</div>
+			}
+		</div>
+	</body>
+	</html>
+
 }

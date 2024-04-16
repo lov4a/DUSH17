@@ -28,7 +28,7 @@
 								if (Model.Actions.Where(a => a.ActionTypeId == 6 && a.MatchId == match.Id && a.FootballerId == Model.foot.Id).Count() > 0)
 								{
 									int inMin = 0;
-									int outMin = 90;
+									int outMin = match.Competition.Minutes;
 									foreach (var rep in Model.Replaces.Where(fb => fb.MatchID == match.Id && (fb.FootballerInId == Model.foot.Id || fb.FootballerOutId == Model.foot.Id)))
 									{
 										if (rep.FootballerOutId == Model.foot.Id)
@@ -56,7 +56,7 @@
 								if (Model.Actions.Where(a => a.ActionTypeId == 6 && a.MatchId == match.Id && a.FootballerId == person.Id).Count() > 0)
 								{
 									int inMin = 0;
-									int outMin = 90;
+									int outMin = match.Competition.Minutes;
 									foreach (var rep in Model.Replaces.Where(fb => fb.MatchID == match.Id && (fb.FootballerInId == person.Id || fb.FootballerOutId == person.Id)))
 									{
 										if (rep.FootballerOutId == person.Id)
@@ -223,7 +223,7 @@
 						if (Model.Actions.Where(a => a.ActionTypeId == 6 && a.MatchId == match.Id && a.FootballerId == Model.foot.Id).Count() > 0)
 						{
 							int inMin = 0;
-							int outMin = 90;
+							int outMin = match.Competition.Minutes;
 							foreach (var rep in Model.Replaces.Where(fb => fb.MatchID == match.Id && (fb.FootballerInId == Model.foot.Id || fb.FootballerOutId == Model.foot.Id)))
 							{
 								if (rep.FootballerOutId == Model.foot.Id)
@@ -261,7 +261,7 @@
 							if (Model.Actions.Where(a => a.ActionTypeId == 6 && a.MatchId == match.Id && a.FootballerId == person.Id).Count() > 0)
 							{
 								int inMin = 0;
-								int outMin = 90;
+								int outMin = match.Competition.Minutes;
 								foreach (var rep in Model.Replaces.Where(fb => fb.MatchID == match.Id && (fb.FootballerInId == person.Id || fb.FootballerOutId == person.Id)))
 								{
 									if (rep.FootballerOutId == person.Id)
@@ -331,7 +331,7 @@
 						if (Model.Actions.Where(a => a.ActionTypeId == 6 && a.MatchId == match.Id && a.FootballerId == Model.foot.Id).Count() > 0)
 						{
 							int inMin = 0;
-							int outMin = 90;
+							int outMin = match.Competition.Minutes;
 							foreach (var rep in Model.Replaces.Where(fb => fb.MatchID == match.Id && (fb.FootballerInId == Model.foot.Id || fb.FootballerOutId == Model.foot.Id)))
 							{
 								if (rep.FootballerOutId == Model.foot.Id)
@@ -369,7 +369,7 @@
 							if (Model.Actions.Where(a => a.ActionTypeId == 6 && a.MatchId == match.Id && a.FootballerId == person.Id).Count() > 0)
 							{
 								int inMin = 0;
-								int outMin = 90;
+								int outMin = match.Competition.Minutes;
 								foreach (var rep in Model.Replaces.Where(fb => fb.MatchID == match.Id && (fb.FootballerInId == person.Id || fb.FootballerOutId == person.Id)))
 								{
 									if (rep.FootballerOutId == person.Id)

@@ -5,21 +5,49 @@
 <head >
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - DUSH17</title>
+    <meta name="yandex-verification" content="1354573ecc36b34a" />
+    <title>@ViewData["Title"]</title>
+    <meta name="description" content="@ViewBag.Description"  />
+    <meta name="keywords" content="@ViewBag.Keywords" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/DUSH17.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/assets/css/bvi.min.css" type="text/css">
+    <link rel="icon" href="https://sh17.ru/favicon2.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="https://sh17.ru//apple-touch-icon.png">
+    <link rel="manifest" href="https://sh17.ru//manifest.webmanifest">
+    <!-- Yandex.Metrika counter -->
+    <script type="text/javascript">
+        (function (m, e, t, r, i, k, a) {
+            m[i] = m[i] || function () { (m[i].a = m[i].a || []).push(arguments) };
+            m[i].l = 1 * new Date();
+            for (var j = 0; j < document.scripts.length; j++) { if (document.scripts[j].src === r) { return; } }
+            k = e.createElement(t), a = e.getElementsByTagName(t)[0], k.async = 1, k.src = r, a.parentNode.insertBefore(k, a)
+        })
+            (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+        ym(94951533, "init", {
+            clickmap: true,
+            trackLinks: true,
+            accurateTrackBounce: true
+        });
+
+    </script>
+    <noscript><div><img src="https://mc.yandex.ru/watch/94951533" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+    <!-- /Yandex.Metrika counter -->
 </head>
 <body>
     <header >
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-md navbar-toggleable-md navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index"><img class="menu_image" src="~/images/logo.png" alt="ДЮСШ-17" /></a>
+                <a class="navbar-brand" asp-area="" asp-page="/Index"><img class="menu_image" src="~/images/logoSH.svg" alt="СШ-17" /></a>
+                <a class="nav-link text-dark miniVk" href="https://vk.com/public116565977" target="_blank"><img src="~/images/Icons/vk.png" /></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between" >
+                <div class="navbar-collapse collapse d-md-inline-flex justify-content-between" >
+                    <div>
                     <ul class="navbar-nav flex-grow-1" >
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Index">Главная</a>
@@ -31,51 +59,150 @@
                             <a class="nav-link text-dark" asp-area="" asp-page="/Players">Игроки</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Tournaments">Турниры</a>
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Tournaments">Соревнования</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-page="/UFL">ЮФЛ</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Info">Сведения об образовательной организации</a>
                         </li>
                     </ul>
-                    <div style="float:right">
-                        <ul class="navbar-nav flex-grow-1" style="float:right">
+                    <ul class="navbar-nav flex-grow-1" style="">
+                       <li class="nav-item">
+                                <a class="nav-link text-dark bottom_nav" asp-area="" asp-page="/Anti-terror">Антитеррористическая защищенность</a>
+                       </li>
+                       <li class="nav-item">
+                                <a class="nav-link text-dark bottom_nav" asp-area="" asp-page="/Services" >Платные услуги</a>
+                       </li>
+                       <li class="nav-item">
+                           <a class="nav-link text-dark bottom_nav" asp-area="" asp-page="/Anti-corruption" >Противодействие корупции</a>
+                       </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark bottom_nav" asp-area="" asp-page="/Feedback">Обратная связь</a>
+                            </li>
+                       <li class="nav-item miniLi" style="">
+                             <a class="nav-link text-dark" asp-page="/Instruction" >Трансяция с камер Манежа "Восход"</a>
+                       </li>
+                    </ul>
+                    </div>
+                    <div style="">
+                        <ul class="navbar-nav flex-grow-1 enterExit" style="">
 
                                 @if (User.Identity.Name != null)
                                 {
-                                <li class="nav-item" style="">
+                                <li class="nav-item Vk" style="">
+                                    <a class="nav-link text-dark" asp-page="/Instruction" title="Включить трансляцию с камер Манежа «Восход»" alt="Трансляция с камер"><img style="width:35px" src="~/images/Icons/camera.png" /></a>
+                                </li>
+                                <li class="nav-item Vk" style="">
+                                    <a class="nav-link text-dark" href="https://vk.com/public116565977" title="Перейти в группу СШ№17 в ВК" alt="Группа СШ-17 во Вконтакте" target="_blank"><img src="~/images/Icons/vk.png" /></a>
+                                </li>
+                                <li class="nav-item" style="display:table">
                                     <a class="nav-link text-dark">@User.Identity.Name</a>
                                 </li>
-                                <li class="nav-item" style="">
+                                <li class="nav-item" style="display:table">
                                     <a class="nav-link text-dark" asp-page="login" asp-page-handler="logout">Выход</a>
                                 </li>
                                 }
                                 else
                                 {
+                                <li class="nav-item Vk" style="">
+                                    <a class="nav-link text-dark" asp-page="/Instruction" title="Включить трансляцию с камер Манежа «Восход»" alt="Трансляция с камер"><img style="width:35px" src="~/images/Icons/camera.png" /></a>
+                                </li>
+                                <li class="nav-item Vk" style="">
+                                    <a class="nav-link text-dark" href="https://vk.com/public116565977" target="_blank"><img src="~/images/Icons/vk.png" /></a>
+                                </li>
                                 <li class="nav-item" style="">
                                     <a class="nav-link text-dark" asp-area="" asp-page="/Login">Вход</a>
                                 </li>
-
+                                    
                                 }
                         </ul>
                     </div>
                 </div>
 
             </div>
+
         </nav>
+
     </header>
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
+            <div id="cookie_note">
+                <p>
+                    Мы используем файлы cookies для улучшения работы сайта. Оставаясь на нашем сайте, вы соглашаетесь с условиями
+                    использования файлов cookies. Чтобы ознакомиться с нашими Положениями о конфиденциальности и об использовании
+                    файлов cookie, <a asp-page="/Сonfidentiality" target="_blank">нажмите здесь</a>.
+                </p>
+                <button class="cookie_accept button btn btn-primary btn-sm">Я согласен</button>
+            </div>
         </main>
+
     </div>
 
-    <footer class="border-top footer text-muted"style="background-color:white">
-        <div class="container">
-            <p align="center"> &copy; 2023 - Владислав Ловчановский</p>
+    <footer class="border-top footer text-muted"style="background-color:white;">
+        <div style="text-align:end" class="sponsors">
+            <a href="https://admin.tomsk.ru/" target="_blank"><img src="~/images/Sponsors/9388572B32FD9479E03D9889F3A3BCBD.png" /></a>
+            <a href="https://football70.nagradion.ru/" target="_blank"><img src="~/images/Sponsors/logo2040301290.png" /></a>
+            <a href="https://minobrnauki.gov.ru/" target="_blank"><img src="~/images/Sponsors/logo.svg" /></a>
+            <a href="https://www.minsport.gov.ru/" target="_blank"><img src="~/images/Sponsors/icon_Header_d0bd9be339.svg" /></a>
+            <a href="https://rfs.ru/" target="_blank"><img src="~/images/Sponsors/rfs.png" /></a>
+            <a href="https://bus.gov.ru/" target="_blank"><img src="~/images/Sponsors/buzgovru.png" /></a>
+        </div>
+        <div>
+            <p align="center" class="author" style=""> &copy; 2023 - Ловчановский В.П.<br/>lovchanovskii@gmail.com</p>
+        </div>
+        <div style="text-align:start" class="sponsors">
+            <a href="http://www.edu.ru/" target="_blank"><img src="~/images/Sponsors/image_image_107939.png" /></a>
+            <a href="http://school-collection.edu.ru/" target="_blank"><img src="~/images/Sponsors/logo (1).svg" /></a>
+            <a href="https://culture.gov.ru/" target="_blank"><img src="~/images/Sponsors/9b37948a2f40e00d97be42a688d82b11.png" /></a>
+            <a href="https://www.gosuslugi.ru/" target="_blank"><img src="~/images/Sponsors/icon_gosuskugi.png" /></a>
+            <a href="http://rusada.ru/" target="_blank"><img src="~/images/Sponsors/rusada.png" /></a>
         </div>
     </footer>
+    <script>
+        function setCookie(name, value, days) {
+            let expires = "";
+            if (days) {
+                let date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "") + expires + "; path=/";
+        }
 
+        function getCookie(name) {
+            let matches = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"));
+            return matches ? decodeURIComponent(matches[1]) : undefined;
+        }
+
+
+        function checkCookies() {
+            let cookieNote = document.getElementById('cookie_note');
+            let cookieBtnAccept = cookieNote.querySelector('.cookie_accept');
+
+            // Если куки cookies_policy нет или она просрочена, то показываем уведомление
+            if (!getCookie('cookies_policy')) {
+                cookieNote.classList.add('show');
+            }
+
+            // При клике на кнопку устанавливаем куку cookies_policy на один год
+            cookieBtnAccept.addEventListener('click', function () {
+                setCookie('cookies_policy', 'true', 365);
+                cookieNote.classList.remove('show');
+            });
+        }
+
+        checkCookies();
+
+    </script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-
+    <script src="~/assets/js/js.cookie.js"></script>
+    <script src="~/assets/js/bvi-init.js"></script>
+    <script src="~/assets/js/bvi.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

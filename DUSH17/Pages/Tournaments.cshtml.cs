@@ -14,11 +14,17 @@ namespace DUSH17.Pages
             context = db;
         }
         public List<Competition> Competitions { get; set; } = null!;
-        public List<TeamList> teams { get; set; } = null!;
+        public List<Championship> Championships { get; set; } = null!;
+		public List<TeamList> teams { get; set; } = null!;
+        public List<Picture> picture { get; set; }
         public void OnGet()
         {
-            Competitions = context.Competitions.OrderByDescending(i=>i.StartDate).Include(i=>i.TeamLists).ThenInclude(i=>i.Team).AsNoTracking().ToList();
-            teams = context.TeamList.Include(i=>i.Team).ThenInclude(i=>i.Coach).AsNoTracking().ToList();
+            picture = context.Pictures.ToList();
+
+			Competitions = context.Competitions.OrderByDescending(i => i.EndDate).Include(i => i.TeamLists).ThenInclude(i => i.Team).Include(i => i.Picture).AsNoTracking().ToList();
+			Championships = context.Championships.Where(i=>i.PreviousChampId == null).OrderByDescending(i => i.Competition.EndDate).
+                Include(i=>i.Competition).ThenInclude(i => i.Picture).Include(i=>i.Competition).ThenInclude(i=>i.TeamLists).ThenInclude(i=>i.Team).AsNoTracking().ToList();
+			teams = context.TeamList.Include(i => i.Team).ThenInclude(i => i.Coach).AsNoTracking().ToList();
         }
     }
 }

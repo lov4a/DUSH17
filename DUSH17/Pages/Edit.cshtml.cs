@@ -26,7 +26,8 @@ namespace DUSH17.Pages
 
             Footballers = context.Footballers.Include(g => g.Team).Include(p => p.Position).AsNoTracking().ToList();
             Person = await context.Footballers.FindAsync(id);
-            foreach (var item in Positions)
+			if (Person == null) return NotFound();
+			foreach (var item in Positions)
             {
                 if (item.Value == Convert.ToString(Person.PositionId))
                 {
@@ -34,7 +35,7 @@ namespace DUSH17.Pages
                     break;
                 }
             }
-            if (Person == null) return NotFound();
+
              
             return Page();
         }

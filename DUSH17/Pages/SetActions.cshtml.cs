@@ -30,7 +30,7 @@ namespace DUSH17.Pages
 		public async Task<IActionResult> OnPostAsync(List<int>? PlayersChecked, int[][]? PlayersCards, int[][]? replace, int[]? GoalMin, int[]? GoalId, int[]? AsistId, int[]? CardMin, int[]? CardId, int[]? TypeId,int[]? repMin, int[]? FootballerIn, int[]? FootballerOut, int mID)
 		{
 			match = context.Matches.Find(mID);
-			Footballers = context.Footballers.Include(g => g.Team).Include(p => p.Position).AsNoTracking().ToList();
+			Footballers = context.Footballers.Include(g => g.Team).Include(p => p.Position).OrderBy(i=>i.Surname).AsNoTracking().ToList();
 			foreach (var player in PlayersChecked)
 			{
 				Actions.Add(new Actionn { FootballerId = player, MatchId = match.Id, ActionTypeId = 6, Time = 0 });
@@ -70,7 +70,7 @@ namespace DUSH17.Pages
 			await context.SaveChangesAsync();
 
 
-			return LocalRedirect("~/TeamPage/" + match.TeamId);
+			return LocalRedirect("~/TeamPage?id=" + match.TeamId);
 		}
 		public void OnGet(int mId)
         {

@@ -7,5 +7,6 @@
 		public int GroupId { get; set; }
 		public Team Team { get; set; } = null!;
 		public Competition Competition { get; set; } = null!;
+		public string? Name { get; set; } = null!;
 	}
 }

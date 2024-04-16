@@ -24,9 +24,8 @@ namespace DUSH17.Pages
         public List<Actionn> Actions { get; private set; } = new();
         public List<Footballer> Birthday { get; private set; } = new();
         public Footballer bestFootballer { get; private set; } = new();
-
-        public int goalsPlusA = 0;
-
+        public List <TeamList> TeamList { get; private set; } = new();
+        public List <Competition> Competitions { get; private set; } = new();
         public void OnGet()
         {
             int draws = 0;
@@ -35,13 +34,22 @@ namespace DUSH17.Pages
             int games = 0;
 
             Teams = context.Groups.Include(c => c.Coach).Include(p => p.Picture).AsNoTracking().ToList();
-            Matches = context.Matches.Where(i => i.Date > DateOnly.FromDateTime(DateTime.Now.AddDays(-90))).Include(i => i.Protocols).AsNoTracking().ToList();
-            LastMatches = context.Matches.Include(i => i.Competition).Include(i => i.Team).Include(i=>i.Opponent).ThenInclude(i=>i.Picture).OrderByDescending(i => i.Date).Take(3).AsNoTracking().ToList();
+            Matches = context.Matches.Where(i => i.Date > DateOnly.FromDateTime(DateTime.Now.AddDays(-35))).Include(i => i.Protocols).Include(i=>i.Competition).AsNoTracking().ToList();
+            LastMatches = context.Matches.Include(i => i.Competition).Include(i => i.Team).Include(i=>i.Opponent).ThenInclude(i=>i.Picture).OrderByDescending(i => i.Date).ThenByDescending(i=>i.Id).Take(3).AsNoTracking().ToList();
             Footballers = context.Footballers.Include(i => i.Picture).AsNoTracking().ToList();
             Replaces = context.Replaces.AsNoTracking().ToList();
-            Actions = context.Actions.Include(a => a.ActionType).Include(i=>i.Match).Where(i=>i.Match.Date > DateOnly.FromDateTime(DateTime.Now.AddDays(-90))).AsNoTracking().ToList();
-            Birthday = context.Footballers.Where(i => i.DateOfBirthday.DayOfYear - DateTime.Now.DayOfYear >= 0 && i.DateOfBirthday.DayOfYear - DateTime.Now.DayOfYear <= 14)
+            Actions = context.Actions.Include(a => a.ActionType).Include(i=>i.Match).Where(i=>i.Match.Date > DateOnly.FromDateTime(DateTime.Now.AddDays(-35))).AsNoTracking().ToList();
+            Birthday = context.Footballers.Where(i => i.DateOfBirthday.DayOfYear - DateTime.Now.DayOfYear > 0 && i.DateOfBirthday.DayOfYear - DateTime.Now.DayOfYear <= 7)
                 .OrderBy(i=>i.DateOfBirthday.DayOfYear).Include(i=>i.Picture).AsNoTracking().ToList();
+            var comp = from comps in context.Competitions.ToList()
+                            join matches in LastMatches on comps.Id equals matches.CompetitionId
+                            select comps;
+            Competitions = comp.ToList();
+            var tl = from comps in context.TeamList.ToList()
+                       join comps2 in Competitions on comps.CompetitionId equals comps2.Id
+                       select comps;
+            TeamList = tl.ToList();
+
             foreach (var team in Teams)
             {
                 wins = Matches.Where(i => i.TeamId == team.Id && i.Goals > i.OpponentGoals).Count();
@@ -62,17 +70,18 @@ namespace DUSH17.Pages
                 }
             }
             int minMinutes = 0;
-            foreach (var foot in Footballers)
+			int goalsPlusA = 0;
+			foreach (var foot in Footballers)
             {
                 int totalMin = 0;
-                foreach (var match in Matches.Where(i=>i.TeamId == foot.Id))
+                foreach (var match in Matches.Where(i=>i.TeamId == foot.TeamId))
                 {
 
                     if (match.Protocols.Where(pr => pr.FootballerId == foot.Id).Count() > 0)
                     {
 
                         int inMin = 0;
-                        int outMin = 90;
+                        int outMin = match.Competition.Minutes;
                         foreach (var rep in Replaces.Where(fb => fb.MatchID == match.Id && (fb.FootballerInId == foot.Id || fb.FootballerOutId == foot.Id)))
                         {
                             if (rep.FootballerOutId == foot.Id)

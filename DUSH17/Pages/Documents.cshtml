@@ -1,0 +1,235 @@
+﻿@page
+@model DUSH17.Pages.DocumentsModel
+@{
+	ViewData["Title"] = "Документы";
+}
+<body class="info short">
+	<div class="info_grid">
+		<div class="index_h" style="grid-column-start:1;grid-column-end:3">
+			<h3 style="font-weight:400;margin-right:1%;">Сведения об образовательной организации</h3>
+			<a style="font-weight:bold;text-align:end; text-decoration:none; color:black" href="#" class="bvi-open" title="Версия сайта для слабовидящих"><img /><img class="menu_imageEye" src="~/img/eye.svg" alt="Глаз" />Версия для слабовидящих</a>
+		</div>
+		<hr style="grid-column-start:1;grid-column-end:3;margin-bottom:1%;margin-top:0; color:black;height:1px;width:100%" />
+		<nav class="navbar navbar-expand-lg navbar-toggleable-md navbar-light bg-white box-shadow mb-3 infopagenav" style="margin-bottom:0 !important;padding:0 !important;border-radius:0px 0px 8px 8px">
+			<div class="container">
+				<button style="border:none;height:10%;margin-top:1%; margin-bottom:1%" class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#xxx" aria-controls="navbarSupportedContent"
+						aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div id="xxx" class="navbar-collapse collapse d-lg-inline-flex justify-content-between">
+					<ul class="navbar-nav flex-grow-1">
+						<li class="nav-item teampage">
+							<a asp-page="">Основные сведения</a>
+						</li>
+						<li class="nav-item teampage">
+							<a  asp-page="/Structure">
+								Структура и органы управления образовательной организацией
+							</a>
+						</li>
+						<li class="nav-item teampage">
+							<a style="color:#c5002e" asp-page="/Documents">Документы</a>
+						</li>
+						<li class="nav-item teampage">
+							<a asp-page="/Education">Образование</a>
+						</li>
+						<li class="nav-item teampage">
+							<a asp-page="/Standarts">Образовательные стандарты и требования</a>
+						</li>
+						<li class="nav-item teampage">
+							<a asp-page="/Management">Руководство. Педагогический (научно педагогический) состав</a>
+						</li>
+						<li class="nav-item teampage">
+							<a asp-page="/MTO">Материально-техническое обеспечение и оснащенность образовательного процесса</a>
+						</li>
+						<li class="nav-item teampage">
+							<a asp-page="/PaidServices">Платные образовательные услуги</a>
+						</li>
+						<li class="nav-item teampage">
+							<a asp-page="/FinancialActivities">Финансово-хозяйственная деятельность</a>
+						</li>
+						<li class="nav-item teampage">
+							<a asp-page="/Vacancies">Вакантные места для приема (перевода) обучающихся</a>
+						</li>
+						<li class="nav-item teampage">
+							<a asp-page="/AvailableEnvironment">Доступная среда</a>
+						</li>
+						<li class="nav-item teampage">
+							<a asp-page="/International">Международное сотрудничество</a>
+						</li>
+					</ul>
+				</div>
+
+			</div>
+		</nav>
+		<div class="select_categ">
+			<div class="categ">
+				<a asp-page="/info">Основные сведения</a>
+			</div>
+			<div class="categ">
+				<a asp-page="/Structure">
+					Структура и органы управления образовательной организацией
+				</a>
+			</div>
+			<div class="categ">
+				<a style="color:#c5002e" asp-page="">Документы</a>
+			</div>
+			<div class="categ">
+				<a asp-page="/Education">Образование</a>
+			</div>
+			<div class="categ">
+				<a asp-page="/Standarts">Образовательные стандарты и требования</a>
+			</div>
+			<div class="categ">
+				<a asp-page="/Management">Руководство. Педагогический (научно педагогический) состав</a>
+			</div>
+			<div class="categ">
+				<a asp-page="/MTO">Материально-техническое обеспечение и оснащенность образовательного процесса</a>
+			</div>
+			<div class="categ">
+				<a asp-page="/PaidServices">Платные образовательные услуги</a>
+			</div>
+			<div class="categ">
+				<a asp-page="/FinancialActivities">Финансово-хозяйственная деятельность</a>
+			</div>
+			<div class="categ">
+				<a asp-page="/Vacancies">Вакантные места для приема (перевода) обучающихся</a>
+			</div>
+			<div class="categ">
+				<a asp-page="/AvailableEnvironment">Доступная среда</a>
+			</div>
+			<div class="categ">
+				<a asp-page="/International">Международное сотрудничество</a>
+			</div>
+
+		</div>
+
+		<div class="docs">
+			<h1 style="margin-top:0">Документы</h1>
+			<hr style="margin-bottom:1%;margin-top:0; color:black;height:1px;width:100%" />
+			<div class="info_line" style="margin-bottom:0">
+				<h2><span>Локальные нормативные документы</span></h2>
+			</div>
+			<div class="info_line">
+				<ul style="margin-bottom:0">
+					<li>
+						<a href="~/documents/Устав-СШ-№17.pdf" target="_blank">Устав образовательной организации<img src="~/images/Icons/doc.png" /></a>
+					</li>
+					<li>
+						<a href="~/documents/Кодекс-этики-и-служебного-поведения.pdf" target="_blank">Кодекс этики и служебного поведения<img src="~/images/Icons/doc.png" /></a>
+					</li>							
+					<li>
+						<a href="~/documents/Св.jpg" target="_blank">Свидетельство о постановке на учет ФНС<img src="~/images/Icons/doc.png" /></a>
+					</li>
+					<li>
+						<a href="~/documents/Правила внутреннего распорядка обучающихся -2023-СШ.pdf" target="_blank">Правила внутреннего распорядка обучающихся<img src="~/images/Icons/doc.png" /></a>
+					</li>
+					<li>
+						<a href="~/documents/Правила внутреннего трудового распорядка -2023-СШ.pdf" target="_blank">Правила внутреннего трудового распорядка;<img src="~/images/Icons/doc.png" /></a>
+					</li>
+					<li>
+						<a href="~/documents/КД-2022-2025 МАУ ДО ДЮСШ № 17.pdf" target="_blank">Коллективный договор<img src="~/images/Icons/doc.png" /></a>
+					</li>
+					<li>
+						<a href="~/documents/Изменения кол.договора - 01.09.2022.pdf" target="_blank">Измненения и дополнения в коллективный договор<img src="~/images/Icons/doc.png" /></a>
+					</li>
+					<li>
+						<a href="~/documents/Самообследование-2022-2023Прил.-5.pdf" target="_blank">Отчет о результатах самообследования<img src="~/images/Icons/doc.png" /></a>
+					</li>
+					<li>
+						<a href="~/documents/Правила приема обучающихся -2023doc.pdf" target="_blank">Правила приема обучающихся<img src="~/images/Icons/doc.png" /></a>
+					</li>
+					<li>
+						<a href="~/documents/Режим занятий обучающихсся-2023.pdf" target="_blank">Режим занятий обучающихся<img src="~/images/Icons/doc.png" /></a>
+					</li>
+					<li>
+						<a href="~/documents/2023-Положение  о формах, порядке текущего контроля.pdf" target=" _blank">Положение о формах, периодичности и порядке текущего контроля успеваемости и промежуточной аттестации обучающихся<img src="~/images/Icons/doc.png" /></a>
+					</li>
+					<li>
+						<a href="~/documents/Положение-о-порядке-и-условиях-восстановления-обучающихся.pdf" target="_blank">Порядок и основания перевода, отчисления и восстановления обучающихся<img src="~/images/Icons/doc.png" /></a>
+					</li>
+					<li>
+						<a href="~/documents/Порядок оформления возникновения, приостановления и прекращения отношений .pdf" target="_blank">
+							Порядок оформления возникновения, приостановления и прекращения отношений между образовательной организацией и обучающимися и (или) родителями (законными представителями) несовершеннолетних обучающихся.<img src="~/images/Icons/doc.png" />
+						</a>
+					</li>
+					<li>
+						<a href="~/documents/Положение_о_системе_оплаты_труда-2023.pdf" target="_blank">
+							Положение о системе оплаты труда работников МАУ ДО СШ №17 города Томска<img src="~/images/Icons/doc.png" />
+						</a>
+					</li>
+					
+				</ul>
+			</div>
+			<div class="info_line" style="margin-bottom:0">
+				<h2><span>План финансово-хозяйственной деятельности</span></h2>
+			</div>
+			<div class="info_line">
+				<ul style="margin-bottom:0">
+					<li>
+						<a href="~/documents/ПФХД-2019г.pdf" target="_blank">План финансово-хозяйственной деятельности на 2019 год  и плановый период 2020 и 2021 годов(01.01.2019)<img src="~/images/Icons/doc.png" /></a>
+					</li>
+					<li>
+						<a href="~/documents/План-ФХД-на-2020 18.03.pdf" target="_blank">План финансово-хозяйственной деятельности на 2020 год  и плановый период 2021 и 2022 годов(18.03.2020)<img src="~/images/Icons/doc.png" /></a>
+					</li>
+					<li>
+						<a href="~/documents/План-ФХД-на-2021 20.02.pdf" target="_blank">План финансово-хозяйственной деятельности на 2021 год  и плановый период 2022 и 2023 годов(20.02.2021)<img src="~/images/Icons/doc.png" /></a>
+					</li>
+					<li>
+						<a href="~/documents/План-ФХД-на-2021 16.04.pdf" target="_blank">План финансово-хозяйственной деятельности на 2021 год  и плановый период 2022 и 2023 годов(16.04.2021)<img src="~/images/Icons/doc.png" /></a>
+					</li>
+					<li>
+						<a href="~/documents/План-ФХД-на-2021 15.07.pdf" target="_blank">План финансово-хозяйственной деятельности на 2021 год  и плановый период 2022 и 2023 годов(15.07.2021)<img src="~/images/Icons/doc.png" /></a>
+					</li>
+					<li>
+						<a href="~/documents/План-ФХД-на-2022 01.01.pdf" target="_blank">План финансово-хозяйственной деятельности на 2022 год  и плановый период 2023 и 2024 годов(01.01.2022)<img src="~/images/Icons/doc.png" /></a>
+					</li>
+					<li>
+						<a href="~/documents/План-ФХД-на-2022 15.07.pdf" target="_blank">План финансово-хозяйственной деятельности на 2022 год  и плановый период 2023 и 2024 годов(15.07.2022)<img src="~/images/Icons/doc.png" /></a>
+					</li>
+					<li>
+						<a href="~/documents/План-ФХД-на-2023 01.01.pdf" target="_blank">План финансово-хозяйственной деятельности на 2023 год  и плановый период 2024 и 2025 годов(01.01.2023)<img src="~/images/Icons/doc.png" /></a>
+					</li>
+					<li>
+						<a href="~/documents/План-ФХД-на-2023 17.02.pdf" target="_blank">План финансово-хозяйственной деятельности на 2023 год  и плановый период 2024 и 2025 годов(17.02.2023)<img src="~/images/Icons/doc.png" /></a>
+					</li>
+					<li>
+						<a href="~/documents/План-ФХД-на-2023 06.04.pdf" target="_blank">План финансово-хозяйственной деятельности на 2023 год  и плановый период 2024 и 2025 годов(06.04.2023)<img src="~/images/Icons/doc.png" /></a>
+					</li>
+					<li>
+						<a href="~/documents/План-ФХД-на-2023 11.05.pdf" target="_blank">План финансово-хозяйственной деятельности на 2023 год  и плановый период 2024 и 2025 годов(11.05.2023)<img src="~/images/Icons/doc.png" /></a>
+					</li>
+					<li>
+						<a href="~/documents/План-ФХД-на-2023 09.08.pdf" target="_blank">План финансово-хозяйственной деятельности на 2023 год  и плановый период 2024 и 2025 годов(09.08.2023)<img src="~/images/Icons/doc.png" /></a>
+					</li>
+					<li>
+						<a href="~/documents/План-ФХД-на-2023 17.11.pdf" target="_blank">План финансово-хозяйственной деятельности на 2023 год  и плановый период 2024 и 2025 годов(17.11.2023)<img src="~/images/Icons/doc.png" /></a>
+					</li>
+					<li>
+						<a href="~/documents/План-ФХД-на-2023 08.12.pdf" target="_blank">План финансово-хозяйственной деятельности на 2023 год  и плановый период 2024 и 2025 годов(08.12.2023)<img src="~/images/Icons/doc.png" /></a>
+					</li>
+					<li>
+						<a href="~/documents/План-ФХД-на-2023 31.12.pdf" target="_blank">План финансово-хозяйственной деятельности на 2023 год  и плановый период 2024 и 2025 годов(31.12.2023)<img src="~/images/Icons/doc.png" /></a>
+					</li>
+					<li>
+						<a href="~/documents/План-ФХД-на-2024 01.01.pdf" target="_blank">План финансово-хозяйственной деятельности на 2024 год  и плановый период 2025 и 2026 годов(01.01.2024)<img src="~/images/Icons/doc.png" /></a>
+					</li>
+					<li>
+						<a href="~/documents/План-ФХД-на-2024 07.03.pdf" target="_blank">План финансово-хозяйственной деятельности на 2024 год  и плановый период 2025 и 2026 годов(07.03.2024)<img src="~/images/Icons/doc.png" /></a>
+					</li>
+				</ul>
+			</div>
+			<div class="info_line" style="margin-bottom:0">
+				<h2><span>Предписаний органов, осуществляющих государственный контроль (надзор) в сфере образования нет</span></h2>
+			</div>
+			<div class="info_line" >
+				<ul style="margin-bottom:0">
+
+				</ul>
+			</div>
+
+
+
+		</div>
+	</div>
+
+</body>

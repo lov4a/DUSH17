@@ -27,14 +27,14 @@ namespace DUSH17.Pages
 		{
 			context = db;
 		}
-		public void OnGet()
+		public void OnGet(int id)
 		{
-			Teams = context.Groups.Include(c => c.Coach).Include(p => p.Picture).AsNoTracking().ToList();
+			Teams = context.Groups.Where(i=>i.Id == id).Include(c => c.Coach).Include(p => p.Picture).AsNoTracking().ToList();
 			Coachess = context.Coaches.Include(p => p.Picture).Include(c=>c.Category).AsNoTracking().ToList();
-			Footballers = context.Footballers.Include(g => g.Team).Include(p => p.Position).AsNoTracking().ToList();
-			Achievments = context.achievements.Include(t => t.Competition).ThenInclude(l => l.CompetitionLevel).AsNoTracking().ToList();
-			Actions = context.Actions.Include(a=>a.ActionType).AsNoTracking().ToList();
-			Matches = context.Matches.Include(i => i.Opponent).ThenInclude(i=>i.Picture).Include(c => c.Competition).ThenInclude(l => l.CompetitionLevel).Include(t => t.Team)
+			Footballers = context.Footballers.Where(i=>i.TeamId == id).Include(g => g.Team).Include(p => p.Position).AsNoTracking().ToList();
+			Achievments = context.achievements.Where(i => i.TeamId == id).Include(t => t.Competition).ThenInclude(l => l.CompetitionLevel).AsNoTracking().ToList();
+			Actions = context.Actions.Include(i=>i.Footballer).Where(i=>i.Footballer.TeamId == id).Include(a=>a.ActionType).AsNoTracking().ToList();
+			Matches = context.Matches.Where(i=>i.TeamId == id).Include(i => i.Opponent).ThenInclude(i=>i.Picture).Include(c => c.Competition).ThenInclude(l => l.CompetitionLevel).Include(t => t.Team)
 	.Include(p => p.Protocols).ThenInclude(f => f.Footballer).AsNoTracking().ToList();
 			Replaces = context.Replaces.AsNoTracking().ToList();
 			Protocols = context.Protocols.AsNoTracking().ToList();

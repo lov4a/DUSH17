@@ -9,6 +9,7 @@ namespace DUSH17.Models
 		public Competition Competition { get; set; } = null!;
 		public int CompetitionId { get; set; }
 		public int Rounds { get; set; }
+		public int? PreviousChampId { get; set; }
 
 	}
 }

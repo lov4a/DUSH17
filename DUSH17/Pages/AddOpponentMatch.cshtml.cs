@@ -31,7 +31,14 @@ namespace DUSH17.Pages
 		public async Task<IActionResult> OnPostAsync(string date)
 		{
 			matches = context.OpponentsMatches.AsNoTracking().ToList();
-			match.Id = matches.MaxBy(i => i.Id).Id + 1;
+			if (matches.Count> 0)
+			{
+				match.Id = matches.MaxBy(i => i.Id).Id + 1;
+			}
+			else
+			{
+				match.Id = 1;
+			}
 			match.Date = DateOnly.Parse(date);
 			context.OpponentsMatches.Add(match);
 			await context.SaveChangesAsync();

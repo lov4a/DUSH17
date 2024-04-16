@@ -14,6 +14,9 @@ namespace DUSH17.Models
         public DateOnly EndDate { get; set; }
         public int CountOfTeams { get; set; }
 		public int PlayOffs { get; set; }
+        public int Minutes { get; set; }
+		public Picture Picture { get; set; } = null!;
+		public int PictureId { get; set; }
 		public virtual ICollection<TeamList> TeamLists { get; set; }
 		public virtual ICollection<OpponentList> OpponentLists { get; set; }
 		public Competition()

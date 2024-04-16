@@ -198,9 +198,18 @@ namespace DUSH17.Data.Migrations
                     b.Property<DateOnly>("EndDate")
                         .HasColumnType("date");
 
+                    b.Property<int>("Minutes")
+                        .HasColumnType("integer");
+
                     b.Property<string>("NameOfCompetition")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("PictureId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("PlayOffs")
+                        .HasColumnType("integer");
 
                     b.Property<DateOnly>("StartDate")
                         .HasColumnType("date");
@@ -208,6 +217,8 @@ namespace DUSH17.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CompetitionLevelId");
+
+                    b.HasIndex("PictureId");
 
                     b.ToTable("Competitions", "xgb_dushbase");
                 });
@@ -347,6 +358,9 @@ namespace DUSH17.Data.Migrations
                     b.Property<int>("OpponentId")
                         .HasColumnType("integer");
 
+                    b.Property<int>("Stage")
+                        .HasColumnType("integer");
+
                     b.Property<int>("TeamId")
                         .HasColumnType("integer");
 
@@ -396,6 +410,9 @@ namespace DUSH17.Data.Migrations
                         .HasColumnType("integer");
 
                     b.Property<int>("CompetitionId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("GroupId")
                         .HasColumnType("integer");
 
                     b.HasKey("OpponentId", "CompetitionId");
@@ -580,6 +597,9 @@ namespace DUSH17.Data.Migrations
                     b.Property<int>("CompetitionId")
                         .HasColumnType("integer");
 
+                    b.Property<int>("GroupId")
+                        .HasColumnType("integer");
+
                     b.HasKey("TeamId", "CompetitionId");
 
                     b.HasIndex("CompetitionId");
@@ -716,7 +736,15 @@ namespace DUSH17.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("DUSH17.Models.Picture", "Picture")
+                        .WithMany()
+                        .HasForeignKey("PictureId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("CompetitionLevel");
+
+                    b.Navigation("Picture");
                 });
 
             modelBuilder.Entity("DUSH17.Models.Footballer", b =>

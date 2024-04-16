@@ -1,172 +1,203 @@
 ﻿@page
 @model DUSH17.Pages.ChampionshipPageModel
 @{
-
+	ViewData["Title"] = @Model.Competittion.NameOfCompetition;
 }
 <script>
 	function menu(x) {
 		var chess = document.getElementsByClassName('h2h')
 		var champ = document.getElementsByClassName('championship')
+		var mainDiv = document.getElementById('champ')
 		var playoff =document.getElementById('play-off')
+		var champ2 =document.getElementById('bests')
 		console.log(champ.length);
 		for(var i = 0; i < champ.length; i++){
 			if (x === 1) {
+				mainDiv.style.display = 'block';
 				champ[i].style.display = 'none';
 				playoff.style.display = 'none';
-				chess[i].style.display = 'block';
+				champ2.style.display = 'none';
+				chess[i].style.display = 'table';
 			}
 			else if (x === 2) {
+				mainDiv.style.display = 'grid';
 				chess[i].style.display = 'none';
-				champ[i].style.display = 'block';
+				champ[i].style.display = 'table';
+				champ2.style.display = 'table';
 				playoff.style.display = 'none';
 			}
 			else if (x === 3) {
 				chess[i].style.display = 'none';
 				champ[i].style.display = 'none';
+				champ2.style.display = 'none';
 				playoff.style.display = 'grid';
 			}
 		}
 
 	}
 </script>
-<h1>@Model.Championship[0].Competition.NameOfCompetition @Model.Championship[0].Competition.StartDate.Year</h1>
-<div class="match_nav_button" style="margin-left:0;margin-bottom:1%">
-	<input style="margin-left:0;" type="button" value="Таблица" onclick="menu(2)" /><input type="button" onclick="menu(1)" value="Шахматка" />
+<div class="index_h">
+	<h3 style="font-weight:400;margin-right:1%;">@Model.Championship[0].Competition.NameOfCompetition @Model.Championship[0].Competition.StartDate.Year</h3>
+	<a style="font-weight:bold;text-align:end; text-decoration:none; color:black" href="#" class="bvi-open" title="Версия сайта для слабовидящих"><img /><img class="menu_imageEye" src="~/img/eye.svg" alt="Глаз" />Версия для слабовидящих</a>
+</div>
+<hr style="margin-top:0; color:black;height:1px" />
+<div class="match_nav_button" style="margin-left:0;margin-bottom:0.5%">
+	<input style="margin:0;padding-left:2%;padding-right:2%;min-width:100px;" type="button" value="Таблица" onclick="menu(2)" /><input style="padding-left:2%;padding-right:2%;min-width:100px;margin-left:1%;margin-top:0" type="button" onclick="menu(1)" value="Шахматка" />
 	@if (Model.Competittion.PlayOffs > 0)
 	{
-		<input type="button" onclick="menu(3)" value="Плей-офф" />
+		<input style="margin-left:2%" type="button" onclick="menu(3)" value="Плей-офф" />
+	}
+	@if (Model.PreviousChamp.Count > 0)
+	{
+		<a asp-page="ChampionshipPage" asp-route-id="@Model.PreviousChamp.First().CompetitionId" style="text-decoration: none;"><input style="margin-left:0.8%"  type="button" onclick="" value="Финальный этап" /></a>
+	}
+	@if (Model.Championship.First().PreviousChampId != null)
+	{
+		<a asp-page="ChampionshipPage" asp-route-id="@Model.Championship.First().PreviousChampId" style="text-decoration: none;"><input style="margin-left:0.8%"  type="button" onclick="" value="Групповой этап" /></a>
 	}
 </div>
-@for (int group = 1; group <= Model.opps.MaxBy(i => i.GroupId).GroupId; group++)
-{
-	int countOfTeams = Model.Participants.Where(i=>i.group == group).Count();
-	<table class="championship" id="champ">
+<div class="championship_grid" id="champ">
+	<div>
+	@for (int group = 1; group <= Model.opps.MaxBy(i => i.GroupId).GroupId; group++)
+	{
+		int countOfTeams = Model.Participants.Where(i => i.group == group).Count();
+
+		<table class="championship">
+			<thead style=" border-radius: 8px 8px 0px 0px;">
+				<tr style=" border-radius: 8px 8px 0px 0px;">
+					<th style="text-align:center; border-radius: 8px 0px 0px 0px;" title="Место">№</th>
+					<th style="width:35%">Группа @Model.Letters[group]</th>
+					<th style="text-align:center" title="Игры">И</th>
+					<th class="hide_td" style="text-align:center" title="Выигрыши">В</th>
+					<th class="hide_td" style="text-align:center" title="Ничьи">Н</th> 
+					<th class="hide_td" style="text-align:center" title="Поражения">П</th>
+					<th style="text-align:center" title="Мячей забито">МЗ</th>
+					<th style="text-align:center" title="Мячей пропущено">МП</th>
+					<th style="text-align:center; border-radius: 0px 8px 0px 0px;" title="Очки">О</th>
+				</tr>
+			</thead>
+			<tbody>
+				@{
+					int i = 1;
+				}
+				@foreach (var team in Model.Participants.Where(i => i.group == group))
+				{
+
+					<tr>
+						<td style="width:5%;text-align:center">@i</td>
+						<td style="width:35%;"><img src="~/images/Opponents/@team.Picture.Name" /> @team.Name</td>
+						<td style="text-align:center">@(team.wins + team.draws + team.loses)</td>
+						<td class="hide_td" style="text-align:center">@team.wins</td>
+						<td class="hide_td" style="text-align:center">@team.draws</td>
+						<td class="hide_td" style="text-align:center">@team.loses</td>
+						<td style="text-align:center">@team.goalsScored</td>
+						<td style="text-align:center">@team.goalsConceded</td>
+						<td style="text-align:center">@(team.wins * 3 + team.draws)</td>
+					</tr>
+					i++;
+				}
+			</tbody>
+		</table>
+		}
+		</div>
+	<table class="championship_players" id="bests" style="">
 		<thead style=" border-radius: 8px 8px 0px 0px;">
 			<tr style=" border-radius: 8px 8px 0px 0px;">
-				<th style="text-align:center; border-radius: 8px 0px 0px 0px;" title="Место">№</th>
-				<th style="width:10%">Команда</th>
+				<th style="text-align:center; border-radius: 8px 0px 0px 0px;" title="">Игрок</th>
 				<th style="text-align:center" title="Игры">И</th>
-				<th style="text-align:center" title="Выигрыши">В</th>
-				<th style="text-align:center" title="Ничьи">Н</th>
-				<th style="text-align:center" title="Поражения">П</th>
-				<th style="text-align:center" title="Мячей забито">МЗ</th>
-				<th style="text-align:center" title="Мячей пропущено">МП</th>
-				<th style="text-align:center; border-radius: 0px 8px 0px 0px;" title="Очки">О</th>
+				<th style="text-align:center" title="Голы">Г</th>
+				<th style="text-align:center;border-radius: 0px 8px 0px 0px;" title="Передачи">П</th>
 			</tr>
 		</thead>
 		<tbody>
-			@{
-				int i = 1;
-			}
-			@foreach (var team in Model.Participants.Where(i=>i.group == group).OrderByDescending(i => i.wins * 3 + i.draws).ThenByDescending(i => i.goalsScored - i.goalsConceded))
+			@foreach (var foot in Model.bests.Where(i=>i.games > 0 && i.goals > 0).OrderByDescending(i=>i.goals).ThenBy(i=>i.games))
 			{
 
 				<tr>
-					<td style="width:5%;text-align:center">@i</td>
-					<td style="width:30%;"><img src="~/images/Opponents/@team.Picture.Name" /> @team.Name</td>
-					<td style="text-align:center">@(team.wins + team.draws + team.loses)</td>
-					<td style="text-align:center">@team.wins</td>
-					<td style="text-align:center">@team.draws</td>
-					<td style="text-align:center">@team.loses</td>
-					<td style="text-align:center">@team.goalsScored</td>
-					<td style="text-align:center">@team.goalsConceded</td>
-					<td style="text-align:center">@(team.wins * 3 + team.draws)</td>
+					<td style="width:50%"><a asp-page="/PlayerPage" asp-route-id="@foot.footballer.Id" style="text-decoration:none; color:black">@foot.footballer.Name @foot.footballer.Surname</a></td>
+					<td style="text-align:center">@foot.games</td>
+					<td style="text-align:center">@foot.goals</td>
+					<td style="text-align:center">@foot.assists</td>
 				</tr>
-				i++;
+			}
+			@foreach (var foot in Model.bests.Where(i=>i.games > 0 && i.goals == 0).OrderByDescending(i=>i.games))
+			{
+
+				<tr>
+					<td style="width:50%"><a asp-page="/PlayerPage" asp-route-id="@foot.footballer.Id" style="text-decoration:none; color:black">@foot.footballer.Name @foot.footballer.Surname</a></td>
+					<td style="text-align:center">@foot.games</td>
+					<td style="text-align:center">@foot.goals</td>
+					<td style="text-align:center">@foot.assists</td>
+				</tr>
+			}
+			@foreach (var foot in Model.bests.Where(i=>i.games == 0).OrderByDescending(i=>i.footballer.Surname))
+			{
+
+				<tr>
+					<td style="width:50%"><a asp-page="/PlayerPage" asp-route-id="@foot.footballer.Id" style="text-decoration:none; color:black">@foot.footballer.Name @foot.footballer.Surname</a></td>
+					<td style="text-align:center">@foot.games</td>
+					<td style="text-align:center">@foot.goals</td>
+					<td style="text-align:center">@foot.assists</td>
+				</tr>
 			}
 		</tbody>
 	</table>
-
-	<table class="h2h" id="chess" style="display:none;">
-		<tbody>
-			<tr>
-				@if (Model.Participants.Exists(i => i.group == 2))
-				{
-					<td style="border-radius: 8px 0px 0px 0px;font-weight:bold;text-align:center;padding-left:0">Группа @Model.Letters[group] </td>
-				}
-				else
-				{
-					<td style="border-radius: 8px 0px 0px 0px;"></td>
-				}
-
-
-				@foreach (var team in Model.Participants.Where(i => i.group == group))
-				{
-					double width = 80 / Model.Participants.Count();
-					<td style="width:@(Math.Round(width,2))%"><img src="~/images/Opponents/@team.Picture.Name" alt="" /></td>
-					
-				}
-			</tr>
-			@{
-				int j = 1;
-			}
-			@for (int x = countOfTeams * (group - 1); x <= countOfTeams * group-1; x++)
-			{
+	@for (int group = 1; group <= Model.opps.MaxBy(i => i.GroupId).GroupId; group++)
+	{
+		int countOfTeams = Model.Participants.Where(i => i.group == group).Count();
+		<table class="h2h" id="chess" style="display:none;grid-column-start:1; grid-column-end:3">
+			<tbody>
 				<tr>
-					
-					<td style="" >@j<img src="~/images/Opponents/@Model.Participants[x].Picture.Name" title="@(x)" style="margin-left:2.5%"/> @Model.Participants[x].Name</td>
-					@for (int y = countOfTeams *(group-1); y <= countOfTeams*group -1; y++)
+					@if (Model.Participants.Exists(i => i.group == 2))
 					{
-						if (x == y)
-						{
-							<td style="background-color:#c5002e"></td>
-						}
-						else
-						{
-							if (Model.Participants[x].type == 2)
-							{
-								<td>
-									@if(Model.Championship[0].Rounds > 1)
-									{
-										@if (Model.Matches.Exists(i => i.OpponentId == Model.Participants[y].Id && i.Home))
-										{
-											<p>@Model.Matches.First(i=>i.OpponentId == Model.Participants[y].Id && i.Home).Goals:@Model.Matches.First(i=>i.OpponentId == Model.Participants[y].Id && i.Home).OpponentGoals</p>
-										}
-										else
-										{
-											<p>- : -</p>
-										}
-										@if (Model.Matches.Exists(i => i.OpponentId == Model.Participants[y].Id && !i.Home))
-										{
-											<p>@Model.Matches.First(i=>i.OpponentId == Model.Participants[y].Id && !i.Home).Goals:@Model.Matches.First(i=>i.OpponentId == Model.Participants[y].Id && !i.Home).OpponentGoals</p>
-										}
-										else
-										{
-											<p>- : -</p>
-										}
-									}
-									else
-									{
-										@if (Model.Matches.Exists(i => i.OpponentId == Model.Participants[y].Id))
-										{
-											<p>@Model.Matches.First(i=>i.OpponentId == Model.Participants[y].Id).Goals:@Model.Matches.First(i=>i.OpponentId == Model.Participants[y].Id).OpponentGoals</p>
-										}
-										else
-										{
-											<p>- : -</p>
-										}										
-									}
+						<td style="border-radius: 8px 0px 0px 0px;font-weight:bold;text-align:center;padding-left:0">Группа @Model.Letters[group] </td>
+					}
+					else
+					{
+						<td style="border-radius: 8px 0px 0px 0px;"></td>
+					}
 
-								</td>
+
+					@foreach (var team in Model.Participants.Where(i => i.group == group))
+					{
+						double width = 80 / Model.Participants.Count();
+						<td style="width:@(Math.Round(width,2))%"><img src="~/images/Opponents/@team.Picture.Name" alt="" /></td>
+
+					}
+					<td style="font-weight:bold" title="Очки">О</td>
+				</tr>
+				@{
+					int j = 1;
+				}
+				@for (int x = countOfTeams * (group - 1); x <= countOfTeams * group - 1; x++)
+				{
+					<tr>
+
+						<td style="">@j<img src="~/images/Opponents/@Model.Participants[x].Picture.Name" title="@(x)" style="margin-left:2.5%" /> @Model.Participants[x].Name</td>
+						@for (int y = countOfTeams * (group - 1); y <= countOfTeams * group - 1; y++)
+						{
+							if (x == y)
+							{
+								<td style="background-color:#c5002e"></td>
 							}
 							else
 							{
-								<td>
-									@if (Model.Participants[y].Name == "СШ-17")
-									{
-										if (Model.Championship[0].Rounds > 1)
+								if (Model.Participants[x].type == 2)
+								{
+									<td>
+										@if (Model.Championship[0].Rounds > 1)
 										{
-											if (Model.Matches.Exists(i => i.OpponentId == Model.Participants[x].Id && !i.Home))
+											@if (Model.Matches.Exists(i =>i.TeamId == Model.Participants[x].Id && i.OpponentId == Model.Participants[y].Id && i.Home))
 											{
-												<p>@Model.Matches.First(i=>i.OpponentId == Model.Participants[x].Id && !i.Home).OpponentGoals:@Model.Matches.First(i=>i.OpponentId == Model.Participants[x].Id && !i.Home).Goals</p>
+												<p>@Model.Matches.First(i=>i.TeamId == Model.Participants[x].Id && i.OpponentId == Model.Participants[y].Id && i.Home).Goals:@Model.Matches.First(i=>i.OpponentId == Model.Participants[y].Id && i.Home).OpponentGoals</p>
 											}
 											else
 											{
 												<p>- : -</p>
 											}
-											if (Model.Matches.Exists(i => i.OpponentId == Model.Participants[x].Id && i.Home))
+												@if (Model.Matches.Exists(i => i.TeamId == Model.Participants[x].Id && i.OpponentId == Model.Participants[y].Id && !i.Home))
 											{
-												<p>@Model.Matches.First(i=>i.OpponentId == Model.Participants[x].Id && i.Home).OpponentGoals:@Model.Matches.First(i=>i.OpponentId == Model.Participants[x].Id && i.Home).Goals</p>
+												<p>@Model.Matches.First(i=>i.TeamId == Model.Participants[x].Id && i.OpponentId == Model.Participants[y].Id && !i.Home).Goals:@Model.Matches.First(i=>i.OpponentId == Model.Participants[y].Id && !i.Home).OpponentGoals</p>
 											}
 											else
 											{
@@ -175,9 +206,9 @@
 										}
 										else
 										{
-											if (Model.Matches.Exists(i => i.OpponentId == Model.Participants[x].Id))
+											@if (Model.Matches.Exists(i => i.TeamId == Model.Participants[x].Id && i.OpponentId == Model.Participants[y].Id && Model.Participants[y].group == group))
 											{
-												<p>@Model.Matches.First(i=>i.OpponentId == Model.Participants[x].Id).OpponentGoals:@Model.Matches.First(i=>i.OpponentId == Model.Participants[x].Id).Goals</p>
+												<a asp-page="Match" asp-route-Id="@Model.Matches.First(i=>i.TeamId == Model.Participants[x].Id && i.OpponentId == Model.Participants[y].Id).Id" style="text-decoration: none;color:black"><p>@Model.Matches.First(i=>i.TeamId == Model.Participants[x].Id && i.OpponentId == Model.Participants[y].Id).Goals:@Model.Matches.First(i=>i.TeamId == Model.Participants[x].Id && i.OpponentId == Model.Participants[y].Id).OpponentGoals</p></a>
 											}
 											else
 											{
@@ -185,80 +216,122 @@
 											}
 										}
 
-									}
-									else
-									{
-										@if(Model.Championship[0].Rounds > 1)
+									</td>
+								}
+								else
+								{
+									<td>
+										@if (Model.Participants[y].type == 2)
 										{
-											if (Model.Oppsmatches.Exists(i => i.Opponent1Id == Model.Participants[x].Id && i.Opponent2Id == Model.Participants[y].Id))
+											if (Model.Championship[0].Rounds > 1)
 											{
-												<p>@Model.Oppsmatches.First(i => i.Opponent1Id == Model.Participants[x].Id && i.Opponent2Id == Model.Participants[y].Id).Goals1:@Model.Oppsmatches.First(i => i.Opponent1Id == Model.Participants[x].Id && i.Opponent2Id == Model.Participants[y].Id).Goals2</p>
-											}
-											else
-											{
-												@if (User.Identity.Name != null)
+													if (Model.Matches.Exists(i => i.TeamId == Model.Participants[y].Id && i.OpponentId == Model.Participants[x].Id && !i.Home))
 												{
-													<a asp-page="AddOpponentMatch" asp-route-home="@Model.Participants[x].Id" asp-route-away="@Model.Participants[y].Id" asp-route-comp="@Model.Championship[0].CompetitionId" style="text-decoration: none;color:black"><p>- : -</p></a>
-
+													<p>@Model.Matches.First(i=>i.TeamId == Model.Participants[y].Id && i.OpponentId == Model.Participants[x].Id && !i.Home).OpponentGoals:@Model.Matches.First(i=>i.TeamId == Model.Participants[y].Id && i.OpponentId == Model.Participants[x].Id && !i.Home).Goals</p>
 												}
 												else
 												{
 													<p>- : -</p>
 												}
-
-											}
-											if (Model.Oppsmatches.Exists(i => i.Opponent2Id == Model.Participants[x].Id && i.Opponent1Id == Model.Participants[y].Id))
-											{
-												<p>@Model.Oppsmatches.First(i => i.Opponent2Id == Model.Participants[x].Id && i.Opponent1Id == Model.Participants[y].Id).Goals1:@Model.Oppsmatches.First(i => i.Opponent2Id == Model.Participants[x].Id && i.Opponent1Id == Model.Participants[y].Id).Goals2</p>
-											}
-											else
-											{
-												@if (User.Identity.Name != null)
+													if (Model.Matches.Exists(i => i.TeamId == Model.Participants[y].Id && i.OpponentId == Model.Participants[x].Id && i.Home))
 												{
-													<a asp-page="AddOpponentMatch" asp-route-home="@Model.Participants[y].Id" asp-route-away="@Model.Participants[x].Id" asp-route-comp="@Model.Championship[0].CompetitionId" style="text-decoration: none;color:black"><p>- : -</p></a>
-
+														<p>@Model.Matches.First(i=>i.TeamId == Model.Participants[y].Id && i.OpponentId == Model.Participants[x].Id && i.Home).OpponentGoals:@Model.Matches.First(i=>i.TeamId == Model.Participants[y].Id && i.OpponentId == Model.Participants[x].Id && i.Home).Goals</p>
 												}
 												else
 												{
 													<p>- : -</p>
 												}
 											}
+											else
+											{
+													if (Model.Matches.Exists(i => i.TeamId == Model.Participants[y].Id && i.OpponentId == Model.Participants[x].Id))
+												{
+														 <a asp-page="Match" asp-route-Id="@Model.Matches.First(i=>i.TeamId == Model.Participants[y].Id && i.OpponentId == Model.Participants[x].Id).Id" style="text-decoration: none;color:black"><p>@Model.Matches.First(i=>i.TeamId == Model.Participants[y].Id && i.OpponentId == Model.Participants[x].Id).OpponentGoals:@Model.Matches.First(i=>i.TeamId == Model.Participants[y].Id && i.OpponentId == Model.Participants[x].Id).Goals</p></a>
+												}
+												else
+												{
+													<p>- : -</p>
+												}
+											}
+
 										}
 										else
 										{
-											if (Model.Oppsmatches.Exists(i => (i.Opponent2Id == Model.Participants[x].Id || i.Opponent2Id == Model.Participants[y].Id) && (i.Opponent1Id == Model.Participants[x].Id || i.Opponent1Id == Model.Participants[y].Id)))
+											@if (Model.Championship[0].Rounds > 1)
 											{
-												<p>@Model.Oppsmatches.First(i => (i.Opponent2Id == Model.Participants[x].Id || i.Opponent2Id == Model.Participants[y].Id) && (i.Opponent1Id == Model.Participants[x].Id || i.Opponent1Id == Model.Participants[y].Id)).Goals1:@Model.Oppsmatches.First(i => (i.Opponent2Id == Model.Participants[x].Id || i.Opponent2Id == Model.Participants[y].Id) && (i.Opponent1Id == Model.Participants[x].Id || i.Opponent1Id == Model.Participants[y].Id)).Goals2</p>
-											}
-											else
-											{
-												@if (User.Identity.Name != null)
+												if (Model.Oppsmatches.Exists(i => i.Opponent1Id == Model.Participants[x].Id && i.Opponent2Id == Model.Participants[y].Id))
 												{
-													<a asp-page="AddOpponentMatch" asp-route-home="@Model.Participants[y].Id" asp-route-away="@Model.Participants[x].Id" asp-route-comp="@Model.Championship[0].CompetitionId" style="text-decoration: none;color:black"><p>- : -</p></a>
-
+													<p>@Model.Oppsmatches.First(i => i.Opponent1Id == Model.Participants[x].Id && i.Opponent2Id == Model.Participants[y].Id).Goals1:@Model.Oppsmatches.First(i => i.Opponent1Id == Model.Participants[x].Id && i.Opponent2Id == Model.Participants[y].Id).Goals2</p>
 												}
 												else
 												{
-													<p>- : -</p>
+													@if (User.Identity.Name != null)
+													{
+														<a asp-page="AddOpponentMatch" asp-route-home="@Model.Participants[x].Id" asp-route-away="@Model.Participants[y].Id" asp-route-comp="@Model.Championship[0].CompetitionId" style="text-decoration: none;color:black"><p>- : -</p></a>
+
+													}
+													else
+													{
+														<p>- : -</p>
+													}
+
+												}
+												if (Model.Oppsmatches.Exists(i => i.Opponent2Id == Model.Participants[x].Id && i.Opponent1Id == Model.Participants[y].Id))
+												{
+													<p>@Model.Oppsmatches.First(i => i.Opponent2Id == Model.Participants[x].Id && i.Opponent1Id == Model.Participants[y].Id).Goals2:@Model.Oppsmatches.First(i => i.Opponent2Id == Model.Participants[x].Id && i.Opponent1Id == Model.Participants[y].Id).Goals1</p>
+												}
+												else
+												{
+													@if (User.Identity.Name != null)
+													{
+														<a asp-page="AddOpponentMatch" asp-route-home="@Model.Participants[y].Id" asp-route-away="@Model.Participants[x].Id" asp-route-comp="@Model.Championship[0].CompetitionId" style="text-decoration: none;color:black"><p>- : -</p></a>
+
+													}
+													else
+													{
+														<p>- : -</p>
+													}
 												}
 											}
-										}
+											else
+											{
+												if (Model.Oppsmatches.Exists(i => (i.Opponent2Id == Model.Participants[x].Id || i.Opponent2Id == Model.Participants[y].Id) && (i.Opponent1Id == Model.Participants[x].Id || i.Opponent1Id == Model.Participants[y].Id)))
+												{
+													<p>@Model.Oppsmatches.First(i => (i.Opponent2Id == Model.Participants[x].Id || i.Opponent2Id == Model.Participants[y].Id) && (i.Opponent1Id == Model.Participants[x].Id || i.Opponent1Id == Model.Participants[y].Id)).Goals1:@Model.Oppsmatches.First(i => (i.Opponent2Id == Model.Participants[x].Id || i.Opponent2Id == Model.Participants[y].Id) && (i.Opponent1Id == Model.Participants[x].Id || i.Opponent1Id == Model.Participants[y].Id)).Goals2</p>
+												}
+												else
+												{
+													@if (User.Identity.Name != null)
+													{
+														<a asp-page="AddOpponentMatch" asp-route-home="@Model.Participants[y].Id" asp-route-away="@Model.Participants[x].Id" asp-route-comp="@Model.Championship[0].CompetitionId" style="text-decoration: none;color:black"><p>- : -</p></a>
 
-									}
-								</td>
+													}
+													else
+													{
+														<p>- : -</p>
+													}
+												}
+											}
+
+										}
+									</td>
+								}
+
 							}
-
 						}
-					}
 
-				</tr>
-				j++;
-			}
-		</tbody>
-	</table>
-}
+						<td style="font-weight:bold" width="7%">@(Model.Participants[x].wins * 3 + Model.Participants[x].draws)</td>
+					</tr>
+					j++;
+				}
+			</tbody>
+		</table>
+	}
+	</div>
+
 <div id="play-off" class="bracket" style="display:none">
-	@if(Model.Competittion.PlayOffs > 8)
+
+	@if(Model.Competittion.PlayOffs % 10 > 8)
 	{
 		<div>
 			<h2>1\8 Финала</h2>
@@ -393,7 +466,7 @@
 		</div>
 
 	}
-	else if (Model.Competittion.PlayOffs > 4)
+	else if (Model.Competittion.PlayOffs % 10 > 4)
 	{
 		<div style="">
 			<h2>Четвертьфинал</h2>
@@ -692,235 +765,276 @@
 		</div>
 
 	}
-	else if(Model.Competittion.PlayOffs > 2)
+	else if(Model.Competittion.PlayOffs % 10 > 2)
 	{
-		<div>
-			<h2>Полуфинал</h2>
-			<div class="play_off_match">
-				<table class="play_off">
-					@if (Model.Play_off.Exists(i=>i.Stage == 21))
-					{
-						<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Play_off.First(i=>i.Stage == 21).Opponent1.Name</td><td>@Model.Play_off.First(i=>i.Stage == 21).Goals1</td></tr>
-						<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Play_off.First(i=>i.Stage == 21).Opponent2.Name</td><td>@Model.Play_off.First(i=>i.Stage == 21).Goals2</td></tr>
-					}
-					else if (Model.Play_offD.Exists(i => i.Stage == 21))
-					{
-						<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">СШ-17</td><td>@Model.Play_offD.First(i=>i.Stage == 21).Goals</td></tr>
-						<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Play_offD.First(i=>i.Stage == 21).Opponent.Name</td><td>@Model.Play_offD.First(i=>i.Stage == 21).OpponentGoals</td></tr>
-					}
-					else if ((Model.Play_off.Exists(i => i.Stage == 41) || (Model.Play_offD).Exists(i => i.Stage == 41)) && (Model.Play_off.Exists(i => i.Stage == 42) || (Model.Play_offD).Exists(i => i.Stage == 42)))
-					{
-						if (Model.Play_off.Exists(i => i.Stage == 41) && Model.Play_off.Exists(i => i.Stage == 42))
-						{
-							<tr>
-								<td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.winner(Model.Play_off.First(i=>i.Stage == 41)).Name</td>
-								<td><a asp-page="AddOpponentMatch" asp-route-home="@Model.winner(Model.Play_off.First(i=>i.Stage == 41)).Id" asp-route-away="@Model.winner(Model.Play_off.First(i=>i.Stage == 42)).Id" asp-route-comp="@Model.Championship[0].CompetitionId" style="text-decoration: none;color:black">X</a></td>
-							</tr>
-							<tr>
-								<td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.winner(Model.Play_off.First(i=>i.Stage == 42)).Name</td>
-								<td><a asp-page="AddOpponentMatch" asp-route-home="@Model.winner(Model.Play_off.First(i=>i.Stage == 41)).Id" asp-route-away="@Model.winner(Model.Play_off.First(i=>i.Stage == 42)).Id" asp-route-comp="@Model.Championship[0].CompetitionId" style="text-decoration: none;color:black">X</a></td>
-							</tr>
-						}
-						else if(Model.Play_offD.Exists(i=>i.Stage == 41))
-						{
-							if (Model.Play_offD.First(i => i.Stage == 41).Goals > Model.Play_offD.First(i => i.Stage == 41).OpponentGoals)
-							{
-								<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;"></td>СШ-17<td></td></tr>
-								<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;"></td>@Model.winner(Model.Play_off.First(i=>i.Stage == 42))<td></td></tr>
+		@for (int n = 1; n <= Model.Competittion.PlayOffs / 10; n++)
+		{
+			if (n == 1)
+			{
+				<h2 style="width:100%; grid-column-start:1; grid-column-end:5">Матчи за 1-4е места</h2>
+			}
+			else if(n == 2)
+			{
+				<hr style="margin-top:0; color:black;height:1px; grid-column-start:1; grid-column-end:5" />
+				<h2 style="width:100%; grid-column-start:1; grid-column-end:5">Матчи за 5-8е места</h2>
+			}
+			else{
+				<hr style="margin-top:0; color:black;height:1px; grid-column-start:1; grid-column-end:5" />
+				<h2 style="width:100%; grid-column-start:1; grid-column-end:5">Матчи за 9-12е места</h2>
+			}
+			<div>
+				<h3>Полуфинал</h3>
+				<div class="play_off_match">
+					<table class="play_off">
 
-							}
-							else
-							{
-								<tr>
-									<td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Play_offD.First(i=>i.Stage == 41).Opponent.Name</td>
-									<td><a asp-page="AddOpponentMatch" asp-route-home="@Model.Play_offD.First(i=>i.Stage == 41).OpponentId" asp-route-away="@Model.winner(Model.Play_off.First(i=>i.Stage == 42)).Id" asp-route-comp="@Model.Championship[0].CompetitionId" style="text-decoration: none;color:black">X</a></td>
-								</tr>
-								<tr>
-									<td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.winner(Model.Play_off.First(i=>i.Stage == 42)).Name</td>
-									<td><a asp-page="AddOpponentMatch" asp-route-home="@Model.winner(Model.Play_off.First(i=>i.Stage == 41)).Id" asp-route-away="@Model.winner(Model.Play_off.First(i=>i.Stage == 42)).Id" asp-route-comp="@Model.Championship[0].CompetitionId" style="text-decoration: none;color:black">X</a></td>
-								</tr>
-							}
+						@if (Model.Play_off.Exists(i => i.Stage == 20 + n * 2 - 1))
+						{
+							<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Play_off.First(i=>i.Stage == 20 + n*2 - 1).Opponent1.Name</td><td>@Model.Play_off.First(i=>i.Stage == 20 + n*2 - 1).Goals1</td></tr>
+							<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Play_off.First(i=>i.Stage == 20 + n*2 - 1).Opponent2.Name</td><td>@Model.Play_off.First(i=>i.Stage == 20 + n*2 - 1).Goals2</td></tr>
+						}
+						else if (Model.Play_offD.Exists(i => i.Stage == 20 + n * 2 - 1))
+						{
+							<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Participants.First(i=>i.Id == Model.Play_offD.First(i=>i.Stage == 20 + n*2 - 1).TeamId).Name</td><td>@Model.Play_offD.First(i=>i.Stage == 20 + n*2 - 1).Goals</td></tr>
+							<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Play_offD.First(i=>i.Stage == 20 + n*2 - 1).Opponent.Name</td><td>@Model.Play_offD.First(i=>i.Stage == 20 + n*2 - 1).OpponentGoals</td></tr>
 						}
 						else
 						{
-							if (Model.Play_offD.First(i => i.Stage == 42).Goals > Model.Play_offD.First(i => i.Stage == 42).OpponentGoals)
+							if (Model.Play_off.Exists(i => i.Stage == 40 + n * 2 - 1))
 							{
-								<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;"></td>СШ-17<td></td></tr>
-								<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;"></td>@Model.winner(Model.Play_off.First(i=>i.Stage == 41))<td></td></tr>
-
+								<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.winner(Model.Play_off.First(i=>i.Stage == 40 + n*2 - 1))</td><td></td></tr>
+							}
+							else if (Model.Play_offD.Exists(i => i.Stage == 40 + n * 2 - 1))
+							{
+								if (Model.Play_offD.First(i => i.Stage == 40 + n * 2 - 1).Goals > Model.Play_offD.First(i => i.Stage == 40 + n * 2 - 1).OpponentGoals)
+								{
+									<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Play_offD.First(i=>i.Stage == 40 + n*2 - 1).TeamId).Name</td><td></td></tr>
+								}
+								else
+								{
+									<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Play_offD.First(i=>i.Stage == 40 + n*2 - 1).TeamId).OpponentName</td><td></td></tr>
+								}
 							}
 							else
 							{
-								<tr>
-									<td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Play_offD.First(i=>i.Stage == 41).Opponent.Name</td>
-									<td><a asp-page="AddOpponentMatch" asp-route-home="@Model.Play_offD.First(i=>i.Stage == 41).OpponentId" asp-route-away="@Model.winner(Model.Play_off.First(i=>i.Stage == 42)).Id" asp-route-comp="@Model.Championship[0].CompetitionId" style="text-decoration: none;color:black">X</a></td>
-								</tr>
-								<tr>
-									<td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.winner(Model.Play_off.First(i=>i.Stage == 42)).Name</td>
-									<td><a asp-page="AddOpponentMatch" asp-route-home="@Model.winner(Model.Play_off.First(i=>i.Stage == 41)).Id" asp-route-away="@Model.winner(Model.Play_off.First(i=>i.Stage == 42)).Id" asp-route-comp="@Model.Championship[0].CompetitionId" style="text-decoration: none;color:black">X</a></td>
-								</tr>
+								<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">Победитель 1</td><td>Х</td></tr>
 							}
-						}
-					}
-					else
-					{
-						<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">Команда 1</td><td>Х</td></tr>
-						<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">Команда 2</td><td>Х</td></tr>
-					}
-				</table>
-			</div>
-			<div class="play_off_match">
-				<table class="play_off">
-					@if (Model.Play_off.Exists(i => i.Stage == 22))
-					{
-						<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Play_off.First(i=>i.Stage == 22).Opponent1.Name</td><td>@Model.Play_off.First(i=>i.Stage == 22).Goals1</td></tr>
-						<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Play_off.First(i=>i.Stage == 22).Opponent2.Name</td><td>@Model.Play_off.First(i=>i.Stage == 22).Goals2</td></tr>
-					}
-					else if (Model.Play_offD.Exists(i => i.Stage == 22))
-					{
-						<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">СШ-17</td><td>@Model.Play_offD.First(i=>i.Stage == 22).Goals</td></tr>
-						<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Play_offD.First(i=>i.Stage == 22).Opponent.Name</td><td>@Model.Play_offD.First(i=>i.Stage == 22).OpponentGoals</td></tr>
-					}
-					else if ((Model.Play_off.Exists(i => i.Stage == 21) || (Model.Play_offD).Exists(i => i.Stage == 21)) && (Model.Play_off.Exists(i => i.Stage == 22) || (Model.Play_offD).Exists(i => i.Stage == 22)))
-					{
-						if (Model.Play_off.Exists(i => i.Stage == 21) && Model.Play_off.Exists(i => i.Stage == 22))
-						{
-							<tr>
-								<td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.winner(Model.Play_off.First(i=>i.Stage == 21)).Name</td>
-								<td><a asp-page="AddOpponentMatch" asp-route-home="@Model.winner(Model.Play_off.First(i=>i.Stage == 21)).Id" asp-route-away="@Model.winner(Model.Play_off.First(i=>i.Stage == 22)).Id" asp-route-comp="@Model.Championship[0].CompetitionId" style="text-decoration: none;color:black">X</a></td>
-							</tr>
-							<tr>
-								<td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.winner(Model.Play_off.First(i=>i.Stage == 22)).Name</td>
-								<td><a asp-page="AddOpponentMatch" asp-route-home="@Model.winner(Model.Play_off.First(i=>i.Stage == 21)).Id" asp-route-away="@Model.winner(Model.Play_off.First(i=>i.Stage == 22)).Id" asp-route-comp="@Model.Championship[0].CompetitionId" style="text-decoration: none;color:black">X</a></td>
-							</tr>
-						}
-						else if (Model.Play_offD.Exists(i => i.Stage == 21))
-						{
-							if (Model.Play_offD.First(i => i.Stage == 21).Goals > Model.Play_offD.First(i => i.Stage == 21).OpponentGoals)
-							{
-								<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;"></td>СШ-17<td></td></tr>
-								<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;"></td>@Model.winner(Model.Play_off.First(i=>i.Stage == 22))<td></td></tr>
 
+							if (Model.Play_off.Exists(i => i.Stage == 40 + n * 2))
+							{
+								<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.winner(Model.Play_off.First(i=>i.Stage == 40 + n*2))</td><td></td></tr>
+							}
+							else if (Model.Play_offD.Exists(i => i.Stage == 40 + n * 2))
+							{
+								if (Model.Play_offD.First(i => i.Stage == 40 + n * 2).Goals > Model.Play_offD.First(i => i.Stage == 40 + n * 2).OpponentGoals)
+								{
+									<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Play_offD.First(i=>i.Stage == 40 + n*2).TeamId).Name</td><td></td></tr>
+								}
+								else
+								{
+									<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Play_offD.First(i=>i.Stage == 40 + n*2).TeamId).OpponentName</td><td></td></tr>
+								}
 							}
 							else
 							{
-								<tr>
-									<td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Play_offD.First(i=>i.Stage == 21).Opponent.Name</td>
-									<td><a asp-page="AddOpponentMatch" asp-route-home="@Model.Play_offD.First(i=>i.Stage == 21).OpponentId" asp-route-away="@Model.winner(Model.Play_off.First(i=>i.Stage == 22)).Id" asp-route-comp="@Model.Championship[0].CompetitionId" style="text-decoration: none;color:black">X</a></td>
-								</tr>
-								<tr>
-									<td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.winner(Model.Play_off.First(i=>i.Stage == 22)).Name</td>
-									<td><a asp-page="AddOpponentMatch" asp-route-home="@Model.winner(Model.Play_off.First(i=>i.Stage == 21)).Id" asp-route-away="@Model.winner(Model.Play_off.First(i=>i.Stage == 22)).Id" asp-route-comp="@Model.Championship[0].CompetitionId" style="text-decoration: none;color:black">X</a></td>
-								</tr>
+								<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">Победитель 2</td><td>Х</td></tr>
 							}
+
+						}
+					</table>
+				</div>
+				<div class="play_off_match">
+					<table class="play_off">
+						@if (Model.Play_off.Exists(i => i.Stage == 20 + n * 2))
+						{
+							<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Play_off.First(i=>i.Stage == 20 + n*2).Opponent1.Name</td><td>@Model.Play_off.First(i=>i.Stage == 20 + n*2).Goals1</td></tr>
+							<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Play_off.First(i=>i.Stage == 20 + n*2).Opponent2.Name</td><td>@Model.Play_off.First(i=>i.Stage == 20 + n*2).Goals2</td></tr>
+						}
+						else if (Model.Play_offD.Exists(i => i.Stage == 20 + n * 2))
+						{
+							<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Participants.First(i=>i.Id == Model.Play_offD.First(i=>i.Stage == 20 + n*2).TeamId).Name</td><td>@Model.Play_offD.First(i=>i.Stage == 20 + n*2).Goals</td></tr>
+							<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Play_offD.First(i=>i.Stage == 20 + n*2).Opponent.Name</td><td>@Model.Play_offD.First(i=>i.Stage == 20 + n*2).OpponentGoals</td></tr>
 						}
 						else
 						{
-							if (Model.Play_offD.First(i => i.Stage == 22).Goals > Model.Play_offD.First(i => i.Stage == 22).OpponentGoals)
+							if (Model.Play_off.Exists(i => i.Stage == 40 + n * 2 + 1))
 							{
-								<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;"></td>СШ-17<td></td></tr>
-								<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;"></td>@Model.winner(Model.Play_off.First(i=>i.Stage == 21))<td></td></tr>
-
+								<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.winner(Model.Play_off.First(i=>i.Stage == 40 + n*2 + 1))</td><td></td></tr>
+							}
+							else if (Model.Play_offD.Exists(i => i.Stage == 40 + n * 2 + 1))
+							{
+								if (Model.Play_offD.First(i => i.Stage == 40 + n * 2 + 1).Goals > Model.Play_offD.First(i => i.Stage == 40 + n * 2).OpponentGoals)
+								{
+									<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Play_offD.First(i=>i.Stage == 40 + n*2 + 1).TeamId).Name</td><td></td></tr>
+								}
+								else
+								{
+									<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Play_offD.First(i=>i.Stage == 40 + n*2 + 1).TeamId).OpponentName</td><td></td></tr>
+								}
 							}
 							else
 							{
-								<tr>
-									<td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Play_offD.First(i=>i.Stage == 21).Opponent.Name</td>
-									<td><a asp-page="AddOpponentMatch" asp-route-home="@Model.Play_offD.First(i=>i.Stage == 21).OpponentId" asp-route-away="@Model.winner(Model.Play_off.First(i=>i.Stage == 22)).Id" asp-route-comp="@Model.Championship[0].CompetitionId" style="text-decoration: none;color:black">X</a></td>
-								</tr>
-								<tr>
-									<td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.winner(Model.Play_off.First(i=>i.Stage == 22)).Name</td>
-									<td><a asp-page="AddOpponentMatch" asp-route-home="@Model.winner(Model.Play_off.First(i=>i.Stage == 21)).Id" asp-route-away="@Model.winner(Model.Play_off.First(i=>i.Stage == 22)).Id" asp-route-comp="@Model.Championship[0].CompetitionId" style="text-decoration: none;color:black">X</a></td>
-								</tr>
+								<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">Победитель 1</td><td>Х</td></tr>
 							}
+
+							if (Model.Play_off.Exists(i => i.Stage == 40 + n * 2 + 2))
+							{
+								<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.winner(Model.Play_off.First(i=>i.Stage == 40 + n*2 + 2))</td><td></td></tr>
+							}
+							else if (Model.Play_offD.Exists(i => i.Stage == 40 + n * 2 + 2))
+							{
+								if (Model.Play_offD.First(i => i.Stage == 40 + n * 2 + 2).Goals > Model.Play_offD.First(i => i.Stage == 40 + n * 2 + 2).OpponentGoals)
+								{
+									<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Play_offD.First(i=>i.Stage == 40 + n*2 + 2).TeamId).Name</td><td></td></tr>
+								}
+								else
+								{
+									<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Play_offD.First(i=>i.Stage == 40 + n*2 + 2).TeamId).OpponentName</td><td></td></tr>
+								}
+							}
+							else
+							{
+								<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">Победитель 2</td><td>Х</td></tr>
+							}
+
 						}
-					}
-					else
-					{
-						<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">Команда 1</td><td>Х</td></tr>
-						<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">Команда 2</td><td>Х</td></tr>
-					}
-				</table>
+					</table>
+				</div>
 			</div>
-		</div>
-		<div>
-			<h2>Финал</h2>
-			<div class="play_off_match">
-				<table class="play_off">
-					@if (Model.Play_off.Exists(i => i.Stage == 1))
-					{
-						<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Play_off.First(i=>i.Stage == 1).Opponent1.Name</td><td>@Model.Play_off.First(i=>i.Stage == 1).Goals1</td></tr>
-						<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Play_off.First(i=>i.Stage == 1).Opponent2.Name</td><td>@Model.Play_off.First(i=>i.Stage == 1).Goals2</td></tr>
-					}
-					else if (Model.Play_offD.Exists(i => i.Stage == 1))
-					{
-						<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">СШ-17</td><td>@Model.Play_offD.First(i=>i.Stage == 1).Goals</td></tr>
-						<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Play_offD.First(i=>i.Stage == 1).Opponent.Name</td><td>@Model.Play_offD.First(i=>i.Stage == 1).OpponentGoals</td></tr>
-					}
-					else if ((Model.Play_off.Exists(i => i.Stage == 43) || (Model.Play_offD).Exists(i => i.Stage == 43)) && (Model.Play_off.Exists(i => i.Stage == 44) || (Model.Play_offD).Exists(i => i.Stage == 44)))
-					{
-						if (Model.Play_off.Exists(i => i.Stage == 43) && Model.Play_off.Exists(i => i.Stage == 44))
-						{
-							<tr>
-								<td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.winner(Model.Play_off.First(i=>i.Stage == 43)).Name</td>
-								<td><a asp-page="AddOpponentMatch" asp-route-home="@Model.winner(Model.Play_off.First(i=>i.Stage == 43)).Id" asp-route-away="@Model.winner(Model.Play_off.First(i=>i.Stage == 44)).Id" asp-route-comp="@Model.Championship[0].CompetitionId" style="text-decoration: none;color:black">X</a></td>
-							</tr>
-							<tr>
-								<td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.winner(Model.Play_off.First(i=>i.Stage == 44)).Name</td>
-								<td><a asp-page="AddOpponentMatch" asp-route-home="@Model.winner(Model.Play_off.First(i=>i.Stage == 43)).Id" asp-route-away="@Model.winner(Model.Play_off.First(i=>i.Stage == 44)).Id" asp-route-comp="@Model.Championship[0].CompetitionId" style="text-decoration: none;color:black">X</a></td>
-							</tr>
-						}
-						else if (Model.Play_offD.Exists(i => i.Stage == 43))
-						{
-							if (Model.Play_offD.First(i => i.Stage == 43).Goals > Model.Play_offD.First(i => i.Stage == 43).OpponentGoals)
-							{
-								<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;"></td>СШ-17<td></td></tr>
-								<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;"></td>@Model.winner(Model.Play_off.First(i=>i.Stage == 44))<td></td></tr>
+			<div>
+				@if (n == 1)
+				{
+					<h3>Финал</h3>
+				}
+				else if (n == 2)
+				{
+					<h3>Матч за 5 место</h3>
+				}
+				else{
+					<h3>Матч за 9 место</h3>
+				}
 
-							}
-							else
-							{
-								<tr>
-									<td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Play_offD.First(i=>i.Stage == 43).Opponent.Name</td>
-									<td><a asp-page="AddOpponentMatch" asp-route-home="@Model.Play_offD.First(i=>i.Stage == 43).OpponentId" asp-route-away="@Model.winner(Model.Play_off.First(i=>i.Stage == 44)).Id" asp-route-comp="@Model.Championship[0].CompetitionId" style="text-decoration: none;color:black">X</a></td>
-								</tr>
-								<tr>
-									<td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.winner(Model.Play_off.First(i=>i.Stage == 44)).Name</td>
-									<td><a asp-page="AddOpponentMatch" asp-route-home="@Model.winner(Model.Play_off.First(i=>i.Stage == 43)).Id" asp-route-away="@Model.winner(Model.Play_off.First(i=>i.Stage == 44)).Id" asp-route-comp="@Model.Championship[0].CompetitionId" style="text-decoration: none;color:black">X</a></td>
-								</tr>
-							}
+				<div class="play_off_match">
+					<table class="play_off">
+						@if (Model.Play_off.Exists(i => i.Stage == 10 + n))
+						{
+							<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Play_off.First(i=>i.Stage == 10 + n).Opponent1.Name</td><td>@Model.Play_off.First(i=>i.Stage == 10 + n).Goals1</td></tr>
+							<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Play_off.First(i=>i.Stage == 10 + n).Opponent2.Name</td><td>@Model.Play_off.First(i=>i.Stage == 10 + n).Goals2</td></tr>
+						}
+						else if (Model.Play_offD.Exists(i => i.Stage == 10 + n))
+						{
+							<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Play_offD.First(i=>i.Stage == 10 + n).TeamId).Name</td><td>@Model.Play_offD.First(i=>i.Stage == 10 + n).Goals</td></tr>
+							<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Play_offD.First(i=>i.Stage == 10 + n).Opponent.Name</td><td>@Model.Play_offD.First(i=>i.Stage == 10 + n).OpponentGoals</td></tr>
 						}
 						else
 						{
-							if (Model.Play_offD.First(i => i.Stage == 44).Goals > Model.Play_offD.First(i => i.Stage == 44).OpponentGoals)
+							if (Model.Play_off.Exists(i => i.Stage == 20 + n * 2 - 1))
 							{
-								<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;"></td>СШ-17<td></td></tr>
-								<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;"></td>@Model.winner(Model.Play_off.First(i=>i.Stage == 43))<td></td></tr>
-
+								<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.winner(Model.Play_off.First(i=>i.Stage == 20 + n*2 - 1)).Name</td><td></td></tr>
+							}
+							else if (Model.Play_offD.Exists(i => i.Stage == 20 + n * 2 - 1))
+							{
+								if (Model.Play_offD.First(i => i.Stage == 20 + n * 2 - 1).Goals > Model.Play_offD.First(i => i.Stage == 20 + n * 2 - 1).OpponentGoals)
+								{
+									<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Participants.First(i=>i.Id == Model.Play_offD.First(i=>i.Stage == 20 + n*2 - 1).TeamId && i.type == 2).Name</td><td></td></tr>
+								}
+								else
+								{
+									<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Participants.First(i=>i.Id == Model.Play_offD.First(i=>i.Stage == 20 + n*2 - 1).OpponentId && i.type == 1).Name</td><td></td></tr>
+								}
 							}
 							else
 							{
-								<tr>
-									<td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Play_offD.First(i=>i.Stage == 43).Opponent.Name</td>
-									<td><a asp-page="AddOpponentMatch" asp-route-home="@Model.Play_offD.First(i=>i.Stage == 43).OpponentId" asp-route-away="@Model.winner(Model.Play_off.First(i=>i.Stage == 44)).Id" asp-route-comp="@Model.Championship[0].CompetitionId" style="text-decoration: none;color:black">X</a></td>
-								</tr>
-								<tr>
-									<td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.winner(Model.Play_off.First(i=>i.Stage == 44)).Name</td>
-									<td><a asp-page="AddOpponentMatch" asp-route-home="@Model.winner(Model.Play_off.First(i=>i.Stage == 43)).Id" asp-route-away="@Model.winner(Model.Play_off.First(i=>i.Stage == 44)).Id" asp-route-comp="@Model.Championship[0].CompetitionId" style="text-decoration: none;color:black">X</a></td>
-								</tr>
+								<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">Победитель 1</td><td>Х</td></tr>
 							}
+
+							if (Model.Play_off.Exists(i => i.Stage == 20 + n * 2))
+							{
+								<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.winner(Model.Play_off.First(i=>i.Stage == 20 + n*2)).Name</td><td></td></tr>
+							}
+							else if (Model.Play_offD.Exists(i => i.Stage == 20 + n * 2))
+							{
+								if (Model.Play_offD.First(i => i.Stage == 20 + n * 2).Goals > Model.Play_offD.First(i => i.Stage == 20 + n * 2).OpponentGoals)
+								{
+									<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Participants.First(i=>i.Id == Model.Play_offD.First(i=>i.Stage == 20 + n*2).TeamId && i.type == 2).Name</td><td></td></tr>
+								}
+								else
+								{
+									<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Participants.First(i=>i.Id == Model.Play_offD.First(i=>i.Stage == 20 + n*2).OpponentId && i.type == 1).Name</td><td></td></tr>
+								}
+							}
+							else
+							{
+								<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">Победитель 2</td><td>Х</td></tr>
+							}
+
 						}
-					}
-					else
-					{
-						<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">Команда 1</td><td>Х</td></tr>
-						<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">Команда 2</td><td>Х</td></tr>
-					}
-				</table>
+					</table>
+				</div>
 			</div>
-		</div>
+			<div>
+				<h3>Матч за @(3 + 4*(n-1)) место</h3>
+				<div class="play_off_match">
+					<table class="play_off">
+						@if (Model.Play_off.Exists(i => i.Stage == 90 + n))
+						{
+							<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Play_off.First(i=>i.Stage == 90 + n).Opponent1.Name</td><td>@Model.Play_off.First(i=>i.Stage == 90 + n).Goals1</td></tr>
+							<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Play_off.First(i=>i.Stage == 90 + n).Opponent2.Name</td><td>@Model.Play_off.First(i=>i.Stage == 90 + n).Goals2</td></tr>
+						}
+						else if (Model.Play_offD.Exists(i => i.Stage == 90 + n))
+						{
+							<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Play_offD.First(i=>i.Stage == 90 + n).TeamId).Name</td><td>@Model.Play_offD.First(i=>i.Stage == 90 + n).Goals</td></tr>
+							<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Play_offD.First(i=>i.Stage == 90 + n).Opponent.Name</td><td>@Model.Play_offD.First(i=>i.Stage == 90 + n).OpponentGoals</td></tr>
+						}
+						else
+						{
+							if (Model.Play_off.Exists(i => i.Stage == 20 + n * 2 - 1))
+							{
+								<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.loser(Model.Play_off.First(i=>i.Stage == 20 + n*2 - 1)).Name</td><td></td></tr>
+							}
+							else if (Model.Play_offD.Exists(i => i.Stage == 20 + n * 2 - 1))
+							{
+								if (Model.Play_offD.First(i => i.Stage == 20 + n * 2 - 1).Goals < Model.Play_offD.First(i => i.Stage == 20 + n * 2 - 1).OpponentGoals)
+								{
+									<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Participants.First(i=>i.Id == Model.Play_offD.First(i=>i.Stage == 20 + n*2 - 1).TeamId && i.type == 2).Name</td><td></td></tr>
+								}
+								else
+								{
+									<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Participants.First(i=>i.Id == Model.Play_offD.First(i=>i.Stage == 20 + n*2 - 1).OpponentId && i.type == 1).Name</td><td></td></tr>
+								}
+							}
+							else
+							{
+								<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">Проигравший 1</td><td>Х</td></tr>
+							}
+
+							if (Model.Play_off.Exists(i => i.Stage == 20 + n * 2))
+							{
+								<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.loser(Model.Play_off.First(i=>i.Stage == 20 + n*2)).Name</td><td></td></tr>
+							}
+							else if (Model.Play_offD.Exists(i => i.Stage == 20 + n * 2))
+							{
+								if (Model.Play_offD.First(i => i.Stage == 20 + n * 2).Goals < Model.Play_offD.First(i => i.Stage == 20 + n * 2).OpponentGoals)
+								{
+									<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Participants.First(i=>i.Id == Model.Play_offD.First(i=>i.Stage == 20 + n*2).TeamId && i.type == 2).Name</td><td></td></tr>
+								}
+								else
+								{
+									<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Participants.First(i=>i.Id == Model.Play_offD.First(i=>i.Stage == 20 + n*2).OpponentId && i.type == 1).Name</td><td></td></tr>
+								}
+							}
+							else
+							{
+								<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">Проигравший 2</td><td>Х</td></tr>
+							}
+
+						}
+					</table>
+				</div>
+			</div>
+		}
+
 	}
-	else if(Model.Competittion.PlayOffs > 1)
+	else if(Model.Competittion.PlayOffs % 10 > 1)
 	{
 		<div>
 			<h2>Финал</h2>

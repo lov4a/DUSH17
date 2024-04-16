@@ -3,11 +3,11 @@
 @{
 	if(Model.Match.Home == true)
 	{
-		ViewData["Title"] = "ДЮСШ-17 " + Model.Match.Goals  + ":" + Model.Match.OpponentGoals + " " + Model.Match.Opponent.Name;
+		ViewData["Title"] = "СШ-17 " + Model.Match.Goals  + ":" + Model.Match.OpponentGoals + " " + Model.Match.Opponent.Name;
 	}
 	else
 	{
-		ViewData["Title"] = Model.Match.Opponent.Name + Model.Match.OpponentGoals + ":" + Model.Match.Goals + " " + "ДЮСШ-17 ";
+		ViewData["Title"] = Model.Match.Opponent.Name+ " " + Model.Match.OpponentGoals + ":" + Model.Match.Goals + " " + "СШ-17 ";
 	}
 }
 
@@ -28,7 +28,9 @@
 
 	}
 </script>
-<div class="match_info">
+<body class="miniMatch">
+
+	<div class="match_info">
 	<a asp-page="ChampionshipPage" asp-route-id="@Model.Match.CompetitionId" style="text-decoration: none;color:black">
 		<div><h1>@Model.Match.Competition.NameOfCompetition</h1></div>
 		<div><h4>@Model.Match.Date @Model.Match.Competition.City</h4></div>
@@ -38,14 +40,14 @@
 		<tbody>
 			@if(Model.Match.Home)
 			{
-				<tr><td style="width:35%"><img src="~/images/Opponents/sh17.png" /></td><td rowspan="3"><h2>@Model.Match.Goals : @Model.Match.OpponentGoals</h2></td><td style="width:35%"><img src="~/images/Opponents/@Model.Match.Opponent.Picture.Name" /></td></tr>
-				<tr><td style="width:35%"><h3>ДЮСШ-17 @Model.Match.Team.Year</h3></td><td style="width:35%"><h3>@Model.Match.Opponent.Name @Model.Match.Opponent.Year</h3></td></tr>
+				<tr><td style="width:35%"><div class="match_logo"><img src="~/images/Opponents/logoSH.svg" /></div> </td><td rowspan="3"><h2>@Model.Match.Goals : @Model.Match.OpponentGoals</h2></td><td style="width:35%"><div class="match_logo"><img src="~/images/Opponents/@Model.Match.Opponent.Picture.Name" /></div></td></tr>
+				<tr><td style="width:35%"><h3>СШ-17 @Model.Match.Team.Year</h3></td><td style="width:35%"><h3>@Model.Match.Opponent.Name @Model.Match.Opponent.Year</h3></td></tr>
 				<tr><td style="width:35%"><h3>Томск</h3></td><td style="width:35%"><h3>@Model.Match.Opponent.City</h3></td></tr>
 			}
 			else
 			{
-				<tr><td style="width:35%"><img src="~/images/Opponents/@Model.Match.Opponent.Picture.Name" /></td><td rowspan="3"><h2>@Model.Match.OpponentGoals : @Model.Match.Goals</h2></td><td style="width:35%"><img src="~/images/Opponents/sh17.png" /></td></tr>
-				<tr><td style="width:35%"><h3>@Model.Match.Opponent.Name @Model.Match.Opponent.Year</h3></td><td style="width:35%"><h3>ДЮСШ-17 @Model.Match.Team.Year</h3></td></tr>
+				<tr><td style="width:35%"><div class="match_logo"><img src="~/images/Opponents/@Model.Match.Opponent.Picture.Name" /></div></td><td rowspan="3"><h2>@Model.Match.OpponentGoals : @Model.Match.Goals</h2></td><td style="width:35%"><div class="match_logo"><img src="~/images/Opponents/logoSH.svg" /></div></td></tr>
+				<tr><td style="width:35%"><h3>@Model.Match.Opponent.Name @Model.Match.Opponent.Year</h3></td><td style="width:35%"><h3>СШ-17 @Model.Match.Team.Year</h3></td></tr>
 				<tr><td style="width:35%"><h3>@Model.Match.Opponent.City</h3></td><td style="width:35%"><h3>Томск</h3></td></tr>
 			}
 
@@ -53,8 +55,8 @@
 	</table>
 </div>
 <div class="match_actions">
-	<div class="match_nav_button">
-		<input type="button" value="Обзор" onclick="menu(1)" /><input type="button" onclick="menu(2)" value="Состав" />
+	<div class="match_nav_button" style="margin-left:1%">
+			<input type="button" value="Обзор" style="width:20%;min-width:67px" onclick="menu(1)" /><input style="margin-left:2%;width:20%;min-width:67px" type="button" onclick="menu(2)" value="Состав" />
 	</div>
 	@if (Model.Match.Home)
 	{
@@ -66,7 +68,9 @@
 			{
 				<div class="squad_line">
 					<div class="squad_person">
-						<h2 style="width:11%;font-weight:bold">@person.Position.ShortName</h2> <h2>@person.Surname @person.Name</h2>
+						<h2 style="font-weight:bold">@person.Position.ShortName</h2><a asp-page="PlayerPage" asp-route-Id="@person.Id" style="text-decoration: none; color:black;white-space:nowrap;padding:1.5%;padding-left:0">
+							<h2 style="padding:0">@person.Surname @person.Name</h2>
+						</a> 
 
 						@{
 							foreach (var act in Model.actionns.OrderBy(i => i.ActionTypeId).Where(i => i.FootballerId == person.Id && (i.ActionTypeId == 1 || i.ActionTypeId == 2 || i.ActionTypeId == 3 || i.ActionTypeId == 4)))
@@ -108,7 +112,9 @@
 								<div class="actions">
 									<img title="Красная карточка" src="~/images/Icons/replace.png" />
 								</div>
-								<h2> @rep.FootballerIn.Surname @rep.FootballerIn.Name</h2>
+								<a asp-page="PlayerPage" asp-route-Id="@person.Id" style="text-decoration: none; color:black;white-space:nowrap;padding:1.5%;padding-left:0">
+									<h2 style="padding:0">@rep.FootballerIn.Surname @rep.FootballerIn.Name</h2>
+								</a>
 							</div>
 						}
 
@@ -121,7 +127,10 @@
 			@foreach (var person in Model.bench.OrderBy(i => i.PositionId))
 			{
 				<div class="squad_line">
-					<div class="squad_person"><h2 style="width:11%;font-weight:bold">@person.Position.ShortName</h2> <h2>@person.Surname @person.Name</h2></div><div>
+					<div class="squad_person">
+						<h2 style="font-weight:bold">@person.Position.ShortName</h2><a asp-page="PlayerPage" asp-route-Id="@person.Id" style="text-decoration: none; color:black;white-space:nowrap;padding:1.5%;padding-left:0">
+							<h2 style="padding:0">@person.Surname @person.Name</h2>
+						</a>
 						@{
 							foreach (var act in Model.actionns.OrderBy(i => i.ActionTypeId).Where(i => i.FootballerId == person.Id && (i.ActionTypeId == 1 || i.ActionTypeId == 2 || i.ActionTypeId == 3 || i.ActionTypeId == 4)))
 							{
@@ -163,11 +172,13 @@
 			@{
 				int x = 0;
 			}
-			@foreach (var act in Model.actionns.Where(i => i.Time < 46 && i.ActionTypeId != 6 && i.ActionTypeId != 2))
+			@foreach (var act in Model.actionns.Where(i => i.Time < (Model.Match.Competition.Minutes / 2 + 1) && i.ActionTypeId != 6 && i.ActionTypeId != 2))
 			{
-				<div class="squad_line">
+				<div class="action_line">
 					<div class="one_action">
-						<h2 style="margin-top:23%">@act.Time'</h2>
+						<h2 style="  display: flex; align-items: center;">
+							@act.Time'
+						</h2>
 						@{
 							switch (act.ActionTypeId)
 							{
@@ -176,43 +187,49 @@
 										<img title="Гол" src="~/images/Icons/goal.png" />
 									</div>
 									<div class="goal_assist">
-										<h2>@act.Footballer.Surname @act.Footballer.Name</h2>
+										<a asp-page="PlayerPage" asp-route-Id="@act.Footballer.Id" style="text-decoration: none; color:black;white-space:nowrap;padding:1%;padding-left:0">
+											<h2 style="padding:0">@act.Footballer.Surname @act.Footballer.Name</h2>
+										</a>
+
 
 										@{
 
 											@if (Model.actionns.Exists(i => i.Id > x && i.Time == act.Time && i.ActionTypeId == 2))
 											{
-												<h3>
-													(@Model.actionns.Where(i =>i.Id > x && i.Time == act.Time && i.ActionTypeId == 2).First().Footballer.Surname
-													@Model.actionns.Where(i =>i.Id > x && i.Time == act.Time && i.ActionTypeId == 2).First().Footballer.Name)
-												</h3>
+												<a asp-page="PlayerPage" asp-route-Id="@Model.actionns.Where(i =>i.Id > x && i.Time == act.Time && i.ActionTypeId == 2).First().FootballerId" style="text-decoration: none; color:black;white-space:nowrap;padding:1%;padding-left:0">
+													<h3>
+														(@Model.actionns.Where(i =>i.Id > x && i.Time == act.Time && i.ActionTypeId == 2).First().Footballer.Surname
+														@Model.actionns.Where(i =>i.Id > x && i.Time == act.Time && i.ActionTypeId == 2).First().Footballer.Name)
+													</h3>
+												</a>
+
 												x = Model.actionns.Where(i => i.Id > x && i.Time == act.Time && i.ActionTypeId == 2).First().Id;
 											}
 										}
 									</div>
 
 									break;
-								case 2:
-									<div class="actions2">
-										<img title="Голевая передача" src="~/images/Icons/assist.png" />
-									</div>
-									<h2>@act.Footballer.Surname @act.Footballer.Name</h2>
-									break;
 								case 3:
 									<div class="actions2">
 										<img title="Желтая карточка" src="~/images/Icons/yellowCard.png" />
 									</div>
-									<h2>@act.Footballer.Surname @act.Footballer.Name</h2>
+									<a asp-page="PlayerPage" asp-route-Id="@act.Footballer.Id" style="text-decoration: none; color:black;white-space:nowrap;padding:1%;padding-left:0">
+										<h2 style="padding:0">@act.Footballer.Surname @act.Footballer.Name</h2>
+									</a>
 									break;
 								case 4:
 									<div class="actions2">
 										<img title="Красная карточка" src="~/images/Icons/redCard.png" />
 									</div>
-									<h2>@act.Footballer.Surname @act.Footballer.Name</h2>
+										<a asp-page="PlayerPage" asp-route-Id="@act.Footballer.Id" style="text-decoration: none; color:black;white-space:nowrap;padding:1%;padding-left:0">
+										<h2 style="padding:0">@act.Footballer.Surname @act.Footballer.Name</h2>
+									</a>
 									break;
 								case 5:
 									<h2>АГ</h2>
-									<h2>@act.Footballer.Surname @act.Footballer.Name</h2>
+										<a asp-page="PlayerPage" asp-route-Id="@act.Footballer.Id" style="text-decoration: none; color:black;white-space:nowrap;padding:1%;padding-left:0">
+											<h2 style="padding:0">@act.Footballer.Surname @act.Footballer.Name</h2>
+										</a>
 									break;
 							}
 						}
@@ -220,11 +237,11 @@
 				</div>
 			}
 			<h1>2-й тайм</h1>
-			@foreach (var act in Model.actionns.Where(i => i.Time > 45 && i.ActionTypeId != 6 && i.ActionTypeId != 2))
+				@foreach (var act in Model.actionns.Where(i => i.Time > (Model.Match.Competition.Minutes / 2) && i.ActionTypeId != 6 && i.ActionTypeId != 2))
 			{
-				<div class="squad_line">
+				<div class="action_line">
 					<div class="one_action">
-						<h2 style="margin-top:23%">@act.Time'</h2>
+						<h2 style="  display: flex; align-items: center;">@act.Time'</h2>
 						@{
 							switch (act.ActionTypeId)
 							{
@@ -233,43 +250,47 @@
 										<img title="Гол" src="~/images/Icons/goal.png" />
 									</div>
 									<div class="goal_assist">
-										<h2>@act.Footballer.Surname @act.Footballer.Name</h2>
+											<a asp-page="PlayerPage" asp-route-Id="@act.Footballer.Id" style="text-decoration: none; color:black;white-space:nowrap;padding:1%;padding-left:0">
+											<h2 style="padding:0">@act.Footballer.Surname @act.Footballer.Name</h2>
+										</a>
 
 										@{
 
 											@if (Model.actionns.Exists(i => i.Id > x && i.Time == act.Time && i.ActionTypeId == 2))
 											{
-												<h3>
-													(@Model.actionns.Where(i =>i.Id > x && i.Time == act.Time && i.ActionTypeId == 2).First().Footballer.Surname
-													@Model.actionns.Where(i =>i.Id > x && i.Time == act.Time && i.ActionTypeId == 2).First().Footballer.Name)
-												</h3>
+													<a asp-page="PlayerPage" asp-route-Id="@Model.actionns.Where(i =>i.Id > x && i.Time == act.Time && i.ActionTypeId == 2).First().FootballerId" style="text-decoration: none; color:black;white-space:nowrap;padding:1%;padding-left:0">
+													<h3 style="padding:0">
+														(@Model.actionns.Where(i =>i.Id > x && i.Time == act.Time && i.ActionTypeId == 2).First().Footballer.Surname
+														@Model.actionns.Where(i =>i.Id > x && i.Time == act.Time && i.ActionTypeId == 2).First().Footballer.Name)
+													</h3>
+												</a>
 												x = Model.actionns.Where(i => i.Id > x && i.Time == act.Time && i.ActionTypeId == 2).First().Id;
 											}
 										}
 									</div>
 
 									break;
-								case 2:
-									<div class="actions2">
-										<img title="Голевая передача" src="~/images/Icons/assist.png" />
-									</div>
-									<h2>@act.Footballer.Surname @act.Footballer.Name</h2>
-									break;
 								case 3:
 									<div class="actions2">
 										<img title="Желтая карточка" src="~/images/Icons/yellowCard.png" />
 									</div>
-									<h2>@act.Footballer.Surname @act.Footballer.Name</h2>
+										<a asp-page="PlayerPage" asp-route-Id="@act.Footballer.Id" style="text-decoration: none; color:black;white-space:nowrap;padding:1%;padding-left:0">
+										<h2 style="padding:0">@act.Footballer.Surname @act.Footballer.Name</h2>
+									</a>
 									break;
 								case 4:
 									<div class="actions2">
 										<img title="Красная карточка" src="~/images/Icons/redCard.png" />
 									</div>
-									<h2>@act.Footballer.Surname @act.Footballer.Name</h2>
+										<a asp-page="PlayerPage" asp-route-Id="@act.Footballer.Id" style="text-decoration: none; color:black;white-space:nowrap;padding:1%;padding-left:0">
+										<h2 style="padding:0">@act.Footballer.Surname @act.Footballer.Name</h2>
+									</a>
 									break;
 								case 5:
 									<h2>АГ</h2>
-									<h2>@act.Footballer.Surname @act.Footballer.Name</h2>
+										<a asp-page="PlayerPage" asp-route-Id="@act.Footballer.Id" style="text-decoration: none; color:black;white-space:nowrap;padding:1%;padding-left:0">
+											<h2 style="padding:0">@act.Footballer.Surname @act.Footballer.Name</h2>
+										</a>
 									break;
 							}
 						}
@@ -336,7 +357,10 @@
 								}
 							}
 						}
-						<h2>@person.Surname @person.Name</h2><h2 style="font-weight:bold">@person.Position.ShortName</h2>
+						<a asp-page="PlayerPage" asp-route-Id="@person.Id" style="text-decoration: none; color:black;white-space:nowrap;padding:1.5%;padding-left:0">
+							<h2 style="padding:0">@person.Surname @person.Name</h2> 
+						</a>
+						<h2 style="font-weight:bold">@person.Position.ShortName</h2>
 					</div>
 
 
@@ -381,7 +405,10 @@
 								}
 							}
 						}
-						<h2>@person.Surname @person.Name</h2><h2 style="font-weight:bold">@person.Position.ShortName</h2>
+						<a asp-page="PlayerPage" asp-route-Id="@person.Id" style="text-decoration: none; color:black;white-space:nowrap;padding:1.5%;padding-left:0">
+							<h2 style="padding:0">@person.Surname @person.Name</h2>
+						</a>
+						<h2 style="font-weight:bold">@person.Position.ShortName</h2>
 					</div>
 				</div>
 			}
@@ -389,10 +416,10 @@
 		<div id="actions" style="display:block">
 			<h1>1-й тайм</h1>
 			@{int x = 0;}
-			@foreach (var act in Model.actionns.Where(i => i.Time < 46 && i.ActionTypeId != 6 && i.ActionTypeId != 2))
+				@foreach (var act in Model.actionns.Where(i => i.Time < (Model.Match.Competition.Minutes / 2 + 1) && i.ActionTypeId != 6 && i.ActionTypeId != 2))
 			{
 
-				<div class="squad_line_away">
+				<div class="action_line_away">
 					<div></div>
 					<div class="one_action_away">
 						@{
@@ -404,13 +431,17 @@
 
 											@if (Model.actionns.Exists(i =>i.Id > x && i.Time == act.Time && i.ActionTypeId == 2))
 											{
-												<h3>
-													(@Model.actionns.Where(i =>i.Id > x && i.Time == act.Time && i.ActionTypeId == 2).First().Footballer.Surname
-													@Model.actionns.Where(i =>i.Id > x && i.Time == act.Time && i.ActionTypeId == 2).First().Footballer.Name)
-												</h3>
+												<a asp-page="PlayerPage" asp-route-Id="@Model.actionns.Where(i =>i.Id > x && i.Time == act.Time && i.ActionTypeId == 2).First().FootballerId" style="text-decoration: none; color:black;white-space:nowrap;padding:0;padding-left:0">
+													<h3 style="padding:0">
+														(@Model.actionns.Where(i =>i.Id > x && i.Time == act.Time && i.ActionTypeId == 2).First().Footballer.Surname
+														@Model.actionns.Where(i =>i.Id > x && i.Time == act.Time && i.ActionTypeId == 2).First().Footballer.Name)
+													</h3>
+												</a>
 												x = Model.actionns.Where(i => i.Id > x && i.Time == act.Time && i.ActionTypeId == 2).First().Id;
 											}
-											<h2>@act.Footballer.Surname @act.Footballer.Name</h2>
+											<a asp-page="PlayerPage" asp-route-Id="@act.Footballer.Id" style="text-decoration: none; color:black;white-space:nowrap;padding:1%;padding-left:0">
+												<h2 style="padding:0">@act.Footballer.Surname @act.Footballer.Name</h2>
+											</a>
 										}
 
 
@@ -421,90 +452,110 @@
 
 									break;
 								case 3:
-									<h2 style="justify-content:end;text-align:end">@act.Footballer.Surname @act.Footballer.Name</h2>
+									<a asp-page="PlayerPage" asp-route-Id="@act.Footballer.Id" style="text-decoration: none; color:black;white-space:nowrap;padding:1%;padding-left:0">
+										<h2 style="justify-content:end;text-align:end;padding:0">@act.Footballer.Surname @act.Footballer.Name</h2>
+									</a>
+
 									<div class="actions2">
 										<img title="Желтая карточка" src="~/images/Icons/yellowCard.png" />
 									</div>
 
 									break;
 								case 4:
-									<h2 style="justify-content:end;text-align:end">@act.Footballer.Surname @act.Footballer.Name</h2>
+									<a asp-page="PlayerPage" asp-route-Id="@act.Footballer.Id" style="text-decoration: none; color:black;white-space:nowrap;padding:1%;padding-left:0">
+											<h2 style="justify-content:end;text-align:end;padding:0">@act.Footballer.Surname @act.Footballer.Name</h2>
+									</a>
 									<div class="actions2">
 										<img title="Красная карточка" src="~/images/Icons/redCard.png" />
 									</div>
 
 									break;
 								case 5:
-									<h2 style="justify-content:end;text-align:end">@act.Footballer.Surname @act.Footballer.Name</h2>
+									<a asp-page="PlayerPage" asp-route-Id="@act.Footballer.Id" style="text-decoration: none; color:black;white-space:nowrap;padding:1%;padding-left:0">
+											<h2 style="justify-content:end;text-align:end;padding:0">@act.Footballer.Surname @act.Footballer.Name</h2>
+									</a>
 									<h2>АГ</h2>
 
 									break;
 							}
 						}
-						<h2 style="margin-top:23%">@act.Time'</h2>
+						<h2 style="  display: flex; align-items: center;">@act.Time'</h2>
 					</div>
 				</div>
 			}
 			<h1>2-й тайм</h1>
-			@foreach (var act in Model.actionns.Where(i => i.Time > 45 && i.ActionTypeId != 6 && i.ActionTypeId != 2))
-			{
-				<div></div>
-				<div class="squad_line_away" >
-					<div></div>
-					<div class="one_action_away">
-						@{
-							switch (act.ActionTypeId)
-							{
-								case 1:
-									<div class="goal_assist" style="justify-content:end">
+				@foreach (var act in Model.actionns.Where(i => i.Time > (Model.Match.Competition.Minutes / 2) && i.ActionTypeId != 6 && i.ActionTypeId != 2))
+				{
 
+					<div class="action_line_away">
+						<div></div>
+						<div class="one_action_away">
+							@{
+								switch (act.ActionTypeId)
+								{
+									case 1:
+										<div class="goal_assist" style="justify-content:end">
+											@{
 
-										@{
-
-											@if (Model.actionns.Exists(i => i.Id > x && i.Time == act.Time && i.ActionTypeId == 2))
-											{
-												<h3>
-													(@Model.actionns.Where(i =>i.Id > x && i.Time == act.Time && i.ActionTypeId == 2).First().Footballer.Surname
-													@Model.actionns.Where(i =>i.Id > x && i.Time == act.Time && i.ActionTypeId == 2).First().Footballer.Name)
-												</h3>
-												x = Model.actionns.Where(i => i.Id > x && i.Time == act.Time && i.ActionTypeId == 2).First().Id;
+												@if (Model.actionns.Exists(i => i.Id > x && i.Time == act.Time && i.ActionTypeId == 2))
+												{
+													<a asp-page="PlayerPage" asp-route-Id="@Model.actionns.Where(i =>i.Id > x && i.Time == act.Time && i.ActionTypeId == 2).First().FootballerId" style="text-decoration: none; color:black;white-space:nowrap;padding:1%;padding-left:0">
+														<h3 style="padding:0">
+															(@Model.actionns.Where(i =>i.Id > x && i.Time == act.Time && i.ActionTypeId == 2).First().Footballer.Surname
+															@Model.actionns.Where(i =>i.Id > x && i.Time == act.Time && i.ActionTypeId == 2).First().Footballer.Name)
+														</h3>
+													</a>
+													x = Model.actionns.Where(i => i.Id > x && i.Time == act.Time && i.ActionTypeId == 2).First().Id;
+												}
+												<a asp-page="PlayerPage" asp-route-Id="@act.Footballer.Id" style="text-decoration: none; color:black;white-space:nowrap;padding:1%;padding-left:0">
+													<h2 style="padding:0">@act.Footballer.Surname @act.Footballer.Name</h2>
+												</a>
 											}
-											<h2>@act.Footballer.Surname @act.Footballer.Name</h2>
-										}
-									</div>
-									<div class="actions2">
-										<img title="Гол" src="~/images/Icons/goal.png" />
-									</div>
 
-									break;
-								case 3:
-									<h2 style="justify-content:end;text-align:end">@act.Footballer.Surname @act.Footballer.Name</h2>
-									<div class="actions2">
-										<img title="Желтая карточка" src="~/images/Icons/yellowCard.png" />
-									</div>
 
-									break;
-								case 4:
-									<h2 style="justify-content:end;text-align:end">@act.Footballer.Surname @act.Footballer.Name</h2>
-									<div class="actions2">
-										<img title="Красная карточка" src="~/images/Icons/redCard.png" />
-									</div>
+										</div>
+										<div class="actions2">
+											<img title="Гол" src="~/images/Icons/goal.png" />
+										</div>
 
-									break;
-								case 5:
-									<h2 style="justify-content:end;text-align:end">@act.Footballer.Surname @act.Footballer.Name</h2>
-									<h2>АГ</h2>
+										break;
+									case 3:
+										<a asp-page="PlayerPage" asp-route-Id="@act.Footballer.Id" style="text-decoration: none; color:black;white-space:nowrap;padding:1%;padding-left:0">
+											<h2 style="justify-content:end;text-align:end;padding:0">@act.Footballer.Surname @act.Footballer.Name</h2>
+										</a>
 
-									break;
+										<div class="actions2">
+											<img title="Желтая карточка" src="~/images/Icons/yellowCard.png" />
+										</div>
+
+										break;
+									case 4:
+										<a asp-page="PlayerPage" asp-route-Id="@act.Footballer.Id" style="text-decoration: none; color:black;white-space:nowrap;padding:1%;padding-left:0">
+											<h2 style="justify-content:end;text-align:end;padding:0">@act.Footballer.Surname @act.Footballer.Name</h2>
+										</a>
+										<div class="actions2">
+											<img title="Красная карточка" src="~/images/Icons/redCard.png" />
+										</div>
+
+										break;
+									case 5:
+										<a asp-page="PlayerPage" asp-route-Id="@act.Footballer.Id" style="text-decoration: none; color:black;white-space:nowrap;padding:1%;padding-left:0">
+											<h2 style="justify-content:end;text-align:end;padding:0">@act.Footballer.Surname @act.Footballer.Name</h2>
+										</a>
+										<h2>АГ</h2>
+
+										break;
+								}
 							}
-						}
-						<h2 style="margin-top:23%">@act.Time'</h2>
+							<h2 style="  display: flex; align-items: center;">@act.Time'</h2>
+						</div>
 					</div>
-				</div>
 			}
 		</div>
-
 	}
 
 </div>
 		
+
+</body>
+

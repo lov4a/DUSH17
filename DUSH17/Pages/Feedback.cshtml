@@ -1,0 +1,53 @@
+﻿@page
+@model DUSH17.Pages.FeedbackModel
+@{
+	ViewData["Title"] = "Обратная связь - МАУ ДО СШ№17";
+	ViewBag.Description = "Спортивная школа № 17 города Томска готова ответить на любые ваши вопросы";
+	ViewBag.Keywords = "СШ-17 Томск Обратная связь";
+}
+<div class="index_h">
+	<h3 style="font-weight:400;margin-right:1%;">Обратная связь</h3>
+	<a style="font-weight:bold;text-align:end; text-decoration:none; color:black" href="#" class="bvi-open" title="Версия сайта для слабовидящих"><img /><img class="menu_imageEye" src="~/img/eye.svg" alt="Глаз" />Версия для слабовидящих</a>
+</div>
+<hr style="margin-top:0; color:black;height:1px" />
+
+
+<div class="docs" style="">
+	<div class="info_line" style="width:100%;margin-top:0;margin-bottom:0">
+		<h2>Электронное обращение</h2>
+	</div>
+	
+	<div class="feedback">
+		<h2>Напишите нам</h2>
+		<form id="contact" asp-page-handler="SendEmail" method="post" onsubmit="alert('Ваше обращение отправлено. Скоро ответим вам!')" name="contact" style="display:block;">
+			<input id="name" class="txt" name="Name" type="text" placeholder="Ваше имя" required>
+			<input type="email" name="Email" placeholder="Ваш email" required />
+			<textarea id="msg" class="txtarea" name="Message" placeholder="Ваше сообщение:" style="min-height:80px" required></textarea><button id="send">Отправить</button>
+		</form>
+	</div>
+	<div class="info_line" style="width:100%;margin-top:2%;margin-bottom:0">
+		<a href="http://webanketa.com/forms/6gr38dsn6rqkcchj64wp8csk/" style="text-decoration:none; color:black;font-weight:400" target="_blank">
+			<h2 style="margin-bottom:0">Анкета о качестве условий оказания услуг МАУ СШ № 17</h2>
+		</a>
+	</div>
+	<hr style="margin-bottom:1.7%;margin-top:0.2%; color:black;height:1px;width:100%;" />
+	<div class="info_line" style="width:100%;margin-bottom:0">
+		<h2 style="margin-bottom:0">Часто задаваемые вопросы</h2>
+	</div>
+	<hr style="margin-top:0.2%; color:black;height:1px;width:100%;margin-bottom:0.2%" />
+	<div class="questions" style="width:100%">
+		<div class="question">
+			<h2>Какие виды спорта преподаются в спортивной школе?</h2>
+			<h3>Футбол</h3>
+		</div>
+		<div class="question">
+			<h2>Сколько стоят занятия в спортивной школе?</h2>
+			<h3>Тренировочные занятия ведутся в МАУ СШ №17 на бесплатной основе. Родителям платить за занятия не нужно</h3>
+		</div>
+		<div class="question">
+			<h2>Есть ли лицензия на образовательную деятельность в спортивной школе?</h2>
+			<h3>С выпиской из реестра лицензий можно ознакомиться на официальном сайте СШ в разделе «Сведения об образовательной организации» вкладка «Документы»</h3>
+		</div>
+	</div>
+</div>
+

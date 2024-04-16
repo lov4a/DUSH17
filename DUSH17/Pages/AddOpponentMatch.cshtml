@@ -2,30 +2,34 @@
 @model DUSH17.Pages.AddOpponentMatchModel
 @{
 }
-<h2>Добавление результата матча соперников</h2>
-<form method="post">
-	<p>
-		<input type="hidden" name="Opponent1Id" value="@Model.Opponent1.Id" />
-	</p>
-	<p>
-		<input type="hidden" name="Opponent2Id" value="@Model.Opponent2.Id"/>
-	</p>
-	<p>
-		<input type="hidden" name="CompetitionId" value="@Model.Competition.Id" />
-	</p>
-	<p>
-		<input type="hidden" name="Stage" value="1" />
-	</p>
-	<div class="match_info">
+<body class="short">
 
-		<div><h1>@Model.Competition.NameOfCompetition</h1></div>
-		<div>
-			<label>Дата матча</label><br />
-			<input type="date" name="date" required />
-		</div>
+	<h2>Добавление результата матча соперников</h2>
+	<form method="post">
+		<p>
+			<input type="hidden" name="Opponent1Id" value="@Model.Opponent1.Id" />
+		</p>
+		<p>
+			<input type="hidden" name="Opponent2Id" value="@Model.Opponent2.Id" />
+		</p>
+		<p>
+			<input type="hidden" name="CompetitionId" value="@Model.Competition.Id" />
+		</p>
+		<div class="match_info">
 
-		<table class="resultOfMatch" style="margin-top:3%">
-			<tbody>
+			<div><h1>@Model.Competition.NameOfCompetition</h1></div>
+			<div>
+				<label>Дата матча</label><br />
+				<input type="date" name="date" required />
+
+			</div>
+			<div>
+				<labael>Стадия</labael>
+				<input type="number" value="0" name="Stage" style="width:5%" required />
+			</div>
+
+			<table class="resultOfMatch" style="margin-top:3%">
+				<tbody>
 
 					<tr>
 						<td style="width:25%"><img src="~/images/Opponents/@Model.Opponent1.Picture.Name" /></td>
@@ -42,9 +46,11 @@
 						<td style="width:25%"><h3>@Model.Opponent2.Name</h3></td>
 					</tr>
 
-			</tbody>
-		</table>
-	</div>
+				</tbody>
+			</table>
+		</div>
 
 
-</form>
+	</form>
+
+</body>

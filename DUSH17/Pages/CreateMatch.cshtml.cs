@@ -31,8 +31,16 @@ namespace DUSH17.Pages
         public async Task<IActionResult> OnPostAsync(List<int>? PlayersChecked, string date)
 		{
 			Matches = context.Matches.Include(c=>c.Competition).Include(t=>t.Team).AsNoTracking().ToList();
-			match.Id = Matches.MaxBy(i => i.Id).Id + 1;
-			match.Date = DateOnly.Parse(date);
+			if (Matches.Count > 0)
+			{
+				match.Id = Matches.MaxBy(i => i.Id).Id + 1;
+			}
+			else
+			{
+				match.Id = 1;
+			}
+
+				match.Date = DateOnly.Parse(date);
 			context.Matches.Add(match);
 			await context.SaveChangesAsync();
 			foreach (var player in PlayersChecked)
@@ -56,7 +64,7 @@ namespace DUSH17.Pages
 										  OName = s.Opponent.Name
 									  }), "ID", "OName", null);
             Matches = context.Matches.Include(c => c.Competition).Include(t => t.Team).AsNoTracking().ToList();
-			Footballers2 = context.Footballers.Include(t => t.Team).Include(p => p.Position).Where(y => y.TeamId == tId).OrderBy(p => p.PositionId).AsNoTracking().ToList();
+			Footballers2 = context.Footballers.Include(t => t.Team).Include(p => p.Position).Where(y => y.TeamId == tId).OrderBy(p => p.Surname).AsNoTracking().ToList();
 			Footballers = context.Footballers.Include(t => t.Team).Include(p => p.Position).Where(y => y.Team.Year - year <= 3 && y.Team.Year - year > -2 && y.TeamId != tId).OrderBy(y => y.Team.Year).ThenBy(p => p.PositionId).AsNoTracking().ToList();
 			IdofTeam = tId;
 		}

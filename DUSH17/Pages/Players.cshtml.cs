@@ -30,7 +30,8 @@ namespace DUSH17.Pages
 		public List<Replace> Replaces { get; set; } = null!;
 		public List<Protocol> Protocols { get; set; } = null!;
 		public List<Stat> stats { get; set; } = new();
-		public List<Position> PositionList { get; private set; } = new();
+		public List<Stat> PlaceHolderstats { get; set; } = new();
+        public List<Position> PositionList { get; private set; } = new();
 		public List<Team> TeamList { get; private set; } = new();
 		public int CurrentPos { get; set; } = 1;
 		public int[] MinMaxForPlaceHolder { get; set; } = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -43,8 +44,8 @@ namespace DUSH17.Pages
 		public List<double> setg90 = new();
 		public List<double> seta90 = new();
 		public List<double> setGP = new();
-		public List<double> setY = new();
-		public List<double> setR = new();
+		public List<int> setY = new();
+		public List<int> setR = new();
 		public List<string> dates = new();
 
 
@@ -55,7 +56,6 @@ namespace DUSH17.Pages
 			Teams = new SelectList(context.Groups, nameof(Team.Id), nameof(Team.Year));
 			PositionList = context.Positions.AsNoTracking().ToList();
 			TeamList = context.Groups.OrderBy(i=>i.Year).Include(c => c.Coach).AsNoTracking().ToList();
-			
 
 			if (fDate != null && sDate!= null)
 			{
@@ -78,196 +78,95 @@ namespace DUSH17.Pages
 
 			Replaces = context.Replaces.AsNoTracking().ToList();
 
-			minMaxValue(Actions);
+            IQueryable<Footballer> footballersIQ = from s in context.Footballers
+                                                   select s;
+            IQueryable<Footballer> footballersIQ2 = footballersIQ.Take(0);
 
-			IQueryable<Footballer> footballersIQ = from s in context.Footballers
-												   select s;
-			IQueryable<Footballer> footballersIQ2 = footballersIQ.Take(0);
-			 
-			if (PosChecked.Count > 0 && !PosChecked.Contains(0))
-			{
-				checkedPos.Clear();
-				foreach (var pp in PosChecked)
-				{
-					checkedPos.Add(pp);
-					footballersIQ2 = footballersIQ2.Concat(footballersIQ.Where(s => s.PositionId == pp));
-				}
-				footballersIQ = footballersIQ2;
-				footballersIQ2 = footballersIQ.Take(0);
-			}
-			if (TeamChecked.Count > 0 && !TeamChecked.Contains(-1))
-			{
-				checkedTeams.Clear();
-				foreach (var t in TeamChecked)
-				{
-					checkedTeams.Add(t);
-					footballersIQ2 = footballersIQ2.Concat(footballersIQ.Where(s => s.TeamId == t));
-				}
-				footballersIQ = footballersIQ2;
-				footballersIQ2 = footballersIQ.Take(0);
-			}
-
-			if (games.Length > 0)
+            if (PosChecked.Count > 0 && !PosChecked.Contains(0))
+            {
+                checkedPos.Clear();
+                foreach (var pp in PosChecked)
+                {
+                    checkedPos.Add(pp);
+                    footballersIQ2 = footballersIQ2.Concat(footballersIQ.Where(s => s.PositionId == pp));
+                }
+                footballersIQ = footballersIQ2;
+                footballersIQ2 = footballersIQ.Take(0);
+            }
+            if (TeamChecked.Count > 0 && !TeamChecked.Contains(-1))
+            {
+                checkedTeams.Clear();
+                foreach (var t in TeamChecked)
+                {
+                    checkedTeams.Add(t);
+                    footballersIQ2 = footballersIQ2.Concat(footballersIQ.Where(s => s.TeamId == t));
+                }
+                footballersIQ = footballersIQ2;
+                footballersIQ2 = footballersIQ.Take(0);
+            }
+            Footballers = footballersIQ.Include(g => g.Team).Include(p => p.Position).OrderBy(p => p.Team.Year).ThenBy(p => p.PositionId).ThenBy(s => s.Surname).AsNoTracking().ToList();
+            getStats();
+            if (games != null && games.Length != 0)
 			{
 				setGames.Clear();
-				setGames.Add(games[0]); 
-				setGames.Add(games[1]);
-				int gm = 0;
-				foreach (var foot in footballersIQ)
-				{
-					gm = Protocols.Where(g => g.FootballerId == foot.Id).Count();
-					if (gm >= games[0] && gm <= games[1])
-					{
-						footballersIQ2 = footballersIQ2.Concat(footballersIQ.Where(i => i.Id == foot.Id));
-					}
-				}
-
-				footballersIQ = footballersIQ2;
-				footballersIQ2 = footballersIQ.Take(0);
-			}
-
-			if (minutes.Length > 0)
-			{
+				setGames.AddRange(games);
+				stats = stats.Where(i =>i.games >= games[0] && i.games <= games[1]).ToList();
+            }
+            if (minutes != null && minutes.Length != 0)
+            {
 				setMinutes.Clear();
 				setMinutes.Add(minutes[0]);
 				setMinutes.Add(minutes[1]);
-				double min = 0;
-				foreach(var foot in footballersIQ)
-				{
-					min = stats.FirstOrDefault(i => i.Id == foot.Id).minutes;
-					if  (min >= minutes[0] && min <= minutes[1])
-					{
-						footballersIQ2 = footballersIQ2.Concat(footballersIQ.Where(i => i.Id == foot.Id));
-					}
-				}
-
-				footballersIQ = footballersIQ2;
-				footballersIQ2 = footballersIQ.Take(0);
-			}
-			if (goals.Length > 0)
-			{
+				stats = stats.Where(i => i.minutes >= minutes[0] && i.minutes <= minutes[1]).ToList();
+            }
+            if (goals != null && goals.Length != 0)
+            {
 				setGoals.Clear();
-				setGoals.Add(goals[0]);
-				setGoals.Add(goals[1]);
-				int g = 0;
-				foreach (var foot in footballersIQ)
-				{
-					g = Actions.Where(g => g.FootballerId == foot.Id && g.ActionTypeId == 1).Count();
-					if (goals[0] <= g && goals[1] >= g)
-					{
-						footballersIQ2 = footballersIQ2.Concat(footballersIQ.Where(i => i.Id == foot.Id));
-					}
-				}
-				footballersIQ = footballersIQ2;
-				footballersIQ2 = footballersIQ.Take(0);
-			}
-
-			if (assists.Length > 0)
-			{
-				setAssists.Clear();
-				setAssists.Add(assists[0]);
-				setAssists.Add(assists[1]);
-				int a = 0;
-				foreach (var foot in footballersIQ)
-				{
-					a = Actions.Where(g => g.FootballerId == foot.Id && g.ActionTypeId == 2).Count();
-					if (assists[0] <= a && assists[1] >= a)
-					{
-						footballersIQ2 = footballersIQ2.Concat(footballersIQ.Where(i => i.Id == foot.Id));
-					}
-				}
-				footballersIQ = footballersIQ2;
-				footballersIQ2 = footballersIQ.Take(0);
-			}
-
-			if (gOn90.Length > 0)
-			{
+				setGoals.AddRange(goals);
+                stats = stats.Where(i => i.goals >= goals[0] && i.goals <= goals[1]).ToList();
+            }
+            if (gOn90 != null && gOn90.Length != 0)
+            {
 				setg90.Clear();
 				setg90.Add(gOn90[0]);
 				setg90.Add(gOn90[1]);
-				double x = 0;
-				foreach (var foot in footballersIQ)
-				{
-					x = stats.FirstOrDefault(i => i.Id == foot.Id).g90;
-					if (gOn90[0] <= x && gOn90[1] >= x)
-					{
-						footballersIQ2 = footballersIQ2.Concat(footballersIQ.Where(i => i.Id == foot.Id));
-					}
-				}
-				footballersIQ = footballersIQ2;
-				footballersIQ2 = footballersIQ.Take(0);
-			}
-			if (aOn90.Length > 0)
-			{
+				stats = stats.Where(i => i.g90 >= gOn90[0] && i.g90 <= gOn90[1]).ToList();
+            }
+            if (assists != null && assists.Length != 0)
+            {
+				setAssists.Clear();
+				setAssists.AddRange(assists);
+                stats = stats.Where(i => i.assists >= assists[0] && i.assists <= assists[1]).ToList();
+            }
+            if (aOn90 != null && aOn90.Length != 0)
+            {
 				seta90.Clear();
 				seta90.Add(aOn90[0]);
 				seta90.Add(aOn90[1]);
-				double x = 0;
-				foreach (var foot in footballersIQ)
-				{
-					x = stats.FirstOrDefault(i => i.Id == foot.Id).a90;
-					if (aOn90[0] <= x && aOn90[1] >= x)
-					{
-						footballersIQ2 = footballersIQ2.Concat(footballersIQ.Where(i => i.Id == foot.Id));
-					}
-				}
-				footballersIQ = footballersIQ2;
-				footballersIQ2 = footballersIQ.Take(0);
-			}
-			if (gp.Length > 0)
-			{
+				stats = stats.Where(i => i.a90 >= aOn90[0] && i.a90 <= aOn90[1]).ToList();
+            }
+            if (gp != null && gp.Length != 0)
+            {
 				setGP.Clear();
 				setGP.Add(gp[0]);
 				setGP.Add(gp[1]);
-				double x = 0;
-				foreach (var foot in footballersIQ)
-				{
-					x = stats.FirstOrDefault(i => i.Id == foot.Id).gPlusA;
-					if (gp[0] <= x && gp[1] >= x)
-					{
-						footballersIQ2 = footballersIQ2.Concat(footballersIQ.Where(i => i.Id == foot.Id));
-					}
-				}
-				footballersIQ = footballersIQ2;
-				footballersIQ2 = footballersIQ.Take(0);
-			}
-			if (yCards.Length > 0)
-			{
+				stats = stats.Where(i => i.gPlusA >= gp[0] && i.gPlusA <= gp[1]).ToList();
+            }
+            if (yCards != null && yCards.Length != 0)
+            {
 				setY.Clear();
-				setY.Add(yCards[0]);
-				setY.Add(yCards[1]);
-				int g = 0;
-				foreach (var foot in footballersIQ)
-				{
-					g = Actions.Where(g => g.FootballerId == foot.Id && g.ActionTypeId == 3).Count();
-					if (yCards[0] <= g && yCards[1] >= g)
-					{
-						footballersIQ2 = footballersIQ2.Concat(footballersIQ.Where(i => i.Id == foot.Id));
-					}
-				}
-				footballersIQ = footballersIQ2;
-				footballersIQ2 = footballersIQ.Take(0);
-			}
-			if (rCards.Length > 0)
-			{
+				setY.AddRange(yCards);
+                stats = stats.Where(i => i.YK >= yCards[0] && i.YK <= yCards[1]).ToList();
+            }
+            if (rCards != null && rCards.Length != 0)
+            {
 				setR.Clear();
-				setR.Add(rCards[0]);
-				setR.Add(rCards[1]);
-				int g = 0;
-				foreach (var foot in footballersIQ)
-				{
-					g = Actions.Where(g => g.FootballerId == foot.Id && g.ActionTypeId == 4).Count();
-					if (rCards[0] <= g && rCards[1] >= g)
-					{
-						footballersIQ2 = footballersIQ2.Concat(footballersIQ.Where(i => i.Id == foot.Id));
-					}
-				}
-				footballersIQ = footballersIQ2;
-				footballersIQ2 = footballersIQ.Take(0);
-			}
-			Footballers = footballersIQ.Include(g => g.Team).Include(p => p.Position).OrderBy(p => p.Team.Year).ThenBy(p=>p.PositionId).ThenBy(s => s.Surname).AsNoTracking().ToList();
-			getStats();
+				setR.AddRange(rCards);
+				stats = stats.Where(i => i.RK >= rCards[0] && i.RK <= rCards[1]).ToList();
+            }
+            stats = stats.OrderByDescending(i=>i.gPlusA).ToList();
 
+            minMaxValue(Actions);
 
 		}
 		public void getStats()
@@ -282,7 +181,7 @@ namespace DUSH17.Pages
 						if (Actions.Where(a => a.ActionTypeId == 6 && a.MatchId == match.Id && a.FootballerId == person.Id).Count() > 0)
 						{
 							int inMin = 0;
-							int outMin = 90;
+							int outMin = match.Competition.Minutes;
 							foreach (var rep in Replaces.Where(fb => fb.MatchID == match.Id && (fb.FootballerInId == person.Id || fb.FootballerOutId == person.Id)))
 							{
 								if (rep.FootballerOutId == person.Id)
@@ -291,7 +190,15 @@ namespace DUSH17.Pages
 								}
 								if (rep.FootballerInId == person.Id)
 								{
-									inMin = rep.Time;
+									if (rep.Time == match.Competition.Minutes)
+									{
+										inMin = rep.Time - 1;
+									}
+									else
+									{
+										inMin = rep.Time;
+									}
+							
 								}
 							}
 							totalMin += outMin - inMin;
@@ -304,14 +211,21 @@ namespace DUSH17.Pages
 				stats.Add(
 					new Stat {
 						Id = person.Id,
-						minutes = totalMin,
+						footballer = person,
+						games = Protocols.Where(g => g.FootballerId == person.Id).Count(),
+                        goals = Actions.Where(i => i.FootballerId == person.Id && i.ActionTypeId == 1).Count(),
+						assists = Actions.Where(i => i.FootballerId == person.Id && i.ActionTypeId == 2).Count(),
+						YK = Actions.Where(i => i.FootballerId == person.Id && i.ActionTypeId == 3).Count(),
+						RK = Actions.Where(i => i.FootballerId == person.Id && i.ActionTypeId == 4).Count(),
+                        minutes = totalMin,
 						g90 = Math.Round(Actions.Where(i=>i.FootballerId == person.Id && i.ActionTypeId == 1).Count() / (totalMin/90),2),
 						a90 = Math.Round(Actions.Where(i=>i.FootballerId == person.Id && i.ActionTypeId == 2).Count() / (totalMin/90),2),
 						gPlusA = Actions.Where(i => i.FootballerId == person.Id && ( i.ActionTypeId == 1 || i.ActionTypeId == 2)).Count()
 					}
-					) ;
+					);
 
 			}
+			PlaceHolderstats = stats;
 		}
 		public void minMaxValue (List<Actionn> Actions)
 		{

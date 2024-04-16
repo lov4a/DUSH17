@@ -60,6 +60,7 @@
     <Content Remove="Pages\test.cshtml" />
     <Content Remove="wwwroot\images\birthday.png" />
     <Content Remove="wwwroot\images\down-arrow.png" />
+    <Content Remove="wwwroot\video\ФГИС Спорт.mp4" />
   </ItemGroup>
 
   <ItemGroup>
@@ -89,6 +90,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\images\TeamsPhoto\" />
+    <Folder Include="wwwroot\video\" />
   </ItemGroup>
 
 </Project>

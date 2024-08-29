@@ -1,0 +1,52 @@
+﻿@page
+@model DUSH17.Pages.t_CalendarModel
+@{
+	ViewData["Title"] = @Model.Competition.name;
+	ViewBag.Description = @Model.Competition.name;
+    ViewBag.Keywords = "Стадион Темп, Темп Томск, Темп расписание, СШ-17 Томск, ДЮСШ-17 Томск";
+}
+@section Styles{
+	<link rel="stylesheet" href="~/css/temp.css" />
+}
+<div class="temp_header" style="display: flex;width: 100%; border-bottom: 1px solid black; margin-bottom: 1%;">
+	<a asp-page="Temp" style="text-decoration: none;"><h1>Главная</h1></a>
+	<a asp-page="t_Tournaments" style="text-decoration: none;"><h1>Турниры</h1></a>
+    <h1>Расписание тренировок</h1>
+</div>
+<div class="match_nav_button" style="margin-left:0;margin-bottom:0.5%">
+	<a asp-page="t_TournamentPage" asp-route-id="@Model.Competition.id" style="text-decoration: none;"><input style="margin:0;padding-left:2%;padding-right:2%;min-width:100px;color:black" type="button" class="temp_button" onclick="" value="Таблица" /></a>
+	<a asp-page="t_Calendar" asp-route-id="@Model.Competition.id" style="text-decoration: none;"><input style="padding-left:2%;padding-right:2%;min-width:100px;margin-left:1%;margin-top:0;color:white!important;background-color:#8bee9f" type="button" class="temp_button" onclick="" value="Календарь" /></a>
+	@if (Model.Competition.playoffs > 0)
+	{
+		<input style="margin-left:2%" type="button" onclick="menu(3)" value="Плей-офф" />
+	}
+	@*	@if (Model.PreviousChamp.Count > 0)
+	{
+	<a asp-page="ChampionshipPage" asp-route-id="@Model.PreviousChamp.First().CompetitionId" style="text-decoration: none;"><input style="margin-left:0.8%"  type="button" onclick="" value="Финальный этап" /></a>
+	}
+	@if (Model.Championship.First().PreviousChampId != null)
+	{
+	<a asp-page="ChampionshipPage" asp-route-id="@Model.Championship.First().PreviousChampId" style="text-decoration: none;"><input style="margin-left:0.8%"  type="button" onclick="" value="Групповой этап" /></a>
+	}*@
+</div>
+<div class="competition">
+	<h3 style="background-color:#8bee9f;margin:0;padding:0.5%;font-weight:400">@Model.Competition.name</h3>
+	<div class="last_games">
+		@for(int i = 1;i <= Model.Matches.MaxBy(i=>i.tour).tour; i++)
+		{
+			<h4 style="font-weight:700 !important;border-top:1px solid black">@i ТУР</h4>
+			<div class="matches">
+				@foreach(var match in Model.Matches.Where(x=>x.tour == i))
+				{
+					<div class="match">
+						<div>
+							<h5 style="text-align:left;font-size: calc(8px + 7 * (100vw / 1580)) !important;font-weight:500 !important">@match.date.ToString("dd.MM")</h5>
+							<h5 style="text-align:left;font-size: calc(8px + 7 * (100vw / 1580)) !important;font-weight:500 !important">@match.time</h5>
+						</div>
+						<h5 style="text-align:end">@match.home.name</h5> <div class="logo" style="text-align:end"><img src="~/images/t_Teams/@match.home.Picture.Name" /></div> <h5 style="text-align:center;font-weight:500 !important">@match.h_goals:@match.v_goals</h5> <div class="logo"><img src="~/images/t_Teams/@match.visitor.Picture.Name" /></div> <h5>@match.visitor.name</h5> <h5 style="text-align:end">@match.stadium</h5>
+					</div>
+				}
+			</div>
+		}
+	</div>
+</div>

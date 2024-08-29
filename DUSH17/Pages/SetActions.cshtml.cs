@@ -30,7 +30,7 @@ namespace DUSH17.Pages
 		public async Task<IActionResult> OnPostAsync(List<int>? PlayersChecked, int[][]? PlayersCards, int[][]? replace, int[]? GoalMin, int[]? GoalId, int[]? AsistId, int[]? CardMin, int[]? CardId, int[]? TypeId,int[]? repMin, int[]? FootballerIn, int[]? FootballerOut, int mID)
 		{
 			match = context.Matches.Find(mID);
-			Footballers = context.Footballers.Include(g => g.Team).Include(p => p.Position).OrderBy(i=>i.Surname).AsNoTracking().ToList();
+			Footballers = context.Footballers.Include(g => g.Team).Include(p => p.Position).OrderBy(i => i.Surname).ThenBy(i => i.Name).ThenBy(i => i.Patronymic).AsNoTracking().ToList();
 			foreach (var player in PlayersChecked)
 			{
 				Actions.Add(new Actionn { FootballerId = player, MatchId = match.Id, ActionTypeId = 6, Time = 0 });
@@ -93,9 +93,9 @@ namespace DUSH17.Pages
 			{
 				Footballers = footballersIQ.Include(p=>p.Position).AsNoTracking().ToList();
 			}
-			List<Footballer> GoalAuthors = Footballers.ToList();
-			List<Footballer> AsistAuthors = Footballers.ToList();
-			List<Footballer> Cards = Footballers.ToList();
+			List<Footballer> GoalAuthors = Footballers.OrderBy(i=>i.Surname).ThenBy(i=>i.Name).ThenBy(i=>i.Patronymic).ToList();
+			List<Footballer> AsistAuthors = Footballers.OrderBy(i => i.Surname).ThenBy(i => i.Name).ThenBy(i => i.Patronymic).ToList();
+			List<Footballer> Cards = Footballers.OrderBy(i => i.Surname).ThenBy(i => i.Name).ThenBy(i => i.Patronymic).ToList();
 			
 			Cards.Insert(0, new Footballer { Id = 0, Name = "Выберите футболиста", Surname = "" });
 			GoalAuthors.Insert(0, new Footballer { Id = 0, Name = "Автогол", Surname = "" });

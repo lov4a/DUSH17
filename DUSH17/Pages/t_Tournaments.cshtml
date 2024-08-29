@@ -1,0 +1,36 @@
+﻿@page
+@model DUSH17.Pages.t_TournamentsModel
+@{
+    ViewData["Title"] = "Стадион «Темп» СШ-17 Томск";
+    ViewBag.Description = "Страница стадиона «Темп» Томск";
+    ViewBag.Keywords = "Стадион Темп, Темп Томск, Темп расписание, СШ-17 Томск, ДЮСШ-17 Томск";
+}
+<div class="temp_header" style="display: flex;width: 100%; border-bottom: 1px solid black; margin-bottom: 1%;">
+	<a asp-page="Temp" style="text-decoration: none;"><h1>Главная</h1></a>
+    <h1 style="color:#8bee9f">Турниры</h1>
+    <h1>Расписание тренировок</h1>
+</div>
+<div class="teams_page" style="justify-content:start">
+	@foreach (var t in Model.Competitions)
+	{
+		<div class="tournament_container">
+			<a asp-page="t_TournamentPage" asp-route-id="@t.id" style="text-decoration: none;">
+				<div style="height:16%">
+					<h1 style="font-weight:600;" title="@t.name">
+						@t.name
+					</h1>
+				</div>
+
+
+				<hr style="margin-bottom:0;margin-top:0; color:lightgray;height:1%" />
+				<div style="width:100%;text-align:center;height:64%">
+					<img alt="Team" src="~/images/Tournaments/@t.picture.Name" style="padding:0" />
+				</div>
+				<hr style="margin-bottom:0;margin-top:0; color:lightgray;height:1%" />
+			</a>
+			<div style="height:16%">
+				<h2 style="text-align:start;padding-left:2%; color:dimgrey; margin-bottom:0.2%;">@t.startDate - @t.endDate</h2>
+			</div>
+		</div>
+	}
+</div>

@@ -22,7 +22,7 @@ namespace DUSH17.Pages
             picture = context.Pictures.ToList();
 
 			Competitions = context.Competitions.OrderByDescending(i => i.EndDate).Include(i => i.TeamLists).ThenInclude(i => i.Team).Include(i => i.Picture).AsNoTracking().ToList();
-			Championships = context.Championships.Where(i=>i.PreviousChampId == null).OrderByDescending(i => i.Competition.EndDate).
+			Championships = context.Championships.Where(i=>i.PreviousChampId == null).OrderByDescending(i => i.Competition.StartDate).
                 Include(i=>i.Competition).ThenInclude(i => i.Picture).Include(i=>i.Competition).ThenInclude(i=>i.TeamLists).ThenInclude(i=>i.Team).AsNoTracking().ToList();
 			teams = context.TeamList.Include(i => i.Team).ThenInclude(i => i.Coach).AsNoTracking().ToList();
         }

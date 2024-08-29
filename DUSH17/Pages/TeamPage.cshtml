@@ -181,7 +181,7 @@
 							}
 							<h3 style="">Результаты</h3><h3></h3>
 							<div style="margin-left:8%;margin-bottom:5%" class="lastgames">
-								@foreach (var m in Model.Matches.Where(i => i.TeamId == t.Id).OrderByDescending(d => d.Date).Take(10))
+								@foreach (var m in Model.Matches.Where(i => i.TeamId == t.Id).OrderByDescending(d => d.Date).ThenByDescending(i=>i.Id).Take(10))
 								{
 
 									@if (m.Goals > m.OpponentGoals)
@@ -499,7 +499,7 @@
 					
 				</thead>
 				<tbody>
-					@foreach (var m in Model.Matches.Where(i => i.TeamId == t.Id).OrderByDescending(y=>y.Date))
+					@foreach (var m in Model.Matches.Where(i => i.TeamId == t.Id).OrderByDescending(y=>y.Date).ThenByDescending(y=>y.Id))
 					{
 						
 						<tr>

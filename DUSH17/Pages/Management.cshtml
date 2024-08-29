@@ -19,7 +19,7 @@
 				<div id="xxx" class="navbar-collapse collapse d-lg-inline-flex justify-content-between">
 					<ul class="navbar-nav flex-grow-1">
 						<li class="nav-item teampage">
-							<a asp-page="">Основные сведения</a>
+							<a asp-page="Info">Основные сведения</a>
 						</li>
 						<li class="nav-item teampage">
 							<a asp-page="/Structure">
@@ -33,13 +33,13 @@
 							<a asp-page="/Education">Образование</a>
 						</li>
 						<li class="nav-item teampage">
-							<a  asp-page="/Standarts">Образовательные стандарты и требования</a>
+							<a style="color:#c5002e" asp-page="/Management">Руководство</a>
 						</li>
 						<li class="nav-item teampage">
-							<a style="color:#c5002e" asp-page="/Management">Руководство. Педагогический (научно педагогический) состав</a>
+							<a asp-page="/TeachingStaff">Педагогический состав</a>
 						</li>
 						<li class="nav-item teampage">
-							<a asp-page="/MTO">Материально-техническое обеспечение и оснащенность образовательного процесса</a>
+							<a asp-page="/MTO">Материально-техническое обеспечение и оснащенность образовательного процесса. Доступная среда</a>
 						</li>
 						<li class="nav-item teampage">
 							<a asp-page="/PaidServices">Платные образовательные услуги</a>
@@ -51,10 +51,16 @@
 							<a asp-page="/Vacancies">Вакантные места для приема (перевода) обучающихся</a>
 						</li>
 						<li class="nav-item teampage">
-							<a asp-page="/AvailableEnvironment">Доступная среда</a>
+							<a asp-page="/Scholarship">Стипендии и меры поддержки обучающихся</a>
 						</li>
 						<li class="nav-item teampage">
 							<a asp-page="/International">Международное сотрудничество</a>
+						</li>
+						<li class="nav-item teampage">
+							<a asp-page="/CateringServices">Организация питания</a>
+						</li>
+						<li class="nav-item teampage">
+							<a asp-page="/Standarts">Образовательные стандарты и требования</a>
 						</li>
 					</ul>
 				</div>
@@ -77,13 +83,13 @@
 				<a asp-page="/Education">Образование</a>
 			</div>
 			<div class="categ">
-				<a asp-page="/Standarts">Образовательные стандарты и требования</a>
+				<a style="color:#c5002e" asp-page="/Management">Руководство</a>
 			</div>
 			<div class="categ">
-				<a style="color:#c5002e" asp-page="">Руководство. Педагогический (научно педагогический) состав</a>
+				<a asp-page="/TeachingStaff">Педагогический состав</a>
 			</div>
 			<div class="categ">
-				<a asp-page="/MTO">Материально-техническое обеспечение и оснащенность образовательного процесса</a>
+				<a asp-page="/MTO">Материально-техническое обеспечение и оснащенность образовательного процесса. Доступная среда</a>
 			</div>
 			<div class="categ">
 				<a asp-page="/PaidServices">Платные образовательные услуги</a>
@@ -95,23 +101,28 @@
 				<a asp-page="/Vacancies">Вакантные места для приема (перевода) обучающихся</a>
 			</div>
 			<div class="categ">
-				<a asp-page="/AvailableEnvironment">Доступная среда</a>
+				<a asp-page="/Scholarship">Стипендии и меры поддержки обучающихся</a>
 			</div>
 			<div class="categ">
 				<a asp-page="/International">Международное сотрудничество</a>
 			</div>
-
+			<div class="categ">
+				<a asp-page="/CateringServices">Организация питания</a>
+			</div>
+			<div class="categ">
+				<a asp-page="/Standarts">Образовательные стандарты и требования</a>
+			</div>
 		</div>
 
 		<div class="docs">
-			<div style="display:flex;width:100%;margin-top:0"><a style="color:#c5002e" asp-page=""><h1 style="margin-top:0;">Руководство</h1></a><a style="margin-left:3%" asp-page="/TeachingStaff"><h1 style="margin-top:0;">Педагогический состав</h1></a></div>
+			<div style="display:flex;width:100%;margin-top:0"><h1 style="margin-top:0;">Руководство</h1></div>
 			<hr style="margin-bottom:1%;margin-top:0; color:black;height:1px;width:100%" />
 			<div class="management">
 				<div class="managment_container">
 					<img src="~/images/Management/Каштанов_С.В.jpg"/>
 					<div>
 						<h4 style="font-weight:bold">Директор</h4>
-						<h3>Кашатнов Сергей Владимирович</h3>
+						<h3>Каштанов Сергей Владимирович</h3>
 						<h3>Телефон: +7 (3822) 46-22-96</h3>
 						<h3>E-mail: st-vosxod@mail.ru</h3>
 					</div>

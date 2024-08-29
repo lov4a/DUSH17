@@ -40,7 +40,7 @@
 		<div class="setSquad">
 			<h2 style="margin-left:2%">Основной состав</h2><label>Отметьте игроков основоного состава</label>
 			<hr style="margin:0; color:black;height:1px" />
-			@foreach (var a in Model.Footballers)
+			@foreach (var a in Model.Footballers.OrderBy(i => i.Surname).ThenBy(i => i.Name).ThenBy(i => i.Patronymic))
 			{
 				<h3><input id="@a.Id" type="checkbox" class="PlayersChecked" name="PlayersChecked" value="@a.Id" onclick="getAccess()" /> <label style="margin-left:0.2%" for="@a.Id">@a.Position.ShortName | @a.Surname @a.Name @a.Patronymic</label></h3>
 			}

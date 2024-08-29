@@ -16,6 +16,7 @@
     <link rel="icon" href="https://sh17.ru/favicon2.ico" type="image/x-icon" />
     <link rel="apple-touch-icon" href="https://sh17.ru//apple-touch-icon.png">
     <link rel="manifest" href="https://sh17.ru//manifest.webmanifest">
+    @RenderSection("Styles", false)
     <!-- Yandex.Metrika counter -->
     <script type="text/javascript">
         (function (m, e, t, r, i, k, a) {
@@ -67,6 +68,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Info">Сведения об образовательной организации</a>
                         </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-page="/Temp">Стадион «Темп»</a>
+                            </li>
                     </ul>
                     <ul class="navbar-nav flex-grow-1" style="">
                        <li class="nav-item">
@@ -82,7 +86,7 @@
                                 <a class="nav-link text-dark bottom_nav" asp-area="" asp-page="/Feedback">Обратная связь</a>
                             </li>
                        <li class="nav-item miniLi" style="">
-                             <a class="nav-link text-dark" asp-page="/Instruction" >Трансяция с камер Манежа "Восход"</a>
+                                <a class="nav-link text-dark" asp-page="/Instruction">Трансяция с камер Манежа «Восход»</a>
                        </li>
                     </ul>
                     </div>

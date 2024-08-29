@@ -1,0 +1,218 @@
+﻿@page
+@model DUSH17.Pages.t_TournamentPageModel
+@{
+	ViewData["Title"] = @Model.Competition.name;
+}
+<script>
+	function menu(x) {
+		var chesss = document.getElementsByClassName('h2h')
+		var champ = document.getElementsByClassName('championship')
+		var mainDiv = document.getElementById('champ')
+		//var playoff = document.getElementById('play-off')
+		console.log(champ.length);
+		for (var i = 0; i < champ.length; i++) {
+			if (x === 1) {
+				mainDiv.style.display = 'block';
+				champ[i].style.display = 'none';
+				//playoff.style.display = 'none';
+				chesss[i].style.display = 'table';
+			}
+			else if (x === 2) {
+				mainDiv.style.display = 'block';
+				chesss[i].style.display = 'none';
+				champ[i].style.display = 'table';
+				//playoff.style.display = 'none';
+			}
+			else if (x === 3) {
+				chesss[i].style.display = 'none';
+				champ[i].style.display = 'none';
+				//playoff.style.display = 'grid';
+			}
+		}
+
+	}
+</script>
+
+<div class="temp_header" style="display: flex;width: 100%; border-bottom: 1px solid black; margin-bottom: 1%;">
+	<a asp-page="Temp" style="text-decoration: none;"><h1>Главная</h1></a>
+	<a asp-page="t_Tournaments" style="text-decoration: none;"><h1>Турниры</h1></a>
+	<h1>Расписание тренировок</h1>
+</div>
+<div class="match_nav_button" style="margin-left:0;margin-bottom:0.5%">
+	<input style="margin:0;padding-left:2%;padding-right:2%;min-width:100px;color:black" type="button" value="Таблица" onclick="menu(2)" class="temp_button" /><input class="temp_button" style="padding-left:2%;padding-right:2%;min-width:100px;margin-left:1%;margin-top:0" type="button" onclick="menu(1)" value="Шахматка" />
+	<a asp-page="t_Calendar" asp-route-id="@Model.Competition.id" style="text-decoration: none;"><input style="padding-left:2%;padding-right:2%;min-width:100px;margin-left:1%;margin-top:0" type="button" class="temp_button" onclick="" value="Календарь" /></a>
+
+	@if (Model.Competition.playoffs > 0)
+	{
+		<input style="margin-left:2%" type="button" onclick="menu(3)" value="Плей-офф" />
+	}
+@*	@if (Model.PreviousChamp.Count > 0)
+	{
+		<a asp-page="ChampionshipPage" asp-route-id="@Model.PreviousChamp.First().CompetitionId" style="text-decoration: none;"><input style="margin-left:0.8%"  type="button" onclick="" value="Финальный этап" /></a>
+	}
+	@if (Model.Championship.First().PreviousChampId != null)
+	{
+		<a asp-page="ChampionshipPage" asp-route-id="@Model.Championship.First().PreviousChampId" style="text-decoration: none;"><input style="margin-left:0.8%"  type="button" onclick="" value="Групповой этап" /></a>
+	}*@
+</div>
+<div class="tournament_page" id="champ">
+	<div>
+	@for (int group = 1; group <= Model.Teams.MaxBy(i => i.groupId).groupId; group++)
+	{
+		int countOfTeams = Model.Teams.Where(i => i.groupId == group).Count();
+
+		<table class="championship" id="temp_table" style="">
+			<thead style=" border-radius: 8px 8px 0px 0px; background:#8bee9f;">
+				<tr style=" border-radius: 8px 8px 0px 0px;">
+					<th style="text-align:center; border-radius: 8px 0px 0px 0px;" title="Место">№</th>
+					<th style="width:35%">Команда</th>
+					<th style="text-align:center" title="Игры">И</th>
+					<th class="hide_td" style="text-align:center" title="Выигрыши">В</th>
+					<th class="hide_td" style="text-align:center" title="Ничьи">Н</th> 
+					<th class="hide_td" style="text-align:center" title="Поражения">П</th>
+					<th style="text-align:center" title="Мячей забито">МЗ</th>
+					<th style="text-align:center" title="Мячей пропущено">МП</th>
+					<th style="text-align:center; border-radius: 0px 8px 0px 0px;" title="Очки">О</th>
+				</tr>
+			</thead>
+			<tbody class="temp_tbody" style="">
+				@{
+					int i = 1;
+				}
+				@foreach (var team in Model.Participants.Where(i => i.group == group))
+				{
+
+					<tr style="">
+						<td style="width:5%;text-align:center;border-left:#8bee9f 3px solid;">@i</td>
+						<td style="width:35%;"><img src="~/images/t_Teams/@team.Picture.Name" /> @team.Name</td>
+						<td style="text-align:center">@(team.wins + team.draws + team.loses)</td>
+						<td class="hide_td" style="text-align:center">@team.wins</td>
+						<td class="hide_td" style="text-align:center">@team.draws</td>
+						<td class="hide_td" style="text-align:center">@team.loses</td>
+						<td style="text-align:center">@team.goalsScored</td>
+						<td style="text-align:center">@team.goalsConceded</td>
+						<td style="text-align:center; border-right:#8bee9f 3px solid;">@(team.wins * 3 + team.draws)</td>
+					</tr>
+					i++;
+				}
+			</tbody>
+		</table>
+		}
+	</div>
+	<div>
+		@for (int group = 1; group <= Model.Teams.MaxBy(i => i.groupId).groupId; group++)
+		{
+			int countOfTeams = Model.Participants.Where(i => i.group == group).Count();
+			<table class="h2h" id="chesss" style="display:none;grid-column-start:1; grid-column-end:3">
+				<tbody>
+					<tr style="border-top:1px solid #8bee9f">
+						@if (Model.Participants.Exists(i => i.group == 2))
+						{
+							<td style="border-radius: 8px 0px 0px 0px;font-weight:bold;text-align:center;padding-left:0">Группа 1 </td>
+						}
+						else
+						{
+							<td style="border-radius: 8px 0px 0px 0px;"></td>
+						}
+
+
+						@foreach (var team in Model.Participants.Where(i => i.group == group))
+						{
+							double width = 65 / Model.Participants.Count();
+							<td style="width:@(Math.Round(width,2))%"><img src="~/images/t_Teams/@team.Picture.Name" alt="" /></td>
+
+						}
+						<td style="font-weight:bold" title="Очки">О</td>
+					</tr>
+					@{
+						int j = 1;
+					}
+					@for (int x = countOfTeams * (group - 1); x <= countOfTeams * group - 1; x++)
+					{
+						<tr>
+
+							<td style="">@j<img src="~/images/t_Teams/@Model.Participants[x].Picture.Name" title="@(x)" style="margin-left:2.5%" /> @Model.Participants[x].Name</td>
+							@for (int y = countOfTeams * (group - 1); y <= countOfTeams * group - 1; y++)
+							{
+								if (x == y)
+								{
+									<td style="background-color:#8bee9f;"></td>
+								}
+								else
+								{
+										<td>
+												@if (Model.Competition.rounds > 1)
+												{
+													if (Model.Matches.Exists(i => i.homeId == Model.Participants[x].Id && i.visitorId == Model.Participants[y].Id))
+													{
+														<p>@Model.Matches.First(i => i.homeId == Model.Participants[x].Id && i.visitorId == Model.Participants[y].Id).h_goals:@Model.Matches.First(i => i.homeId == Model.Participants[x].Id && i.visitorId == Model.Participants[y].Id).v_goals</p>
+													}
+													else
+													{
+														@if (User.Identity.Name != null)
+														{
+															<a asp-page="AddOpponentMatch" asp-route-home="@Model.Participants[x].Id" asp-route-away="@Model.Participants[y].Id" asp-route-comp="@Model.Competition.id" style="text-decoration: none;color:black"><p>- : -</p></a>
+
+														}
+														else
+														{
+															<p>- : -</p>
+														}
+
+													}
+													if (Model.Matches.Exists(i => i.visitorId == Model.Participants[x].Id && i.homeId == Model.Participants[y].Id))
+													{
+														<p>@Model.Matches.First(i => i.visitorId == Model.Participants[x].Id && i.homeId == Model.Participants[y].Id).v_goals:@Model.Matches.First(i => i.visitorId == Model.Participants[x].Id && i.homeId == Model.Participants[y].Id).h_goals</p>
+													}
+													else
+													{
+														@if (User.Identity.Name != null)
+														{
+															<a asp-page="AddOpponentMatch" asp-route-home="@Model.Participants[y].Id" asp-route-away="@Model.Participants[x].Id" asp-route-comp="@Model.Competition.id" style="text-decoration: none;color:black"><p>- : -</p></a>
+
+														}
+														else
+														{
+															<p>- : -</p>
+														}
+													}
+												}
+												else
+												{
+													if (Model.Matches.Exists(i => i.visitorId == Model.Participants[x].Id && i.homeId == Model.Participants[y].Id))
+													{
+														<p>@Model.Matches.First(i => i.visitorId == Model.Participants[x].Id &&  i.homeId == Model.Participants[y].Id).v_goals:@Model.Matches.First(i => i.visitorId == Model.Participants[x].Id &&  i.homeId == Model.Participants[y].Id).h_goals</p>
+													}
+													else if (Model.Matches.Exists(i => i.visitorId == Model.Participants[y].Id && i.homeId == Model.Participants[x].Id))
+													{
+														<p>@Model.Matches.First(i => i.visitorId == Model.Participants[y].Id &&  i.homeId == Model.Participants[x].Id).h_goals:@Model.Matches.First(i => i.visitorId == Model.Participants[y].Id &&  i.homeId == Model.Participants[x].Id).v_goals</p>
+													}
+													else
+													{
+														@if (User.Identity.Name != null)
+														{
+															<a asp-page="AddOpponentMatch" asp-route-home="@Model.Participants[y].Id" asp-route-away="@Model.Participants[x].Id" asp-route-comp="@Model.Competition.id" style="text-decoration: none;color:black"><p>- : -</p></a>
+
+														}
+														else
+														{
+															<p>- : -</p>
+														}
+													}
+												}
+
+											
+										</td>
+
+								}
+							}
+
+							<td style="font-weight:bold" width="7%">@(Model.Participants[x].wins * 3 + Model.Participants[x].draws)</td>
+						</tr>
+						j++;
+					}
+				</tbody>
+			</table>
+		}
+	</div>
+</div>

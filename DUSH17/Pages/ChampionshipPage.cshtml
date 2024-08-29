@@ -160,7 +160,7 @@
 
 					@foreach (var team in Model.Participants.Where(i => i.group == group))
 					{
-						double width = 80 / Model.Participants.Count();
+						double width = 70 / Model.Participants.Count();
 						<td style="width:@(Math.Round(width,2))%"><img src="~/images/Opponents/@team.Picture.Name" alt="" /></td>
 
 					}
@@ -922,7 +922,7 @@
 						}
 						else if (Model.Play_offD.Exists(i => i.Stage == 10 + n))
 						{
-							<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Play_offD.First(i=>i.Stage == 10 + n).TeamId).Name</td><td>@Model.Play_offD.First(i=>i.Stage == 10 + n).Goals</td></tr>
+							<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Participants.First(i => i.Id == Model.Play_offD.First(i => i.Stage == 10 + n).TeamId).Name</td><td>@Model.Play_offD.First(i => i.Stage == 10 + n).Goals</td></tr>
 							<tr><td style="border-right:1px solid lightgray;border-bottom:1px solid lightgray;">@Model.Play_offD.First(i=>i.Stage == 10 + n).Opponent.Name</td><td>@Model.Play_offD.First(i=>i.Stage == 10 + n).OpponentGoals</td></tr>
 						}
 						else

@@ -994,7 +994,7 @@ input[type="checkbox"] {
 }
 .teams_page {
     display: grid;
-    grid-auto-rows:minmax(100px,260px);
+    grid-auto-rows:minmax(100px,320px);
     grid-template-columns: repeat(auto-fit, minmax(240px, 420px ));
     grid-gap: 1rem;
     margin-bottom: 2%;
@@ -1356,6 +1356,9 @@ div.tournament_container {
     color: white;
 }
 
+.championship .temp_tbody tr:last-child td {
+    border-bottom:3px solid #efefef;
+}
 .championship_players th {
     padding: 1%;
     font-size: calc(14px + 8 * (100vw / 1900));
@@ -1403,6 +1406,9 @@ div.tournament_container {
 
 .championship_players td:last-child {
     border-right: 3px solid #c5002e;
+}
+#temp_table tr:last-child td {
+    border-bottom: 3px solid #8bee9f !important;
 }
 
 .championship_players td:first-child {
@@ -1486,11 +1492,12 @@ div.tournament_container {
 .h2h td:first-child{
     text-align:left;
     padding-left:0.7%;
-    width:20%;
+    width:auto;
 }
 .h2h td:first-child img {
     max-height: 40px;
-    width:7%;
+    width:10%;
+    max-width:35px;
 }
 .h2h tr:hover{
     background-color:#ffe3e3;
@@ -1508,7 +1515,40 @@ div.tournament_container {
     top: -1000px; /* Положение от верхнего края */
     z-index: -1; /* Располагаем ниже текста ячейки */
 }
-
+#chesss tr:hover {
+    background-color: #c4ffd0;
+}
+#chesss td:hover::before {
+    content: ''; /* Добавляем псевдоколонку */
+    background: #c4ffd0; /* Цвет фона */
+    position: absolute; /* Абсолютное позиционирование */
+    height: 2000px; /* Высота колонки */
+    width: 100%; /* Ширина колонки */
+    left: 0; /* Положение от левого края */
+    top: -1000px; /* Положение от верхнего края */
+    z-index: -1; /* Располагаем ниже текста ячейки */
+}
+#chesss tr:first-child td {
+    border-top: 3px solid #8bee9f;
+    border-bottom: 3px solid #8bee9f;
+}
+#chesss tr:last-child td {
+    border-bottom: 3px solid #8bee9f;
+}
+#chesss td:last-child {
+    border-right: 3px solid #8bee9f;
+}
+#chesss td:first-child {
+    border-left: 3px solid #8bee9f;
+    border-right: 3px solid #8bee9f;
+}
+.temp_button{
+    color:black !important;
+}
+.temp_button:focus{
+    background-color:#8bee9f !important;
+    color:white !important;
+}
 .bracket {
     display: grid;
     grid-template-columns: 20% 20% 20% 20%;
@@ -1920,6 +1960,9 @@ input[type="radio"]:checked {
     font-size: calc(13px + 9 * (100vw / 1900));
     margin-bottom: 1%;
     font-weight: 500;
+}
+.news ol li {
+    font-size: calc(13px + 9 * (100vw / 1900));
 }
 .conf h1 {
     font-size: calc(18px + 11 * (100vw / 1900));
@@ -3262,13 +3305,25 @@ input[type="radio"]:checked {
             width: 40%;
         }
     }
+@media (max-width: 390px) {
 
-    @media (max-width: 335px) {
-        .team_info {
-            grid-template-columns: 36.5% 60.5%;
-        }
+    .teams_page {
+        display: grid;
+        grid-auto-rows: minmax(100px,275px);
     }
+}
+@media (max-width: 360px) {
 
+    .teams_page {
+        display: grid;
+        grid-auto-rows: minmax(100px,260px);
+    }
+}
+@media (max-width: 337px) {
+    .team_info {
+        grid-template-columns: 36.5% 60.5%;
+    }
+}
     @media (max-width: 375px) {
         .one_action {
             grid-gap: 2%;
@@ -3591,3 +3646,33 @@ input[type="radio"]:checked {
     .short footer {
         bottom: 0;
     }
+
+.temp_header h1{
+    font-family: 'Segoe UI';
+    font-size: calc(10px + 10 * (100vw / 1580));
+    font-weight: 400;
+    margin-right: 3%;
+    color:black
+}
+.temp_header a {
+    font-family: 'Segoe UI';
+    font-size: calc(10px + 10 * (100vw / 1580));
+    font-weight: 400;
+    margin-right: 3%;
+
+}
+.temp_header h1:hover {
+    color: #8bee9f !important;
+}
+.tournament_page {
+    display:block;
+    grid-gap: 2%;
+}
+@media (max-width: 500px) {
+    .temp_header{
+        margin-top:1% !important;
+    }
+    .temp_header h1{
+        padding-left:0.8%;
+    }
+}

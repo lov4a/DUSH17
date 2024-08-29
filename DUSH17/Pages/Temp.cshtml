@@ -1,0 +1,46 @@
+﻿@page
+@using System.Globalization;
+@model DUSH17.Pages.TempModel
+@{
+    ViewData["Title"] = "Стадион «Темп» СШ-17 Томск";
+    ViewBag.Description = "Страница стадиона «Темп» Томск";
+    ViewBag.Keywords = "Стадион Темп, Темп Томск, Темп расписание, СШ-17 Томск, ДЮСШ-17 Томск";
+}
+@section Styles{
+    <link rel="stylesheet" href="~/css/temp.css"/>
+}
+<div class="header">
+    <h1 style="color:#8bee9f">Главная</h1>
+    <a asp-page="t_Tournaments" style="text-decoration: none;"><h1>Турниры</h1></a>
+    <h1>Расписание тренировок</h1>
+</div>
+<div class="last_games">
+    <h2>Список матчей</h2>
+    @foreach (var comp in Model.competitions)
+    {
+        @if(Model.matches.Exists(x=>x.competitionId == comp.id))
+        {
+            <div class="competition">
+                <a asp-page="t_TournamentPage" asp-route-id="@comp.id" style="text-decoration: none; color:white">
+                    <h3>@comp.name</h3>
+                </a>
+            @foreach(var date in Model.dates)
+            {
+                @if (Model.matches.Exists(x => x.competitionId == comp.id && x.date == date))
+                {
+                        TextInfo textInfo = new CultureInfo("ru-RU", false).TextInfo;
+                    <h4>@date.ToString("dd.MM") @textInfo.ToTitleCase(date.ToString("dddd",new CultureInfo("ru-RU")))</h4>
+                }
+                <div class="matches">
+                    @foreach (var match in Model.matches.Where(x => x.competitionId == comp.id && x.date == date))
+                    {
+                        <div class="match">
+                                <h5 style="text-align:left;font-weight:500 !important">@match.time</h5> <h5 style="text-align:end">@match.home.name</h5> <div class="logo" style="text-align:end"><img src="~/images/t_Teams/@match.home.Picture.Name" /></div> <h5 style="text-align:center;font-weight:500 !important">@match.h_goals:@match.v_goals</h5> <div class="logo"><img src="~/images/t_Teams/@match.visitor.Picture.Name" /></div> <h5>@match.visitor.name</h5> <h5 style="text-align:end">@match.stadium</h5>
+                        </div>
+                    }
+                </div>
+            }
+            </div>
+        }
+    }
+</div>

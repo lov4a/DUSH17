@@ -31,6 +31,10 @@ namespace DUSH17.Context
 		public DbSet<Championship> Championships { get; set; }
 		public DbSet<OpponentList> OpponentList { get; set; }
 		public DbSet<OpponentsMatch> OpponentsMatches { get; set; }
+		public DbSet<t_Competition> t_Competitions { get; set; }
+		public DbSet<t_Match> t_Matches { get; set; }
+        public DbSet<t_Team> t_Teams { get; set; }
+        public DbSet<t_TeamList> t_TeamList { get; set; }
 
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -46,6 +50,8 @@ namespace DUSH17.Context
 			.HasKey(t => new { t.TeamId, t.CompetitionId });
 			modelBuilder.Entity<OpponentList>()
 			.HasKey(t => new { t.OpponentId, t.CompetitionId });
+			modelBuilder.Entity<t_TeamList>()
+			.HasKey(t => new { t.teamId, t.competitionId });
 		}
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
 			: base(options) 

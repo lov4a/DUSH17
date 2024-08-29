@@ -8,8 +8,8 @@
 		public int wins { get; set; }
 		public int draws { get; set; }
 		public int loses { get; set; }
-		public int goalsScored { get; set; }
-		public int goalsConceded { get; set; }
+		public int? goalsScored { get; set; }
+		public int? goalsConceded { get; set; }
 		public int type { get; set; }
 		public int group { get; set; }
 	}

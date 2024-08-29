@@ -104,7 +104,7 @@ namespace DUSH17.Pages
 					Participants.Add(new Participant
 					{
 						Id = team.Team.Id,
-						Name = "би-17",
+						Name = "би Й17",
 						Picture = context.Pictures.Find(18),
 						wins = Matches.Where(i => i.TeamId == team.TeamId && i.Goals > i.OpponentGoals && opps.Where(j => j.GroupId == team.GroupId).Any(o => o.OpponentId == i.OpponentId)).Count(),
 						draws = Matches.Where(i => i.TeamId == team.TeamId && i.Goals == i.OpponentGoals && opps.Where(j => j.GroupId == team.GroupId).Any(o => o.OpponentId == i.OpponentId)).Count(),
@@ -128,47 +128,51 @@ namespace DUSH17.Pages
 					games = Actionns.Where(i=>i.ActionTypeId == 6 && i.FootballerId == f.Id).Count()
 				});
 				}
-			Participants = Participants.OrderBy(i=>i.group).ThenByDescending(i => i.wins * 3 + i.draws).ThenByDescending(i => i.goalsScored - i.goalsConceded).ToList();
+			Participants = Participants.OrderBy(i=>i.group).ThenByDescending(i=>i.wins*3+i.draws).ThenByDescending(i => i.goalsScored - i.goalsConceded).ThenByDescending(i=>i.goalsScored).ThenBy(i=>i.Name).ToList();
 			int i = 0;
-			for (int group = 0; group < Participants.Max(i=> i.group);group++)
+			for (int group = 0; group < Participants.Max(i => i.group); group++)
 			{
-				int points = Participants.Where(g=>g.group == group+1).Max(i=>i.wins*3+i.draws+1);
-				foreach (var part in Participants.Where(g=>g.group == group+1 && g.wins*3 + g.draws < points).ToList())
+				int points = Participants.Where(g => g.group == group + 1).Max(i => i.wins * 3 + i.draws + 1);
+				foreach (var part in Participants.Where(g => g.group == group + 1 && g.wins * 3 + g.draws < points).ToList())
 				{
 
-					if (points > part.wins*3 + part.draws) 
+					if (points > part.wins * 3 + part.draws)
 					{
 						if (Participants.Exists(j => j.Id != part.Id && (j.wins * 3 + j.draws) == (part.wins * 3 + part.draws) && j.group == part.group && j.Id != part.Id))
 						{
-							
+
 
 							List<Participant> h2h = new List<Participant>();
 							foreach (var p in Participants.Where(j => (j.wins * 3 + j.draws) == (part.wins * 3 + part.draws) && j.group == part.group))
 							{
-									h2h.Add(new Participant
-									{
-										Id = p.Id,
-										Name = p.Name,
-										Picture = p.Picture,
-										wins = 0,
-										draws = 0,
-										loses = 0,
-										goalsScored = 0,
-										goalsConceded = 0,
-										type = p.type,
-										group = p.group
-									});
+								h2h.Add(new Participant
+								{
+									Id = p.Id,
+									Name = p.Name,
+									Picture = p.Picture,
+									wins = 0,
+									draws = 0,
+									loses = 0,
+									goalsScored = 0,
+									goalsConceded = 0,
+									type = p.type,
+									group = p.group
+								});
 							}
-							if (h2h.Count() > 0)
+
+							List<OpponentsMatch> OppsH2h = Oppsmatches.Where(x => h2h.Any(o => o.Id == x.Opponent1Id && o.type == 1) && h2h.Any(o2 => o2.Id == x.Opponent2Id && o2.type == 1)).ToList();
+							List<Match> MatchesH2h = Matches.Where(x => h2h.Any(o => o.Id == x.OpponentId) && h2h.Any(o => o.type == 2 && o.Id == x.TeamId)).ToList();
+							
+							if (h2h.Count() > 0 && (OppsH2h.Count() > 0 || MatchesH2h.Count() > 0))
 							{
-								List<OpponentsMatch> OppsH2h = Oppsmatches.Where(x => h2h.Any(o => o.Id == x.Opponent1Id) && h2h.Any(o2 => o2.Id == x.Opponent2Id)).ToList();
-								List<Match> MatchesH2h = Matches.Where(x => h2h.Any(o => o.Id == x.OpponentId)).ToList();
 								foreach (var team in h2h)
 								{
 									if (team.type == 2)
 									{
 										team.wins = MatchesH2h.Where(i => i.TeamId == team.Id && i.Goals > i.OpponentGoals).Count();
 										team.draws = MatchesH2h.Where(i => i.TeamId == team.Id && i.Goals == i.OpponentGoals).Count();
+										team.goalsScored = MatchesH2h.Where(i => i.TeamId == team.Id).Sum(i => i.Goals);
+										team.goalsConceded = MatchesH2h.Where(i => i.TeamId == team.Id).Sum(i => i.OpponentGoals);
 									}
 									else
 									{
@@ -176,16 +180,19 @@ namespace DUSH17.Pages
 									Matches.Where(i => i.OpponentId == team.Id && i.Goals < i.OpponentGoals).Count();
 										team.draws = Oppsmatches.Where(i => (i.Opponent1Id == team.Id || i.Opponent2Id == team.Id) && (i.Goals1 == i.Goals2)).Count() +
 									Matches.Where(i => i.OpponentId == team.Id && i.Goals == i.OpponentGoals).Count();
+										team.goalsScored = OppsH2h.Where(i => i.Opponent1Id == team.Id).Sum(i => i.Goals1) + OppsH2h.Where(i => i.Opponent2Id == team.Id).Sum(i => i.Goals2);
+										team.goalsConceded = OppsH2h.Where(i => i.Opponent1Id == team.Id).Sum(i => i.Goals2) + OppsH2h.Where(i => i.Opponent2Id == team.Id).Sum(i => i.Goals1);
 									}
 
 								}
-								h2h = h2h.OrderByDescending(i => i.wins * 3 + i.draws).ThenByDescending(i => i.goalsScored - i.goalsConceded).ToList();
+								h2h = h2h.OrderByDescending(i => i.wins * 3 + i.draws).ThenByDescending(i => i.goalsScored - i.goalsConceded).ThenByDescending(i=>i.goalsScored).ToList();
 
 								var temp = Participants.ToList();
-							    
+
 								for (int index = 0; index < temp.Count; index++)
 								{
-									if (temp[index].Name == part.Name) {
+									if (temp[index].Name == part.Name)
+									{
 										i = index;
 									}
 								}

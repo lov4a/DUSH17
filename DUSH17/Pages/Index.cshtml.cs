@@ -32,6 +32,7 @@ namespace DUSH17.Pages
             int wins = 0;
             int points = 0;
             int games = 0;
+            int goalDiff = 0;
 
             Teams = context.Groups.Include(c => c.Coach).Include(p => p.Picture).AsNoTracking().ToList();
             Matches = context.Matches.Where(i => i.Date > DateOnly.FromDateTime(DateTime.Now.AddDays(-35))).Include(i => i.Protocols).Include(i=>i.Competition).AsNoTracking().ToList();
@@ -39,7 +40,7 @@ namespace DUSH17.Pages
             Footballers = context.Footballers.Include(i => i.Picture).AsNoTracking().ToList();
             Replaces = context.Replaces.AsNoTracking().ToList();
             Actions = context.Actions.Include(a => a.ActionType).Include(i=>i.Match).Where(i=>i.Match.Date > DateOnly.FromDateTime(DateTime.Now.AddDays(-35))).AsNoTracking().ToList();
-            Birthday = context.Footballers.Where(i => i.DateOfBirthday.DayOfYear - DateTime.Now.DayOfYear > 0 && i.DateOfBirthday.DayOfYear - DateTime.Now.DayOfYear <= 7)
+            Birthday = context.Footballers.Where(i => i.DateOfBirthday.DayOfYear - DateTime.Now.DayOfYear >= 0 && i.DateOfBirthday.DayOfYear - DateTime.Now.DayOfYear <= 7)
                 .OrderBy(i=>i.DateOfBirthday.DayOfYear).Include(i=>i.Picture).AsNoTracking().ToList();
             var comp = from comps in context.Competitions.ToList()
                             join matches in LastMatches on comps.Id equals matches.CompetitionId
@@ -66,6 +67,14 @@ namespace DUSH17.Pages
                     {
                         bestTeam = Teams.Where(i => i.Id == team.Id).First();
                         games = Matches.Where(i => i.TeamId == team.Id).Count();
+                    }
+                    else if(games == Matches.Where(i => i.TeamId == team.Id).Count())
+                    {
+                        if(goalDiff < Matches.Where(i => i.TeamId == team.Id).Sum(i=>i.Goals - i.OpponentGoals))
+                        {
+							bestTeam = Teams.Where(i => i.Id == team.Id).First();
+                            goalDiff = Matches.Where(i => i.TeamId == team.Id).Sum(i => i.Goals - i.OpponentGoals);
+						}
                     }
                 }
             }

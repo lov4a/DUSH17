@@ -1,0 +1,143 @@
+﻿.header {
+    display: flex;
+    width: 100%;
+    border-bottom: 1px solid black;
+    margin-bottom: 1%;
+}
+.header a{
+    font-family: 'Segoe UI';
+    font-size: calc(10px + 10 * (100vw / 1580));
+    font-weight: 400;
+    margin-right: 3%;
+    color:black;
+}
+.header a:hover{
+    color:#8bee9f;
+}
+h1 {
+    font-family: 'Segoe UI';
+    font-size: calc(10px + 10 * (100vw / 1580));
+    font-weight: 400;
+    margin-right: 3%;
+}
+h2 {
+    font-family: 'Segoe UI';
+    font-size: calc(10px + 10 * (100vw / 1580));
+    font-weight: 500;
+    margin-right: 3%;
+}
+
+.last_games h2 {
+    font-size: calc(10px + 7 * (100vw / 1580)) !important;
+    font-weight:400 !important;
+}
+.last_games h3 {
+    font-size: calc(12px + 6 * (100vw / 1580)) !important;
+    width: 100%;
+    background-color: #8bee9f;
+    padding: 0.3%;
+    font-weight: 400 !important;
+    margin-bottom: 0;
+    border-radius: 8px 8px 0px 0px;
+}
+.last_games h4 {
+    font-size: calc(12px + 6 * (100vw / 1580)) !important;
+    width: 100%;
+    padding: 0.3%;
+    border: 1px solid lightgray;
+    border-top:none;
+    font-weight: 500 !important;
+    margin-bottom: 0;
+    text-align:center;
+    background:#efefef;
+}
+.last_games h5 {
+    font-size: calc(12px + 6 * (100vw / 1580)) !important;
+    width: 100%;
+    padding: 0.3%;
+    border-top: none;
+    font-weight: 400 !important;
+    margin-bottom: 0;
+}
+.competition {
+    margin: 0;
+    margin-bottom: 1%;
+    border: 1px solid lightgray;
+    border-radius: 8px;
+    -webkit-box-shadow: 4px 4px 22px -2px rgba(34, 60, 80, 0.2);
+    -moz-box-shadow: 4px 4px 22px -2px rgba(34, 60, 80, 0.2);
+    box-shadow: 4px 4px 22px -2px rgba(34, 60, 80, 0.2);
+}
+.matches {
+
+    border-top: none;
+    padding: 0.3%;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+.matches .match:last-child{
+    border-radius: 0px 0px 8px 8px;
+    border-bottom:none;
+}
+.match {
+    border-bottom: 1px solid lightgray;
+    display: grid;
+    grid-auto-rows: auto;
+    grid-template-columns: 8% 33% 4% 7% 4% 33% 10%;
+    grid-gap: 0;
+    justify-content: center;
+    align-items: center;
+}
+.logo{
+    width:100%;
+}
+.logo img{
+    width:90%;
+    padding:7%;
+    min-width:27px;
+}
+
+@media (max-width: 500px) {
+    .container, .container-lg, .container-md, .container-sm {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding:0 !important;
+    }
+    .header{
+        margin-top: 1%;
+    }
+    .header h1{
+        padding-left:0.7%;
+    }
+    h2 {
+        padding-left: 0.7%;
+    }
+    .last_games h3{
+        border-radius:0;
+    }
+    .competition{
+        border-radius:0;
+    }
+}
+@media (max-width: 665px) {
+    .match {
+        grid-template-columns: 8% 30% 7% 8% 7% 30% 9%;
+    }
+}
+@media (max-width: 400px) {
+    .last_games h5 {
+        font-size: calc(10px + 6 * (100vw / 1580)) !important;
+    }
+    .match {
+        grid-template-columns: 8% 28% 9% 8% 9% 28% 9%;
+    }
+}
+@media (max-width: 270px) {
+    .last_games h5 {
+        font-size: calc(10px + 6 * (100vw / 1580)) !important;
+    }
+
+    .match {
+        grid-template-columns: 8% 26.5% 10.5% 8% 10.5% 26.5% 9%;
+    }
+}

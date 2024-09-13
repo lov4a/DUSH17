@@ -88,6 +88,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="wwwroot\documents\structure\" />
+    <Folder Include="wwwroot\documents\docs\" />
+    <Folder Include="wwwroot\documents\education\" />
     <Folder Include="wwwroot\images\TeamsPhoto\" />
     <Folder Include="wwwroot\video\" />
   </ItemGroup>
